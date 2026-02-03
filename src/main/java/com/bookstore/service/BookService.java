@@ -1,12 +1,9 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.BookDTO;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Category;
 import com.bookstore.exception.ResourceNotFoundException;
-import com.bookstore.mapper.BookMapper;
 import com.bookstore.repository.BookRepository;
-import com.bookstore.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,51 +12,33 @@ import org.springframework.stereotype.Service;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final CategoryRepository categoryRepository;
-    private final BookMapper bookMapper;
-
-    public BookService(BookRepository bookRepository, CategoryRepository categoryRepository, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.categoryRepository = categoryRepository;
-        this.bookMapper = bookMapper;
     }
 
-    public Page<BookDTO> getAllBooks(Pageable pageable) {
-        return bookRepository.findAll(pageable).map(bookMapper::toDTO);
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
-    public BookDTO getBookById(Long id) {
-        Book book = bookRepository.findById(id)
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
-        return bookMapper.toDTO(book);
     }
 
-    public Page<BookDTO> searchBooks(String keyword, Pageable pageable) {
-        return bookRepository.searchByTitleOrAuthor(keyword, pageable).map(bookMapper::toDTO);
+    public Page<Book> searchBooks(String keyword, Pageable pageable) {
+        return bookRepository.searchByTitleOrAuthor(keyword, pageable);
     }
 
-    public Page<BookDTO> getBooksByCategory(Long categoryId, Pageable pageable) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
-        return bookRepository.findByCategory(category, pageable).map(bookMapper::toDTO);
+    public Page<Book> getBooksByCategory(Category category, Pageable pageable) {
+        return bookRepository.findByCategory(category, pageable);
     }
 
-    public BookDTO createBook(BookDTO bookDTO) {
-        Category category = resolveCategory(bookDTO.getCategoryId());
-        Book book = bookMapper.toEntity(bookDTO, category);
-        Book savedBook = bookRepository.save(book);
-        return bookMapper.toDTO(savedBook);
+    public Book createBook(Book book) {
+        return bookRepository.save(book);
     }
 
-    public BookDTO updateBook(Long id, BookDTO bookDTO) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
-
-        Category category = resolveCategory(bookDTO.getCategoryId());
-        bookMapper.updateEntity(book, bookDTO, category);
-
-        Book updatedBook = bookRepository.save(book);
-        return bookMapper.toDTO(updatedBook);
+    public Book updateBook(Book book) {
+        return bookRepository.save(book);
     }
 
     public void deleteBook(Long id) {
@@ -69,15 +48,6 @@ public class BookService {
     }
 
     public Book getBookEntity(Long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
-    }
-
-    private Category resolveCategory(Long categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+        return getBookById(id);
     }
 }

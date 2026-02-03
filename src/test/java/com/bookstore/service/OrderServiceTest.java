@@ -1,13 +1,10 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.CheckoutRequest;
-import com.bookstore.dto.OrderDTO;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.Order;
 import com.bookstore.entity.OrderStatus;
 import com.bookstore.entity.User;
-import com.bookstore.mapper.OrderMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
@@ -38,9 +35,6 @@ class OrderServiceTest {
     private BookRepository bookRepository;
 
     @Mock
-    private OrderMapper orderMapper;
-
-    @Mock
     private OwnershipValidator ownershipValidator;
 
     @InjectMocks
@@ -48,10 +42,12 @@ class OrderServiceTest {
 
     @Test
     void checkout_createsOrderUpdatesStockAndClearsCart() {
-        User user = User.builder().id(1L).build();
-        Book book = Book.builder().id(10L).price(BigDecimal.valueOf(25)).stockQuantity(10).build();
-        CartItem item = CartItem.builder().id(3L).user(user).book(book).quantity(2).build();
-        CheckoutRequest request = new CheckoutRequest("123 Main St");
+        User user = User.builder().build();
+        user.setId(1L);
+        Book book = Book.builder().price(BigDecimal.valueOf(25)).stockQuantity(10).build();
+        book.setId(10L);
+        CartItem item = CartItem.builder().user(user).book(book).quantity(2).build();
+        item.setId(3L);
 
         when(cartService.getCartItems(user)).thenReturn(List.of(item));
         when(bookRepository.save(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -60,9 +56,8 @@ class OrderServiceTest {
             order.setId(99L);
             return order;
         });
-        when(orderMapper.toDTO(any(Order.class))).thenReturn(new OrderDTO());
 
-        OrderDTO result = orderService.checkout(user, request);
+        Order result = orderService.checkout(user, "123 Main St");
 
         ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository).save(orderCaptor.capture());
