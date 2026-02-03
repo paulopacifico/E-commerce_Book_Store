@@ -7,18 +7,22 @@ import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
+
+    public BookService(BookRepository bookRepository, CategoryRepository categoryRepository, BookMapper bookMapper) {
+        this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
+        this.bookMapper = bookMapper;
+    }
 
     public Page<BookDTO> getAllBooks(Pageable pageable) {
         return bookRepository.findAll(pageable).map(bookMapper::toDTO);
