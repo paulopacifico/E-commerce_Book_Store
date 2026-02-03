@@ -5,7 +5,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn -q -DskipTests package
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-noble
 WORKDIR /app
 COPY --from=build /app/target/bookstore-ecommerce-1.0.0.jar app.jar
 EXPOSE 8080
