@@ -1,8 +1,6 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.AuthResponse;
-import com.bookstore.dto.LoginRequest;
-import com.bookstore.dto.RegisterRequest;
+import com.bookstore.domain.AuthResult;
 import com.bookstore.entity.Role;
 import com.bookstore.entity.User;
 import com.bookstore.exception.BadRequestException;
@@ -33,48 +31,35 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+    public AuthResult register(String email, String password, String firstName, String lastName) {
+        if (userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email already exists");
         }
 
         User user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .firstName(firstName)
+                .lastName(lastName)
                 .role(Role.USER)
                 .build();
 
         userRepository.save(user);
 
         String token = jwtTokenProvider.generateToken(user.getEmail());
-
-        return AuthResponse.builder()
-                .token(token)
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .role(user.getRole().name())
-                .build();
+        return new AuthResult(token, user);
     }
 
-    public AuthResponse login(LoginRequest request) {
+    public AuthResult login(String email, String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()));
+                        email,
+                        password));
 
         String token = jwtTokenProvider.generateToken(authentication);
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         User user = principal.getUser();
 
-        return AuthResponse.builder()
-                .token(token)
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .role(user.getRole().name())
-                .build();
+        return new AuthResult(token, user);
     }
 }
