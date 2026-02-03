@@ -99,3 +99,15 @@ This application was developed to demonstrate proficiency in:
 **Paulo Pacifico**  
 *Backend Java Developer*  
 📍 **Canada**
+
+## 📮 Postman
+You can import the Postman collection and environment from the `postman/` folder.
+
+1. Import `postman/bookstore.postman_environment.json`
+2. Import `postman/bookstore.postman_collection.json`
+3. Select the **Bookstore Local** environment
+
+The collection uses `{{baseUrl}}` and `{{authToken}}` variables.
+
+### Auto-save JWT token
+The **Login** request includes a test script to store the token in `{{authToken}}` automatically after a successful response.
