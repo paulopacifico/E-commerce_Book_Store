@@ -9,7 +9,6 @@ import com.bookstore.mapper.OrderMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -26,6 +24,18 @@ public class OrderService {
     private final BookRepository bookRepository;
     private final OrderMapper orderMapper;
     private final OwnershipValidator ownershipValidator;
+
+    public OrderService(OrderRepository orderRepository,
+            CartService cartService,
+            BookRepository bookRepository,
+            OrderMapper orderMapper,
+            OwnershipValidator ownershipValidator) {
+        this.orderRepository = orderRepository;
+        this.cartService = cartService;
+        this.bookRepository = bookRepository;
+        this.orderMapper = orderMapper;
+        this.ownershipValidator = ownershipValidator;
+    }
 
     @Transactional
     public OrderDTO checkout(User user, CheckoutRequest request) {
