@@ -2,7 +2,7 @@ package com.bookstore.controller;
 
 import com.bookstore.dto.CheckoutRequest;
 import com.bookstore.dto.OrderDTO;
-import com.bookstore.entity.User;
+import com.bookstore.security.UserPrincipal;
 import com.bookstore.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,21 +22,21 @@ public class OrderController {
 
     @PostMapping("/checkout")
     public ResponseEntity<OrderDTO> checkout(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody CheckoutRequest request) {
-        OrderDTO order = orderService.checkout(user, request);
+        OrderDTO order = orderService.checkout(principal.getUser(), request);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getUserOrders(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(orderService.getUserOrders(user));
+    public ResponseEntity<List<OrderDTO>> getUserOrders(@AuthenticationPrincipal UserPrincipal principal) {
+        return ResponseEntity.ok(orderService.getUserOrders(principal.getUser()));
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrderById(user, orderId));
+        return ResponseEntity.ok(orderService.getOrderById(principal.getUser(), orderId));
     }
 }

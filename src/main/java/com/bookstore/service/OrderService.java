@@ -2,12 +2,13 @@ package com.bookstore.service;
 
 import com.bookstore.dto.CheckoutRequest;
 import com.bookstore.dto.OrderDTO;
-import com.bookstore.dto.OrderItemDTO;
 import com.bookstore.entity.*;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.OrderMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
+import com.bookstore.validation.OwnershipValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final BookRepository bookRepository;
+    private final OrderMapper orderMapper;
+    private final OwnershipValidator ownershipValidator;
 
     @Transactional
     public OrderDTO checkout(User user, CheckoutRequest request) {
@@ -75,13 +78,13 @@ public class OrderService {
         // Clear the cart
         cartService.clearCart(user);
 
-        return mapToDTO(savedOrder);
+        return orderMapper.toDTO(savedOrder);
     }
 
     public List<OrderDTO> getUserOrders(User user) {
         return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
                 .stream()
-                .map(this::mapToDTO)
+                .map(orderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -89,37 +92,8 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
-        if (!order.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("Order does not belong to current user");
-        }
+        ownershipValidator.validateOrderOwnership(user, order);
 
-        return mapToDTO(order);
-    }
-
-    private OrderDTO mapToDTO(Order order) {
-        List<OrderItemDTO> items = order.getOrderItems().stream()
-                .map(this::mapOrderItemToDTO)
-                .collect(Collectors.toList());
-
-        return OrderDTO.builder()
-                .id(order.getId())
-                .items(items)
-                .totalAmount(order.getTotalAmount())
-                .status(order.getStatus().name())
-                .shippingAddress(order.getShippingAddress())
-                .createdAt(order.getCreatedAt())
-                .build();
-    }
-
-    private OrderItemDTO mapOrderItemToDTO(OrderItem orderItem) {
-        return OrderItemDTO.builder()
-                .id(orderItem.getId())
-                .bookId(orderItem.getBook().getId())
-                .bookTitle(orderItem.getBook().getTitle())
-                .bookAuthor(orderItem.getBook().getAuthor())
-                .quantity(orderItem.getQuantity())
-                .priceAtPurchase(orderItem.getPriceAtPurchase())
-                .subtotal(orderItem.getSubtotal())
-                .build();
+        return orderMapper.toDTO(order);
     }
 }

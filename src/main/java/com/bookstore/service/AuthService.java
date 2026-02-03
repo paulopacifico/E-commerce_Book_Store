@@ -8,6 +8,7 @@ import com.bookstore.entity.User;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.repository.UserRepository;
 import com.bookstore.security.JwtTokenProvider;
+import com.bookstore.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,7 +58,8 @@ public class AuthService {
                         request.getPassword()));
 
         String token = jwtTokenProvider.generateToken(authentication);
-        User user = (User) authentication.getPrincipal();
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        User user = principal.getUser();
 
         return AuthResponse.builder()
                 .token(token)

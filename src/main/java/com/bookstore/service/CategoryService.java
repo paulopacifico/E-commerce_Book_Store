@@ -4,6 +4,7 @@ import com.bookstore.dto.CategoryDTO;
 import com.bookstore.entity.Category;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.CategoryMapper;
 import com.bookstore.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,18 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .map(this::mapToDTO)
+                .map(categoryMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-        return mapToDTO(category);
+        return categoryMapper.toDTO(category);
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
@@ -40,7 +42,7 @@ public class CategoryService {
                 .build();
 
         Category savedCategory = categoryRepository.save(category);
-        return mapToDTO(savedCategory);
+        return categoryMapper.toDTO(savedCategory);
     }
 
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
@@ -56,7 +58,7 @@ public class CategoryService {
         category.setDescription(categoryDTO.getDescription());
 
         Category updatedCategory = categoryRepository.save(category);
-        return mapToDTO(updatedCategory);
+        return categoryMapper.toDTO(updatedCategory);
     }
 
     public void deleteCategory(Long id) {
@@ -65,12 +67,4 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    private CategoryDTO mapToDTO(Category category) {
-        return CategoryDTO.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .description(category.getDescription())
-                .bookCount(category.getBooks() != null ? category.getBooks().size() : 0)
-                .build();
-    }
 }

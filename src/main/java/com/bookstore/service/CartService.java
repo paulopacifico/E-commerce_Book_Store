@@ -6,9 +6,11 @@ import com.bookstore.dto.CartResponse;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.User;
-import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
+import com.bookstore.validation.OwnershipValidator;
+import com.bookstore.validation.StockValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +26,14 @@ public class CartService {
 
     private final CartItemRepository cartItemRepository;
     private final BookService bookService;
+    private final CartMapper cartMapper;
+    private final StockValidator stockValidator;
+    private final OwnershipValidator ownershipValidator;
 
     public CartResponse getCart(User user) {
         List<CartItem> cartItems = cartItemRepository.findByUserId(user.getId());
         List<CartItemDTO> itemDTOs = cartItems.stream()
-                .map(this::mapToDTO)
+                .map(cartMapper::toDTO)
                 .collect(Collectors.toList());
 
         BigDecimal totalAmount = itemDTOs.stream()
@@ -50,9 +55,7 @@ public class CartService {
     public CartItemDTO addToCart(User user, AddToCartRequest request) {
         Book book = bookService.getBookEntity(request.getBookId());
 
-        if (book.getStockQuantity() < request.getQuantity()) {
-            throw new BadRequestException("Not enough stock available. Available: " + book.getStockQuantity());
-        }
+        stockValidator.validateAvailableStock(book, request.getQuantity());
 
         Optional<CartItem> existingItem = cartItemRepository.findByUserIdAndBookId(user.getId(), book.getId());
 
@@ -60,10 +63,7 @@ public class CartService {
         if (existingItem.isPresent()) {
             cartItem = existingItem.get();
             int newQuantity = cartItem.getQuantity() + request.getQuantity();
-            if (newQuantity > book.getStockQuantity()) {
-                throw new BadRequestException(
-                        "Total quantity exceeds available stock. Available: " + book.getStockQuantity());
-            }
+            stockValidator.validateTotalQuantity(book, newQuantity);
             cartItem.setQuantity(newQuantity);
         } else {
             cartItem = CartItem.builder()
@@ -74,7 +74,7 @@ public class CartService {
         }
 
         CartItem savedItem = cartItemRepository.save(cartItem);
-        return mapToDTO(savedItem);
+        return cartMapper.toDTO(savedItem);
     }
 
     @Transactional
@@ -82,18 +82,13 @@ public class CartService {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item", "id", cartItemId));
 
-        if (!cartItem.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("Cart item does not belong to current user");
-        }
+        ownershipValidator.validateCartItemOwnership(user, cartItem);
 
-        if (quantity > cartItem.getBook().getStockQuantity()) {
-            throw new BadRequestException("Quantity exceeds available stock. Available: " +
-                    cartItem.getBook().getStockQuantity());
-        }
+        stockValidator.validateTotalQuantity(cartItem.getBook(), quantity);
 
         cartItem.setQuantity(quantity);
         CartItem updatedItem = cartItemRepository.save(cartItem);
-        return mapToDTO(updatedItem);
+        return cartMapper.toDTO(updatedItem);
     }
 
     @Transactional
@@ -101,9 +96,7 @@ public class CartService {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item", "id", cartItemId));
 
-        if (!cartItem.getUser().getId().equals(user.getId())) {
-            throw new BadRequestException("Cart item does not belong to current user");
-        }
+        ownershipValidator.validateCartItemOwnership(user, cartItem);
 
         cartItemRepository.delete(cartItem);
     }
@@ -115,20 +108,5 @@ public class CartService {
 
     public List<CartItem> getCartItems(User user) {
         return cartItemRepository.findByUserId(user.getId());
-    }
-
-    private CartItemDTO mapToDTO(CartItem cartItem) {
-        Book book = cartItem.getBook();
-        BigDecimal subtotal = book.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
-
-        return CartItemDTO.builder()
-                .id(cartItem.getId())
-                .bookId(book.getId())
-                .bookTitle(book.getTitle())
-                .bookAuthor(book.getAuthor())
-                .bookPrice(book.getPrice())
-                .quantity(cartItem.getQuantity())
-                .subtotal(subtotal)
-                .build();
     }
 }
