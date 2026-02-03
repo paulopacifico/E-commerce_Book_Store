@@ -1,16 +1,16 @@
 # 📚 E-Commerce Book Store API
 
 ## Professional Overview
-This project represents a robust backend solution for a digital bookstore, engineered to handle secure transactions and inventory management. Built with modern **Java 17** and **Spring Boot 3**, it demonstrates enterprise-grade architectural patterns common in the Canadian tech landscape.
+This project represents a robust backend solution for a digital bookstore, engineered to handle secure transactions and inventory management. Built with modern **Java 21** and **Spring Boot 4**, it demonstrates enterprise-grade architectural patterns common in the Canadian tech landscape.
 
 The application focuses on **security**, **scalability**, and **clean code principles**, utilizing JWT for stateless authentication and JPA for efficient data abstraction.
 
 ## 🚀 Tech Stack & Tools
 | Category | Technologies |
 |----------|--------------|
-| **Core Framework** | Java 17, Spring Boot 3.2.1 |
+| **Core Framework** | Java 21, Spring Boot 4.0.2 |
 | **Security** | Spring Security, JWT (0.12.3) |
-| **Database/ORM** | Spring Data JPA, H2 Database (In-Memory) |
+| **Database/ORM** | Spring Data JPA, H2 (In-Memory), PostgreSQL (Docker) |
 | **Build & Tools** | Maven, Lombok |
 
 ## 🔑 Key Features
@@ -34,8 +34,8 @@ The application focuses on **security**, **scalability**, and **clean code princ
 ## 🔮 Future Enhancements
 *   **Refresh Token Rotation**: Implementing secure token rotation to enhance session security and limit long-lived access token risks.
 *   **Advanced Pagination & Filtering**: Adding multisort criteria and dynamic filters for complex book listings.
-*   **PostgreSQL Integration**: Migrating from H2 to PostgreSQL for production-grade data persistence and reliability.
-*   **Dockerization**: Creating a `Dockerfile` and `docker-compose.yml` for unified containerized deployment.
+*   **PostgreSQL Migration**: Promote the Docker profile to a production-grade config (TLS, secrets, migrations).
+*   **Container Hardening**: Add non-root user and smaller base images for production runs.
 *   **API Documentation**: Integrating **Swagger/OpenAPI** for interactive and auto-generated API docs.
 
 ## 🔐 Test Credentials (Demo)
@@ -49,8 +49,8 @@ The application comes pre-loaded with sample data for quick evaluation.
 ## 🛠️ Getting Started
 
 ### Prerequisites
-*   Java Development Kit (JDK) 17+
-*   Maven 3.8+
+*   Java Development Kit (JDK) 21+
+*   Maven 3.9+
 
 ### Installation & Run
 1.  **Clone the repository**
@@ -70,12 +70,21 @@ The application comes pre-loaded with sample data for quick evaluation.
     ```
     The API will be available at `http://localhost:8080`.
 
+### Run with Docker + PostgreSQL
+This uses the `docker` Spring profile and a local Postgres container.
+
+```bash
+docker compose up --build
+```
+
+Then access the API at `http://localhost:8080`.
+
 ## 📂 Project Structure
 ```
 src/
 ├── main/
 │   ├── java/com/bookstore/   # Core application logic
-│   └── resources/            # Configs (application.properties)
+│   └── resources/            # Configs (application.yml, application-docker.yml)
 └── test/                     # Unit and Integration tests
 ```
 
