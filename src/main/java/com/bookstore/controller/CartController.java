@@ -4,7 +4,7 @@ import com.bookstore.dto.AddToCartRequest;
 import com.bookstore.dto.CartItemDTO;
 import com.bookstore.dto.CartResponse;
 import com.bookstore.dto.UpdateCartRequest;
-import com.bookstore.entity.User;
+import com.bookstore.security.UserPrincipal;
 import com.bookstore.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,37 +21,37 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public ResponseEntity<CartResponse> getCart(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(cartService.getCart(user));
+    public ResponseEntity<CartResponse> getCart(@AuthenticationPrincipal UserPrincipal principal) {
+        return ResponseEntity.ok(cartService.getCart(principal.getUser()));
     }
 
     @PostMapping("/add")
     public ResponseEntity<CartItemDTO> addToCart(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody AddToCartRequest request) {
-        CartItemDTO cartItem = cartService.addToCart(user, request);
+        CartItemDTO cartItem = cartService.addToCart(principal.getUser(), request);
         return new ResponseEntity<>(cartItem, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{cartItemId}")
     public ResponseEntity<CartItemDTO> updateCartItem(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long cartItemId,
             @Valid @RequestBody UpdateCartRequest request) {
-        return ResponseEntity.ok(cartService.updateCartItem(user, cartItemId, request.getQuantity()));
+        return ResponseEntity.ok(cartService.updateCartItem(principal.getUser(), cartItemId, request.getQuantity()));
     }
 
     @DeleteMapping("/remove/{cartItemId}")
     public ResponseEntity<Void> removeFromCart(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long cartItemId) {
-        cartService.removeFromCart(user, cartItemId);
+        cartService.removeFromCart(principal.getUser(), cartItemId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clearCart(@AuthenticationPrincipal User user) {
-        cartService.clearCart(user);
+    public ResponseEntity<Void> clearCart(@AuthenticationPrincipal UserPrincipal principal) {
+        cartService.clearCart(principal.getUser());
         return ResponseEntity.noContent().build();
     }
 }
