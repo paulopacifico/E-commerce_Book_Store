@@ -1,11 +1,8 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.AddToCartRequest;
-import com.bookstore.dto.CartItemDTO;
-import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
+import com.bookstore.entity.Book;
 import com.bookstore.entity.User;
-import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.validation.OwnershipValidator;
 import com.bookstore.validation.StockValidator;
@@ -20,8 +17,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,9 +29,6 @@ class CartServiceTest {
     private BookService bookService;
 
     @Mock
-    private CartMapper cartMapper;
-
-    @Mock
     private StockValidator stockValidator;
 
     @Mock
@@ -47,17 +39,18 @@ class CartServiceTest {
 
     @Test
     void addToCart_mergesExistingItemAndValidatesStock() {
-        User user = User.builder().id(1L).build();
-        Book book = Book.builder().id(10L).price(BigDecimal.valueOf(20)).stockQuantity(10).build();
-        CartItem existing = CartItem.builder().id(5L).user(user).book(book).quantity(2).build();
-        AddToCartRequest request = new AddToCartRequest(10L, 3);
+        User user = User.builder().build();
+        user.setId(1L);
+        Book book = Book.builder().price(BigDecimal.valueOf(20)).stockQuantity(10).build();
+        book.setId(10L);
+        CartItem existing = CartItem.builder().user(user).book(book).quantity(2).build();
+        existing.setId(5L);
 
         when(bookService.getBookEntity(10L)).thenReturn(book);
         when(cartItemRepository.findByUserIdAndBookId(1L, 10L)).thenReturn(Optional.of(existing));
         when(cartItemRepository.save(any(CartItem.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(cartMapper.toDTO(any(CartItem.class))).thenReturn(new CartItemDTO());
 
-        CartItemDTO result = cartService.addToCart(user, request);
+        CartItem result = cartService.addToCart(user, 10L, 3);
 
         verify(stockValidator).validateAvailableStock(book, 3);
         verify(stockValidator).validateTotalQuantity(book, 5);
@@ -69,19 +62,22 @@ class CartServiceTest {
 
     @Test
     void updateCartItem_validatesOwnershipAndStock() {
-        User user = User.builder().id(1L).build();
-        Book book = Book.builder().id(10L).price(BigDecimal.valueOf(20)).stockQuantity(10).build();
-        CartItem item = CartItem.builder().id(5L).user(user).book(book).quantity(2).build();
+        User user = User.builder().build();
+        user.setId(1L);
+        Book book = Book.builder().price(BigDecimal.valueOf(20)).stockQuantity(10).build();
+        book.setId(10L);
+        CartItem item = CartItem.builder().user(user).book(book).quantity(2).build();
+        item.setId(5L);
 
         when(cartItemRepository.findById(5L)).thenReturn(Optional.of(item));
         when(cartItemRepository.save(any(CartItem.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(cartMapper.toDTO(any(CartItem.class))).thenReturn(new CartItemDTO());
 
-        cartService.updateCartItem(user, 5L, 4);
+        CartItem result = cartService.updateCartItem(user, 5L, 4);
 
         verify(ownershipValidator).validateCartItemOwnership(user, item);
         verify(stockValidator).validateTotalQuantity(book, 4);
         verify(cartItemRepository).save(item);
         assertThat(item.getQuantity()).isEqualTo(4);
+        assertThat(result).isNotNull();
     }
 }

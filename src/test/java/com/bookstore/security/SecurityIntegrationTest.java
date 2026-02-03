@@ -1,6 +1,8 @@
 package com.bookstore.security;
 
 import com.bookstore.dto.BookDTO;
+import com.bookstore.entity.Book;
+import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +60,11 @@ class SecurityIntegrationTest {
         }
 
         @Bean
+        CategoryService categoryService() {
+            return org.mockito.Mockito.mock(CategoryService.class);
+        }
+
+        @Bean
         JwtTokenProvider jwtTokenProvider() {
             return org.mockito.Mockito.mock(JwtTokenProvider.class);
         }
@@ -101,15 +108,15 @@ class SecurityIntegrationTest {
                 .stockQuantity(10)
                 .build();
 
-        BookDTO response = BookDTO.builder()
-                .id(1L)
+        Book response = Book.builder()
                 .title(request.getTitle())
                 .author(request.getAuthor())
                 .price(request.getPrice())
                 .stockQuantity(request.getStockQuantity())
                 .build();
+        response.setId(1L);
 
-        when(bookService.createBook(any(BookDTO.class))).thenReturn(response);
+        when(bookService.createBook(any(Book.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
