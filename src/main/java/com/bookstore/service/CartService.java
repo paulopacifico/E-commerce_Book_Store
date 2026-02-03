@@ -11,7 +11,6 @@ import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.validation.OwnershipValidator;
 import com.bookstore.validation.StockValidator;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CartService {
 
     private final CartItemRepository cartItemRepository;
@@ -29,6 +27,18 @@ public class CartService {
     private final CartMapper cartMapper;
     private final StockValidator stockValidator;
     private final OwnershipValidator ownershipValidator;
+
+    public CartService(CartItemRepository cartItemRepository,
+            BookService bookService,
+            CartMapper cartMapper,
+            StockValidator stockValidator,
+            OwnershipValidator ownershipValidator) {
+        this.cartItemRepository = cartItemRepository;
+        this.bookService = bookService;
+        this.cartMapper = cartMapper;
+        this.stockValidator = stockValidator;
+        this.ownershipValidator = ownershipValidator;
+    }
 
     public CartResponse getCart(User user) {
         List<CartItem> cartItems = cartItemRepository.findByUserId(user.getId());
