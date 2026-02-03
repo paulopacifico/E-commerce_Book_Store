@@ -3,6 +3,8 @@ package com.bookstore.controller;
 import com.bookstore.dto.AuthResponse;
 import com.bookstore.dto.LoginRequest;
 import com.bookstore.dto.RegisterRequest;
+import com.bookstore.domain.AuthResult;
+import com.bookstore.entity.User;
 import com.bookstore.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,13 +23,30 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
+        AuthResult result = authService.register(
+                request.getEmail(),
+                request.getPassword(),
+                request.getFirstName(),
+                request.getLastName());
+        AuthResponse response = toAuthResponse(result);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        AuthResponse response = authService.login(request);
+        AuthResult result = authService.login(request.getEmail(), request.getPassword());
+        AuthResponse response = toAuthResponse(result);
         return ResponseEntity.ok(response);
+    }
+
+    private AuthResponse toAuthResponse(AuthResult result) {
+        User user = result.getUser();
+        return AuthResponse.builder()
+                .token(result.getToken())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .role(user.getRole().name())
+                .build();
     }
 }

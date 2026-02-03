@@ -1,13 +1,10 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.AddToCartRequest;
-import com.bookstore.dto.CartItemDTO;
-import com.bookstore.dto.CartResponse;
+import com.bookstore.domain.CartSummary;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.User;
 import com.bookstore.exception.ResourceNotFoundException;
-import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.validation.OwnershipValidator;
 import com.bookstore.validation.StockValidator;
@@ -17,78 +14,66 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CartService {
 
     private final CartItemRepository cartItemRepository;
     private final BookService bookService;
-    private final CartMapper cartMapper;
     private final StockValidator stockValidator;
     private final OwnershipValidator ownershipValidator;
 
     public CartService(CartItemRepository cartItemRepository,
             BookService bookService,
-            CartMapper cartMapper,
             StockValidator stockValidator,
             OwnershipValidator ownershipValidator) {
         this.cartItemRepository = cartItemRepository;
         this.bookService = bookService;
-        this.cartMapper = cartMapper;
         this.stockValidator = stockValidator;
         this.ownershipValidator = ownershipValidator;
     }
 
-    public CartResponse getCart(User user) {
+    public CartSummary getCart(User user) {
         List<CartItem> cartItems = cartItemRepository.findByUserId(user.getId());
-        List<CartItemDTO> itemDTOs = cartItems.stream()
-                .map(cartMapper::toDTO)
-                .collect(Collectors.toList());
 
-        BigDecimal totalAmount = itemDTOs.stream()
-                .map(CartItemDTO::getSubtotal)
+        BigDecimal totalAmount = cartItems.stream()
+                .map(item -> item.getBook().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        int totalItems = itemDTOs.stream()
-                .mapToInt(CartItemDTO::getQuantity)
+        int totalItems = cartItems.stream()
+                .mapToInt(CartItem::getQuantity)
                 .sum();
 
-        return CartResponse.builder()
-                .items(itemDTOs)
-                .totalItems(totalItems)
-                .totalAmount(totalAmount)
-                .build();
+        return new CartSummary(cartItems, totalItems, totalAmount);
     }
 
     @Transactional
-    public CartItemDTO addToCart(User user, AddToCartRequest request) {
-        Book book = bookService.getBookEntity(request.getBookId());
+    public CartItem addToCart(User user, Long bookId, int quantity) {
+        Book book = bookService.getBookEntity(bookId);
 
-        stockValidator.validateAvailableStock(book, request.getQuantity());
+        stockValidator.validateAvailableStock(book, quantity);
 
         Optional<CartItem> existingItem = cartItemRepository.findByUserIdAndBookId(user.getId(), book.getId());
 
         CartItem cartItem;
         if (existingItem.isPresent()) {
             cartItem = existingItem.get();
-            int newQuantity = cartItem.getQuantity() + request.getQuantity();
+            int newQuantity = cartItem.getQuantity() + quantity;
             stockValidator.validateTotalQuantity(book, newQuantity);
             cartItem.setQuantity(newQuantity);
         } else {
             cartItem = CartItem.builder()
                     .user(user)
                     .book(book)
-                    .quantity(request.getQuantity())
+                    .quantity(quantity)
                     .build();
         }
 
-        CartItem savedItem = cartItemRepository.save(cartItem);
-        return cartMapper.toDTO(savedItem);
+        return cartItemRepository.save(cartItem);
     }
 
     @Transactional
-    public CartItemDTO updateCartItem(User user, Long cartItemId, Integer quantity) {
+    public CartItem updateCartItem(User user, Long cartItemId, Integer quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item", "id", cartItemId));
 
@@ -97,8 +82,7 @@ public class CartService {
         stockValidator.validateTotalQuantity(cartItem.getBook(), quantity);
 
         cartItem.setQuantity(quantity);
-        CartItem updatedItem = cartItemRepository.save(cartItem);
-        return cartMapper.toDTO(updatedItem);
+        return cartItemRepository.save(cartItem);
     }
 
     @Transactional
