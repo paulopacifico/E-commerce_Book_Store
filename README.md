@@ -50,8 +50,8 @@ flowchart LR
 
 **Run**
 ```bash
-git clone https://github.com/paulopacifico/bookstore-ecommerce.git
-cd bookstore-ecommerce
+git clone https://github.com/paulopacifico/E-commerce_Book_Store.git
+cd E-commerce_Book_Store
 mvn clean install
 mvn spring-boot:run
 ```
