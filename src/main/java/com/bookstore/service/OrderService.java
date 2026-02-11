@@ -1,8 +1,10 @@
 package com.bookstore.service;
 
+import com.bookstore.dto.OrderDTO;
 import com.bookstore.entity.*;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.OrderMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
@@ -21,21 +23,24 @@ public class OrderService {
     private final BookRepository bookRepository;
     private final OwnershipValidator ownershipValidator;
     private final StockValidator stockValidator;
+    private final OrderMapper orderMapper;
 
     public OrderService(OrderRepository orderRepository,
             CartService cartService,
             BookRepository bookRepository,
             OwnershipValidator ownershipValidator,
-            StockValidator stockValidator) {
+            StockValidator stockValidator,
+            OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.bookRepository = bookRepository;
         this.ownershipValidator = ownershipValidator;
         this.stockValidator = stockValidator;
+        this.orderMapper = orderMapper;
     }
 
     @Transactional
-    public Order checkout(User user, String shippingAddress) {
+    public OrderDTO checkout(User user, String shippingAddress) {
         List<CartItem> cartItems = cartService.getCartItems(user);
 
         if (cartItems.isEmpty()) {
@@ -81,21 +86,24 @@ public class OrderService {
         // Clear the cart
         cartService.clearCart(user);
 
-        return savedOrder;
+        return orderMapper.toDTO(savedOrder);
     }
 
-    public List<Order> getUserOrders(User user) {
+    @Transactional(readOnly = true)
+    public List<OrderDTO> getUserOrders(User user) {
         return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
                 .stream()
+                .map(orderMapper::toDTO)
                 .toList();
     }
 
-    public Order getOrderById(User user, Long orderId) {
+    @Transactional(readOnly = true)
+    public OrderDTO getOrderById(User user, Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
         ownershipValidator.validateOrderOwnership(user, order);
 
-        return order;
+        return orderMapper.toDTO(order);
     }
 }

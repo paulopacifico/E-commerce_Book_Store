@@ -1,10 +1,13 @@
 package com.bookstore.service;
 
+import com.bookstore.dto.CategoryDTO;
 import com.bookstore.entity.Category;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.CategoryMapper;
 import com.bookstore.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,47 +15,65 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> getAllCategories() {
+        return categoryRepository.findAllWithBookCount()
+                .stream()
+                .map(categoryMapper::toDTO)
+                .toList();
     }
 
-    public Category getCategoryById(Long id) {
-        return categoryRepository.findById(id)
+    @Transactional(readOnly = true)
+    public CategoryDTO getCategoryById(Long id) {
+        return categoryRepository.findWithBookCountById(id)
+                .map(categoryMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
-    public Category createCategory(Category category) {
+    @Transactional
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        Category category = categoryMapper.toEntity(categoryDTO);
+
         if (categoryRepository.existsByName(category.getName())) {
             throw new BadRequestException("Category with name '" + category.getName() + "' already exists");
         }
 
-        return categoryRepository.save(category);
+        Category created = categoryRepository.save(category);
+        return categoryMapper.toDTO(created, 0);
     }
 
-    public Category updateCategory(Long id, Category updates) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+    @Transactional
+    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
+        Category category = getCategoryEntity(id);
 
-        if (!category.getName().equals(updates.getName()) &&
-                categoryRepository.existsByName(updates.getName())) {
-            throw new BadRequestException("Category with name '" + updates.getName() + "' already exists");
+        if (!category.getName().equals(categoryDTO.getName()) &&
+                categoryRepository.existsByName(categoryDTO.getName())) {
+            throw new BadRequestException("Category with name '" + categoryDTO.getName() + "' already exists");
         }
 
-        category.setName(updates.getName());
-        category.setDescription(updates.getDescription());
+        categoryMapper.updateEntity(category, categoryDTO);
+        categoryRepository.save(category);
 
-        return categoryRepository.save(category);
-    }
-
-    public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id)
+        return categoryRepository.findWithBookCountById(id)
+                .map(categoryMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-        categoryRepository.delete(category);
     }
 
+    @Transactional
+    public void deleteCategory(Long id) {
+        categoryRepository.delete(getCategoryEntity(id));
+    }
+
+    @Transactional(readOnly = true)
+    public Category getCategoryEntity(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+    }
 }

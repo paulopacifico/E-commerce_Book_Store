@@ -1,10 +1,12 @@
 package com.bookstore.service;
 
-import com.bookstore.domain.CartSummary;
+import com.bookstore.dto.CartItemDTO;
+import com.bookstore.dto.CartResponse;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.User;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.validation.OwnershipValidator;
 import com.bookstore.validation.StockValidator;
@@ -22,18 +24,22 @@ public class CartService {
     private final BookService bookService;
     private final StockValidator stockValidator;
     private final OwnershipValidator ownershipValidator;
+    private final CartMapper cartMapper;
 
     public CartService(CartItemRepository cartItemRepository,
             BookService bookService,
             StockValidator stockValidator,
-            OwnershipValidator ownershipValidator) {
+            OwnershipValidator ownershipValidator,
+            CartMapper cartMapper) {
         this.cartItemRepository = cartItemRepository;
         this.bookService = bookService;
         this.stockValidator = stockValidator;
         this.ownershipValidator = ownershipValidator;
+        this.cartMapper = cartMapper;
     }
 
-    public CartSummary getCart(User user) {
+    @Transactional(readOnly = true)
+    public CartResponse getCart(User user) {
         List<CartItem> cartItems = cartItemRepository.findByUserId(user.getId());
 
         BigDecimal totalAmount = cartItems.stream()
@@ -44,11 +50,15 @@ public class CartService {
                 .mapToInt(CartItem::getQuantity)
                 .sum();
 
-        return new CartSummary(cartItems, totalItems, totalAmount);
+        return CartResponse.builder()
+                .items(cartItems.stream().map(cartMapper::toDTO).toList())
+                .totalItems(totalItems)
+                .totalAmount(totalAmount)
+                .build();
     }
 
     @Transactional
-    public CartItem addToCart(User user, Long bookId, int quantity) {
+    public CartItemDTO addToCart(User user, Long bookId, int quantity) {
         Book book = bookService.getBookEntity(bookId);
 
         stockValidator.validateAvailableStock(book, quantity);
@@ -69,11 +79,12 @@ public class CartService {
                     .build();
         }
 
-        return cartItemRepository.save(cartItem);
+        CartItem saved = cartItemRepository.save(cartItem);
+        return cartMapper.toDTO(saved);
     }
 
     @Transactional
-    public CartItem updateCartItem(User user, Long cartItemId, Integer quantity) {
+    public CartItemDTO updateCartItem(User user, Long cartItemId, Integer quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item", "id", cartItemId));
 
@@ -82,7 +93,8 @@ public class CartService {
         stockValidator.validateTotalQuantity(cartItem.getBook(), quantity);
 
         cartItem.setQuantity(quantity);
-        return cartItemRepository.save(cartItem);
+        CartItem saved = cartItemRepository.save(cartItem);
+        return cartMapper.toDTO(saved);
     }
 
     @Transactional
@@ -100,6 +112,7 @@ public class CartService {
         cartItemRepository.deleteByUserId(user.getId());
     }
 
+    @Transactional(readOnly = true)
     public List<CartItem> getCartItems(User user) {
         return cartItemRepository.findByUserId(user.getId());
     }

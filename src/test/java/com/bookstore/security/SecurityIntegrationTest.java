@@ -1,7 +1,6 @@
 package com.bookstore.security;
 
 import com.bookstore.dto.BookDTO;
-import com.bookstore.entity.Book;
 import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,7 +76,7 @@ class SecurityIntegrationTest {
 
     @Test
     void getBooks_isPublic() throws Exception {
-        when(bookService.getAllBooks(any())).thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+        when(bookService.getAllBooks(any())).thenReturn(new PageImpl<>(List.<BookDTO>of(), PageRequest.of(0, 10), 0));
 
         mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk());
@@ -108,7 +107,7 @@ class SecurityIntegrationTest {
                 .stockQuantity(10)
                 .build();
 
-        Book response = Book.builder()
+        BookDTO response = BookDTO.builder()
                 .title(request.getTitle())
                 .author(request.getAuthor())
                 .price(request.getPrice())
@@ -116,7 +115,7 @@ class SecurityIntegrationTest {
                 .build();
         response.setId(1L);
 
-        when(bookService.createBook(any(Book.class))).thenReturn(response);
+        when(bookService.createBook(any(BookDTO.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

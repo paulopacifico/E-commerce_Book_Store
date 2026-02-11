@@ -1,10 +1,6 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.BookDTO;
-import com.bookstore.entity.Book;
-import com.bookstore.entity.Category;
-import com.bookstore.mapper.BookMapper;
-import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -20,13 +16,9 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
-    private final CategoryService categoryService;
-    private final BookMapper bookMapper;
 
-    public BookController(BookService bookService, CategoryService categoryService, BookMapper bookMapper) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
-        this.categoryService = categoryService;
-        this.bookMapper = bookMapper;
     }
 
     @GetMapping
@@ -41,14 +33,13 @@ public class BookController {
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<BookDTO> books = bookService.getAllBooks(pageable).map(bookMapper::toDTO);
+        Page<BookDTO> books = bookService.getAllBooks(pageable);
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
-        Book book = bookService.getBookById(id);
-        return ResponseEntity.ok(bookMapper.toDTO(book));
+        return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @GetMapping("/search")
@@ -58,7 +49,7 @@ public class BookController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<BookDTO> books = bookService.searchBooks(keyword, pageable).map(bookMapper::toDTO);
+        Page<BookDTO> books = bookService.searchBooks(keyword, pageable);
         return ResponseEntity.ok(books);
     }
 
@@ -69,41 +60,25 @@ public class BookController {
             @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Category category = categoryService.getCategoryById(categoryId);
-        Page<BookDTO> books = bookService.getBooksByCategory(category, pageable).map(bookMapper::toDTO);
+        Page<BookDTO> books = bookService.getBooksByCategory(categoryId, pageable);
         return ResponseEntity.ok(books);
     }
 
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
-        Category category = resolveCategory(bookDTO.getCategoryId());
-        Book book = bookMapper.toEntity(bookDTO, category);
-        Book created = bookService.createBook(book);
-        BookDTO createdDTO = bookMapper.toDTO(created);
-        return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(bookService.createBook(bookDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(
             @PathVariable Long id,
             @Valid @RequestBody BookDTO bookDTO) {
-        Book existing = bookService.getBookById(id);
-        Category category = resolveCategory(bookDTO.getCategoryId());
-        bookMapper.updateEntity(existing, bookDTO, category);
-        Book updated = bookService.updateBook(existing);
-        return ResponseEntity.ok(bookMapper.toDTO(updated));
+        return ResponseEntity.ok(bookService.updateBook(id, bookDTO));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private Category resolveCategory(Long categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
-        return categoryService.getCategoryById(categoryId);
     }
 }

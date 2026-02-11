@@ -1,8 +1,10 @@
 package com.bookstore.service;
 
+import com.bookstore.dto.CartItemDTO;
 import com.bookstore.entity.CartItem;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.User;
+import com.bookstore.mapper.CartMapper;
 import com.bookstore.repository.CartItemRepository;
 import com.bookstore.validation.OwnershipValidator;
 import com.bookstore.validation.StockValidator;
@@ -34,6 +36,9 @@ class CartServiceTest {
     @Mock
     private OwnershipValidator ownershipValidator;
 
+    @Mock
+    private CartMapper cartMapper;
+
     @InjectMocks
     private CartService cartService;
 
@@ -48,9 +53,11 @@ class CartServiceTest {
 
         when(bookService.getBookEntity(10L)).thenReturn(book);
         when(cartItemRepository.findByUserIdAndBookId(1L, 10L)).thenReturn(Optional.of(existing));
+        CartItemDTO mapped = CartItemDTO.builder().id(5L).quantity(5).build();
         when(cartItemRepository.save(any(CartItem.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(cartMapper.toDTO(any(CartItem.class))).thenReturn(mapped);
 
-        CartItem result = cartService.addToCart(user, 10L, 3);
+        CartItemDTO result = cartService.addToCart(user, 10L, 3);
 
         verify(stockValidator).validateAvailableStock(book, 3);
         verify(stockValidator).validateTotalQuantity(book, 5);
@@ -58,6 +65,7 @@ class CartServiceTest {
         verify(cartItemRepository).save(captor.capture());
         assertThat(captor.getValue().getQuantity()).isEqualTo(5);
         assertThat(result).isNotNull();
+        assertThat(result.getQuantity()).isEqualTo(5);
     }
 
     @Test
@@ -70,14 +78,17 @@ class CartServiceTest {
         item.setId(5L);
 
         when(cartItemRepository.findById(5L)).thenReturn(Optional.of(item));
+        CartItemDTO mapped = CartItemDTO.builder().id(5L).quantity(4).build();
         when(cartItemRepository.save(any(CartItem.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(cartMapper.toDTO(any(CartItem.class))).thenReturn(mapped);
 
-        CartItem result = cartService.updateCartItem(user, 5L, 4);
+        CartItemDTO result = cartService.updateCartItem(user, 5L, 4);
 
         verify(ownershipValidator).validateCartItemOwnership(user, item);
         verify(stockValidator).validateTotalQuantity(book, 4);
         verify(cartItemRepository).save(item);
         assertThat(item.getQuantity()).isEqualTo(4);
         assertThat(result).isNotNull();
+        assertThat(result.getQuantity()).isEqualTo(4);
     }
 }

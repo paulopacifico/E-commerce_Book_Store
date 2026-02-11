@@ -2,9 +2,10 @@ package com.bookstore.service;
 
 import com.bookstore.entity.Book;
 import com.bookstore.entity.CartItem;
-import com.bookstore.entity.Order;
 import com.bookstore.entity.OrderStatus;
 import com.bookstore.entity.User;
+import com.bookstore.dto.OrderDTO;
+import com.bookstore.mapper.OrderMapper;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
@@ -41,6 +42,9 @@ class OrderServiceTest {
     @Mock
     private StockValidator stockValidator;
 
+    @Mock
+    private OrderMapper orderMapper;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -55,17 +59,23 @@ class OrderServiceTest {
 
         when(cartService.getCartItems(user)).thenReturn(List.of(item));
         when(bookRepository.save(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(orderRepository.save(any(Order.class))).thenAnswer(inv -> {
-            Order order = inv.getArgument(0);
+        when(orderRepository.save(any(com.bookstore.entity.Order.class))).thenAnswer(inv -> {
+            com.bookstore.entity.Order order = inv.getArgument(0);
             order.setId(99L);
             return order;
         });
+        when(orderMapper.toDTO(any(com.bookstore.entity.Order.class))).thenReturn(OrderDTO.builder()
+                .id(99L)
+                .status(OrderStatus.CONFIRMED.name())
+                .totalAmount(BigDecimal.valueOf(50))
+                .build());
 
-        Order result = orderService.checkout(user, "123 Main St");
+        OrderDTO result = orderService.checkout(user, "123 Main St");
 
-        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        ArgumentCaptor<com.bookstore.entity.Order> orderCaptor =
+                ArgumentCaptor.forClass(com.bookstore.entity.Order.class);
         verify(orderRepository).save(orderCaptor.capture());
-        Order savedOrder = orderCaptor.getValue();
+        com.bookstore.entity.Order savedOrder = orderCaptor.getValue();
 
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
         assertThat(savedOrder.getTotalAmount()).isEqualByComparingTo("50");
@@ -74,5 +84,7 @@ class OrderServiceTest {
         verify(cartService).clearCart(user);
         verify(bookRepository).save(book);
         assertThat(result).isNotNull();
+        assertThat(result.getStatus()).isEqualTo(OrderStatus.CONFIRMED.name());
+        assertThat(result.getTotalAmount()).isEqualByComparingTo("50");
     }
 }

@@ -2,8 +2,6 @@ package com.bookstore.controller;
 
 import com.bookstore.dto.CheckoutRequest;
 import com.bookstore.dto.OrderDTO;
-import com.bookstore.entity.Order;
-import com.bookstore.mapper.OrderMapper;
 import com.bookstore.security.UserPrincipal;
 import com.bookstore.service.OrderService;
 import jakarta.validation.Valid;
@@ -19,35 +17,29 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
 
-    public OrderController(OrderService orderService, OrderMapper orderMapper) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.orderMapper = orderMapper;
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<OrderDTO> checkout(
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody CheckoutRequest request) {
-        Order order = orderService.checkout(principal.getUser(), request.getShippingAddress());
-        return new ResponseEntity<>(orderMapper.toDTO(order), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                orderService.checkout(principal.getUser(), request.getShippingAddress()),
+                HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getUserOrders(@AuthenticationPrincipal UserPrincipal principal) {
-        List<OrderDTO> orders = orderService.getUserOrders(principal.getUser())
-                .stream()
-                .map(orderMapper::toDTO)
-                .toList();
-        return ResponseEntity.ok(orders);
+        return ResponseEntity.ok(orderService.getUserOrders(principal.getUser()));
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(
             @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable Long orderId) {
-        Order order = orderService.getOrderById(principal.getUser(), orderId);
-        return ResponseEntity.ok(orderMapper.toDTO(order));
+        return ResponseEntity.ok(orderService.getOrderById(principal.getUser(), orderId));
     }
 }
