@@ -9,10 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+
+    private static final int MIN_KEY_LENGTH_BYTES = 32; // 256 bits for HS256
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -20,9 +24,28 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    /**
+     * Builds the signing key from the configured secret.
+     * Supports both raw text (UTF-8) and Base64-encoded secrets.
+     * For HS256, the key is at least 256 bits (32 bytes).
+     */
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(java.util.Base64.getEncoder().encodeToString(jwtSecret.getBytes()));
+        byte[] keyBytes = tryDecodeBase64(jwtSecret);
+        if (keyBytes == null || keyBytes.length == 0) {
+            keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        }
+        if (keyBytes.length < MIN_KEY_LENGTH_BYTES) {
+            keyBytes = Arrays.copyOf(keyBytes, MIN_KEY_LENGTH_BYTES);
+        }
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private static byte[] tryDecodeBase64(String value) {
+        try {
+            return Decoders.BASE64.decode(value);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String generateToken(Authentication authentication) {

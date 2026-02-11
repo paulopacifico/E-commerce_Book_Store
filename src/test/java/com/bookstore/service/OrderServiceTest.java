@@ -8,6 +8,7 @@ import com.bookstore.entity.User;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
+import com.bookstore.validation.StockValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -36,6 +37,9 @@ class OrderServiceTest {
 
     @Mock
     private OwnershipValidator ownershipValidator;
+
+    @Mock
+    private StockValidator stockValidator;
 
     @InjectMocks
     private OrderService orderService;

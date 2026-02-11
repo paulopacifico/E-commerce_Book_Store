@@ -6,6 +6,7 @@ import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
+import com.bookstore.validation.StockValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +20,18 @@ public class OrderService {
     private final CartService cartService;
     private final BookRepository bookRepository;
     private final OwnershipValidator ownershipValidator;
+    private final StockValidator stockValidator;
 
     public OrderService(OrderRepository orderRepository,
             CartService cartService,
             BookRepository bookRepository,
-            OwnershipValidator ownershipValidator) {
+            OwnershipValidator ownershipValidator,
+            StockValidator stockValidator) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.bookRepository = bookRepository;
         this.ownershipValidator = ownershipValidator;
+        this.stockValidator = stockValidator;
     }
 
     @Transactional
@@ -38,13 +42,9 @@ public class OrderService {
             throw new BadRequestException("Cart is empty");
         }
 
-        // Validate stock availability
+        // Validate stock availability (reuses same rule as CartService)
         for (CartItem item : cartItems) {
-            Book book = item.getBook();
-            if (book.getStockQuantity() < item.getQuantity()) {
-                throw new BadRequestException("Not enough stock for '" + book.getTitle() +
-                        "'. Available: " + book.getStockQuantity());
-            }
+            stockValidator.validateAvailableStock(item.getBook(), item.getQuantity());
         }
 
         // Create order
