@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: bookstore-ecommerce
+  datasource:
+    url: jdbc:h2:mem:bookstoredb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationThatIsLongEnoughForHS256Algorithm123456
+  expiration: 86400000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.bookstore: DEBUG
+    org.springframework.security: DEBUG

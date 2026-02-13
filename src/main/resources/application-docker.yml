@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/bookstore
+    driver-class-name: org.postgresql.Driver
+    username: bookstore
+    password: bookstore
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    com.bookstore: INFO
+    org.springframework.security: INFO
