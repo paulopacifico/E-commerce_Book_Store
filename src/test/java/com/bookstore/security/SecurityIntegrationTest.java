@@ -2,6 +2,7 @@ package com.bookstore.security;
 
 import com.bookstore.dto.BookDTO;
 import com.bookstore.entity.Book;
+import com.bookstore.service.AuditLogger;
 import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Import(SecurityIntegrationTest.TestConfig.class)
@@ -65,6 +67,11 @@ class SecurityIntegrationTest {
         }
 
         @Bean
+        AuditLogger auditLogger() {
+            return org.mockito.Mockito.mock(AuditLogger.class);
+        }
+
+        @Bean
         JwtTokenProvider jwtTokenProvider() {
             return org.mockito.Mockito.mock(JwtTokenProvider.class);
         }
@@ -77,10 +84,21 @@ class SecurityIntegrationTest {
 
     @Test
     void getBooks_isPublic() throws Exception {
-        when(bookService.getAllBooks(any())).thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+        Book book = Book.builder()
+                .title("Clean Architecture")
+                .author("Robert C. Martin")
+                .price(BigDecimal.valueOf(29.99))
+                .stockQuantity(10)
+                .build();
+        book.setId(1L);
+        when(bookService.getAllBooks(any())).thenReturn(new PageImpl<>(List.of(book), PageRequest.of(0, 10), 1));
 
         mockMvc.perform(get("/api/books"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     @Test

@@ -19,15 +19,18 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
     private final AuthenticationManager authenticationManager;
 
     public AuthService(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider jwtTokenProvider,
+            RefreshTokenService refreshTokenService,
             AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenService = refreshTokenService;
         this.authenticationManager = authenticationManager;
     }
 
@@ -46,8 +49,9 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String token = jwtTokenProvider.generateToken(user.getEmail());
-        return new AuthResult(token, user);
+        String accessToken = jwtTokenProvider.generateToken(user.getEmail());
+        String refreshToken = refreshTokenService.createForUser(user).getToken();
+        return new AuthResult(accessToken, refreshToken, jwtTokenProvider.getJwtExpirationSeconds(), user);
     }
 
     public AuthResult login(String email, String password) {
@@ -56,10 +60,19 @@ public class AuthService {
                         email,
                         password));
 
-        String token = jwtTokenProvider.generateToken(authentication);
+        String accessToken = jwtTokenProvider.generateToken(authentication);
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         User user = principal.getUser();
+        String refreshToken = refreshTokenService.createForUser(user).getToken();
 
-        return new AuthResult(token, user);
+        return new AuthResult(accessToken, refreshToken, jwtTokenProvider.getJwtExpirationSeconds(), user);
+    }
+
+    public AuthResult refresh(String refreshToken) {
+        var rotated = refreshTokenService.rotate(refreshToken);
+        User user = rotated.getUser();
+        String accessToken = jwtTokenProvider.generateToken(user.getEmail());
+        String newRefreshToken = rotated.getToken();
+        return new AuthResult(accessToken, newRefreshToken, jwtTokenProvider.getJwtExpirationSeconds(), user);
     }
 }

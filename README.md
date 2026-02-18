@@ -12,9 +12,16 @@ A production‑minded Spring Boot backend for a digital bookstore. The system fo
 
 ## Highlights
 - Stateless authentication with JWT and Spring Security
+- Access + refresh token flow (`/api/auth/refresh`) with refresh token rotation
+- In-memory request rate limiting on `/api/**` to reduce abuse
+- Hardened CORS via explicit allow-list configuration properties
+- Audit logging for critical auth/admin/order operations
+- Input sanitization guard (`@NoHtml`) on user-controlled text fields
 - Clean separation between API DTOs and domain logic
 - Cart and order workflows with validation and stock checks
 - Docker + PostgreSQL profile for containerized runs
+- Idempotent PostgreSQL seed runner (`docker` profile)
+- Consistent API error envelope and stable pagination DTO responses
 - Postman collection + environment included
 
 ## Tech Stack
@@ -69,7 +76,15 @@ Postman assets are in `postman/`:
 2. Import `postman/bookstore.postman_collection.json`
 3. Select **Bookstore Local** environment
 
-The **Login** request stores the JWT in `{{authToken}}` automatically.
+The **Login** and **Refresh Token** requests store:
+- `{{authToken}}` (access token)
+- `{{refreshToken}}` (refresh token)
+
+## OpenAPI
+- Static OpenAPI spec: `docs/openapi.yaml`
+- Import into Postman as an API definition or use as contract documentation.
+- Runtime OpenAPI JSON: `/v3/api-docs`
+- Runtime Swagger UI: `/swagger-ui.html` (or `/swagger-ui/index.html`)
 
 ## Testing
 ```bash
@@ -80,17 +95,21 @@ mvn test
 GitHub Actions runs the test suite on JDK 21.
 
 ## API Modules
-- **Auth:** register, login (JWT)
+- **Auth:** register, login, refresh token
 - **Books:** search, list, get, admin CRUD
 - **Categories:** list, get, admin CRUD
 - **Cart:** add/update/remove/clear, summary totals
 - **Orders:** checkout, list, get by id
 
-## Roadmap
-- Token refresh flow
-- Idempotent data seeding for PostgreSQL
-- Improved paging DTOs (Spring Data Page serialization)
-- Additional production hardening (non‑root container user)
+## Response Contracts
+- **Paged endpoints (`/api/books`, `/api/books/search`, `/api/books/category/{id}`):**
+  return `PageResponse<T>` with: `content`, `page`, `size`, `totalElements`, `totalPages`, `first`, `last`, `hasNext`, `hasPrevious`.
+- **Error responses (all endpoints):**
+  return `ApiErrorResponse` with: `status`, `error`, `message`, `path`, `timestamp`, and optional `errors` map for validation failures.
+
+## Security Hardening Config
+- **Rate limit properties:** `app.security.rate-limit.max-requests`, `app.security.rate-limit.window-seconds`
+- **CORS properties:** `app.security.cors.allowed-origins`, `allowed-methods`, `allowed-headers`, `exposed-headers`, `allow-credentials`, `max-age`
 
 ## Author
 **Paulo Pacifico**  

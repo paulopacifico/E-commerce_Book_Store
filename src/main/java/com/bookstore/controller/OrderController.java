@@ -5,6 +5,7 @@ import com.bookstore.dto.OrderDTO;
 import com.bookstore.entity.Order;
 import com.bookstore.mapper.OrderMapper;
 import com.bookstore.security.UserPrincipal;
+import com.bookstore.service.AuditLogger;
 import com.bookstore.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,12 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderMapper orderMapper;
+    private final AuditLogger auditLogger;
 
-    public OrderController(OrderService orderService, OrderMapper orderMapper) {
+    public OrderController(OrderService orderService, OrderMapper orderMapper, AuditLogger auditLogger) {
         this.orderService = orderService;
         this.orderMapper = orderMapper;
+        this.auditLogger = auditLogger;
     }
 
     @PostMapping("/checkout")
@@ -31,6 +34,7 @@ public class OrderController {
             @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody CheckoutRequest request) {
         Order order = orderService.checkout(principal.getUser(), request.getShippingAddress());
+        auditLogger.log("ORDER_CHECKOUT", principal.getUsername(), "ORDER", "SUCCESS", "orderId=" + order.getId());
         return new ResponseEntity<>(orderMapper.toDTO(order), HttpStatus.CREATED);
     }
 

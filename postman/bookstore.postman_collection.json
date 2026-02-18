@@ -46,7 +46,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demo\",\n  \"email\": \"user@test.com\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"USER\"\n}"
+              "body": "{\n  \"token\": \"<jwt>\",\n  \"accessToken\": \"<jwt>\",\n  \"refreshToken\": \"<refresh-token>\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 86400,\n  \"email\": \"user@test.com\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"USER\"\n}"
             }
           ]
         },
@@ -88,7 +88,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.demo\",\n  \"email\": \"admin@bookstore.com\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"User\",\n  \"role\": \"ADMIN\"\n}"
+              "body": "{\n  \"token\": \"<jwt>\",\n  \"accessToken\": \"<jwt>\",\n  \"refreshToken\": \"<refresh-token>\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 86400,\n  \"email\": \"admin@bookstore.com\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"User\",\n  \"role\": \"ADMIN\"\n}"
             }
           ],
           "event": [
@@ -99,8 +99,66 @@
                 "exec": [
                   "const data = pm.response.json();",
                   "if (data && data.token) {",
-                  "  pm.environment.set('authToken', data.token);",
+                  "  pm.environment.set(\"authToken\", data.token);",
+                  "}",
+                  "if (data && data.refreshToken) {",
+                  "  pm.environment.set(\"refreshToken\", data.refreshToken);",
                   "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"<jwt>\",\n  \"accessToken\": \"<jwt>\",\n  \"refreshToken\": \"<refresh-token>\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 86400,\n  \"email\": \"user@test.com\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"role\": \"USER\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data && data.token) pm.environment.set(\"authToken\", data.token);",
+                  "if (data && data.refreshToken) pm.environment.set(\"refreshToken\", data.refreshToken);"
                 ]
               }
             }
@@ -156,7 +214,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"title\": \"Clean Architecture\",\n      \"author\": \"Robert C. Martin\",\n      \"isbn\": \"9780134494166\",\n      \"description\": \"A guide to software structure and design.\",\n      \"price\": 29.99,\n      \"stockQuantity\": 12,\n      \"imageUrl\": \"https://example.com/clean-architecture.jpg\",\n      \"categoryId\": 3,\n      \"categoryName\": \"Software Engineering\"\n    }\n  ],\n  \"pageable\": {\n    \"pageNumber\": 0,\n    \"pageSize\": 10\n  },\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"last\": true,\n  \"first\": true,\n  \"size\": 10,\n  \"number\": 0,\n  \"numberOfElements\": 1,\n  \"empty\": false\n}"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"title\": \"Clean Architecture\",\n      \"author\": \"Robert C. Martin\",\n      \"isbn\": \"9780134494166\",\n      \"description\": \"A guide to software structure and design.\",\n      \"price\": 29.99,\n      \"stockQuantity\": 12,\n      \"imageUrl\": \"https://example.com/clean-architecture.jpg\",\n      \"categoryId\": 3,\n      \"categoryName\": \"Software Engineering\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"hasNext\": false,\n  \"hasPrevious\": false\n}"
             }
           ]
         },
@@ -234,7 +292,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"content\": [\n    {\n      \"id\": 2,\n      \"title\": \"Clean Code\",\n      \"author\": \"Robert C. Martin\",\n      \"isbn\": \"9780132350884\",\n      \"description\": \"A handbook of agile software craftsmanship.\",\n      \"price\": 24.99,\n      \"stockQuantity\": 8,\n      \"imageUrl\": \"https://example.com/clean-code.jpg\",\n      \"categoryId\": 3,\n      \"categoryName\": \"Software Engineering\"\n    }\n  ],\n  \"pageable\": {\n    \"pageNumber\": 0,\n    \"pageSize\": 10\n  },\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"last\": true,\n  \"first\": true,\n  \"size\": 10,\n  \"number\": 0,\n  \"numberOfElements\": 1,\n  \"empty\": false\n}"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 2,\n      \"title\": \"Clean Code\",\n      \"author\": \"Robert C. Martin\",\n      \"isbn\": \"9780132350884\",\n      \"description\": \"A handbook of agile software craftsmanship.\",\n      \"price\": 24.99,\n      \"stockQuantity\": 8,\n      \"imageUrl\": \"https://example.com/clean-code.jpg\",\n      \"categoryId\": 3,\n      \"categoryName\": \"Software Engineering\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 10,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"first\": true,\n  \"last\": true,\n  \"hasNext\": false,\n  \"hasPrevious\": false\n}"
             }
           ]
         },

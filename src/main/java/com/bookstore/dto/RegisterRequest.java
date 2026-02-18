@@ -3,6 +3,7 @@ package com.bookstore.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.bookstore.validation.NoHtml;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,10 @@ public class RegisterRequest {
     private String password;
     
     @NotBlank(message = "First name is required")
+    @NoHtml
     private String firstName;
     
     @NotBlank(message = "Last name is required")
+    @NoHtml
     private String lastName;
 }

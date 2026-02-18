@@ -12,9 +12,19 @@ spring:
     defer-datasource-initialization: true
   sql:
     init:
-      mode: always
+      mode: never
 
 logging:
   level:
     com.bookstore: INFO
     org.springframework.security: INFO
+    AUDIT: INFO
+
+app:
+  security:
+    rate-limit:
+      max-requests: 300
+      window-seconds: 60
+    cors:
+      allowed-origins:
+        - ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
