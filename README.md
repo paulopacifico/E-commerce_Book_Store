@@ -90,6 +90,11 @@ The **Login** and **Refresh Token** requests store:
 ```bash
 mvn test
 ```
+## Troubleshooting
+- Access documentation and endpoints via:
+  - Swagger UI: `http://localhost:8080/swagger-ui.html`
+  - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+  - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
 
 ## CI
 GitHub Actions runs the test suite on JDK 21.
