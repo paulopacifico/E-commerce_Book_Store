@@ -113,4 +113,4 @@ GitHub Actions runs the test suite on JDK 21.
 
 ## Author
 **Paulo Pacifico**  
-Backend Java Developer (Canada)
+Backend Java Developer
