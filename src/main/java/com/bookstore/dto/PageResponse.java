@@ -1,9 +1,11 @@
 package com.bookstore.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+@Schema(description = "Paginated response wrapper")
 public record PageResponse<T>(
         List<T> content,
         int page,

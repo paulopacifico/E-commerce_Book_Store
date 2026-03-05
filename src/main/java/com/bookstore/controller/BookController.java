@@ -8,6 +8,12 @@ import com.bookstore.mapper.BookMapper;
 import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
 import com.bookstore.service.AuditLogger;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +43,11 @@ public class BookController {
         this.auditLogger = auditLogger;
     }
 
+    @Operation(summary = "List all books", description = "Returns a paginated list of all books with optional sorting.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
+    })
     @GetMapping
     public ResponseEntity<PageResponse<BookDTO>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
@@ -53,12 +64,23 @@ public class BookController {
         return ResponseEntity.ok(PageResponse.from(books));
     }
 
+    @Operation(summary = "Get book by ID", description = "Returns a single book by its ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
         Book book = bookService.getBookById(id);
         return ResponseEntity.ok(bookMapper.toDTO(book));
     }
 
+    @Operation(summary = "Search books", description = "Searches books by keyword (title, author, description) with pagination.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
+    })
     @GetMapping("/search")
     public ResponseEntity<PageResponse<BookDTO>> searchBooks(
             @RequestParam String keyword,
@@ -70,6 +92,12 @@ public class BookController {
         return ResponseEntity.ok(PageResponse.from(books));
     }
 
+    @Operation(summary = "List books by category", description = "Returns a paginated list of books for the given category ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Category not found", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
+    })
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<PageResponse<BookDTO>> getBooksByCategory(
             @PathVariable Long categoryId,
@@ -82,6 +110,14 @@ public class BookController {
         return ResponseEntity.ok(PageResponse.from(books));
     }
 
+    @Operation(summary = "Create book", description = "Creates a new book. Requires admin role.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Book created"),
+            @ApiResponse(responseCode = "400", description = "Validation error", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO, Authentication authentication) {
         Category category = resolveCategory(bookDTO.getCategoryId());
@@ -92,6 +128,15 @@ public class BookController {
         return new ResponseEntity<>(createdDTO, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update book", description = "Updates an existing book by ID. Requires admin role.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Book updated"),
+            @ApiResponse(responseCode = "400", description = "Validation error", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @PutMapping("/{id}")
     public ResponseEntity<BookDTO> updateBook(
             @PathVariable Long id,
@@ -105,6 +150,14 @@ public class BookController {
         return ResponseEntity.ok(bookMapper.toDTO(updated));
     }
 
+    @Operation(summary = "Delete book", description = "Deletes a book by ID. Requires admin role.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Book deleted"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id, Authentication authentication) {
         bookService.deleteBook(id);

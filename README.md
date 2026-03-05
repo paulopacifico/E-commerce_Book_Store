@@ -10,6 +10,8 @@
 ## Overview
 A production‑minded Spring Boot backend for a digital bookstore. The system focuses on secure transactions, inventory management, and clean, maintainable architecture. It’s designed to be easy to run locally (H2) or in Docker with PostgreSQL, and it ships with a full Postman collection for API exploration.
 
+**Portfolio:** This project demonstrates core Java Backend skills for recruiters: layered architecture with Spring Boot, JPA persistence (H2/PostgreSQL), REST API with full OpenAPI/Swagger documentation, JWT security, validation, error handling, and tests.
+
 ## Highlights
 - Stateless authentication with JWT and Spring Security
 - Access + refresh token flow (`/api/auth/refresh`) with refresh token rotation
@@ -85,6 +87,12 @@ The **Login** and **Refresh Token** requests store:
 - Import into Postman as an API definition or use as contract documentation.
 - Runtime OpenAPI JSON: `/v3/api-docs`
 - Runtime Swagger UI: `/swagger-ui.html` (or `/swagger-ui/index.html`)
+
+## Troubleshooting
+- Access documentation and endpoints via:
+  - Swagger UI: `http://localhost:8080/swagger-ui.html`
+  - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+  - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
 
 ## Testing
 ```bash
