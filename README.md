@@ -88,16 +88,11 @@ The **Login** and **Refresh Token** requests store:
 - Runtime OpenAPI JSON: `/v3/api-docs`
 - Runtime Swagger UI: `/swagger-ui.html` (or `/swagger-ui/index.html`)
 
-## Troubleshooting
-- Access documentation and endpoints via:
-  - Swagger UI: `http://localhost:8080/swagger-ui.html`
-  - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
-  - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
-
 ## Testing
 ```bash
 mvn test
 ```
+
 ## Troubleshooting
 - Access documentation and endpoints via:
   - Swagger UI: `http://localhost:8080/swagger-ui.html`

@@ -4,6 +4,7 @@ import com.bookstore.entity.Category;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.repository.CategoryRepository;
+import com.bookstore.repository.CategoryWithCount;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,23 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    /**
+     * Returns categories with book count without loading the books collection (avoids N+1).
+     */
+    public List<CategoryWithCount> getAllCategoriesWithBookCount() {
+        return categoryRepository.findAllWithBookCount();
+    }
+
     public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+    }
+
+    /**
+     * Returns category with book count by id without loading the books collection.
+     */
+    public CategoryWithCount getCategoryWithBookCountById(Long id) {
+        return categoryRepository.findByIdWithBookCount(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 

@@ -40,7 +40,7 @@ public class CategoryController {
     })
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategories()
+        List<CategoryDTO> categories = categoryService.getAllCategoriesWithBookCount()
                 .stream()
                 .map(categoryMapper::toDTO)
                 .toList();
@@ -55,8 +55,7 @@ public class CategoryController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        return ResponseEntity.ok(categoryMapper.toDTO(category));
+        return ResponseEntity.ok(categoryMapper.toDTO(categoryService.getCategoryWithBookCountById(id)));
     }
 
     @Operation(summary = "Create category", description = "Creates a new category. Requires admin role.")

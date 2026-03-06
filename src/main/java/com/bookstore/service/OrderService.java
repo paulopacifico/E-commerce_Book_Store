@@ -91,7 +91,7 @@ public class OrderService {
     }
 
     public Order getOrderById(User user, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdWithOrderItemsAndBook(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
         ownershipValidator.validateOrderOwnership(user, order);
