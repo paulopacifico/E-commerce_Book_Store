@@ -1,0 +1,64 @@
+<div class="book-list">
+  <div class="filters">
+    <input
+      type="search"
+      class="search-input"
+      placeholder="Search books..."
+      [value]="searchValue()"
+      (input)="onSearchInput($any($event.target).value)"
+      aria-label="Search books"
+    />
+    <select
+      class="category-select"
+      [value]="selectedCategoryId() ?? ''"
+      (change)="onCategoryChange(categorySelectValue($any($event.target)))"
+      aria-label="Filter by category"
+    >
+      <option value="">All categories</option>
+      @for (cat of categories$ | async; track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-wrap" aria-busy="true">
+      <span class="spinner"></span>
+      <span>Loading books...</span>
+    </div>
+  } @else {
+    @let bookList = books$ | async;
+    @if (bookList && bookList.length > 0) {
+      <div class="book-grid">
+        @for (book of bookList; track trackByBookId($index, book)) {
+          <app-book-card [book]="book" (addToCart)="onAddToCart($event)" />
+        }
+      </div>
+      @if ((totalPages()) > 1) {
+        <nav class="pagination" aria-label="Books pagination">
+          <button
+            type="button"
+            class="page-btn"
+            [disabled]="currentPage() === 0"
+            (click)="goToPage(currentPage() - 1)"
+          >
+            Previous
+          </button>
+          <span class="page-info">
+            Page {{ currentPage() + 1 }} of {{ totalPages() }}
+          </span>
+          <button
+            type="button"
+            class="page-btn"
+            [disabled]="currentPage() >= totalPages() - 1"
+            (click)="goToPage(currentPage() + 1)"
+          >
+            Next
+          </button>
+        </nav>
+      }
+    } @else {
+      <p class="empty">No books found.</p>
+    }
+  }
+</div>

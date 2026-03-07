@@ -39,6 +39,22 @@ export class BookService {
     );
   }
 
+  getBooksByCategory(
+    categoryId: number,
+    page?: number,
+    size?: number
+  ): Observable<PageResponse<Book>> {
+    let params = new HttpParams();
+    if (page != null) params = params.set('page', page);
+    if (size != null) params = params.set('size', size);
+    return this.http
+      .get<PageResponse<Book>>(`${this.apiUrl}/category/${categoryId}`, { params })
+      .pipe(
+        retry({ count: 2, delay: 500 }),
+        catchError(this.handleError)
+      );
+  }
+
   searchBooks(query: string, categoryId?: number): Observable<Book[]> {
     if (categoryId != null) {
       return this.http
