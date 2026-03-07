@@ -27,7 +27,7 @@ A production‑minded Spring Boot backend for a digital bookstore. The system fo
 - Postman collection + environment included
 
 ## Tech Stack
-- **Language/Runtime:** Java 21
+- **Language/Runtime:** Java 25
 - **Framework:** Spring Boot 4.0.2
 - **Security:** Spring Security, JWT (jjwt 0.12.3)
 - **Persistence:** Spring Data JPA, H2 (local), PostgreSQL (Docker)
