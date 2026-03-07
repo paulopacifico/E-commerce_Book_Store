@@ -20,9 +20,10 @@ server:
   port: 8080
 
 jwt:
-  secret: mySecretKeyForJWTTokenGenerationThatIsLongEnoughForHS256Algorithm123456
-  expiration: 86400000
-  refresh-expiration: 604800000
+  # In production set JWT_SECRET env var; default below is for local/dev only
+  secret: ${JWT_SECRET:mySecretKeyForJWTTokenGenerationThatIsLongEnoughForHS256Algorithm123456}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
 app:
   security:

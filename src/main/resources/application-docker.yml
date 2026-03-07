@@ -1,3 +1,5 @@
+# Docker profile: set JWT_SECRET (and optionally JWT_EXPIRATION, JWT_REFRESH_EXPIRATION)
+# in the container environment for production; otherwise default from application.yml is used.
 spring:
   datasource:
     url: jdbc:postgresql://db:5432/bookstore

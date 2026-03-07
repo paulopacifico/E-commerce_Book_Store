@@ -1,0 +1,11 @@
+# Production profile: no default for JWT secret — set JWT_SECRET (and optionally
+# JWT_EXPIRATION, JWT_REFRESH_EXPIRATION) in the environment or the app will fail at startup.
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}

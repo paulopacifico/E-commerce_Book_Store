@@ -116,6 +116,7 @@ GitHub Actions runs the test suite on JDK 21.
   return `ApiErrorResponse` with: `status`, `error`, `message`, `path`, `timestamp`, and optional `errors` map for validation failures.
 
 ## Security Hardening Config
+- **JWT (production):** set `JWT_SECRET` in the environment; optional `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION` (milliseconds). With profile `prod`, the app fails at startup if `JWT_SECRET` is not set.
 - **Rate limit properties:** `app.security.rate-limit.max-requests`, `app.security.rate-limit.window-seconds`
 - **CORS properties:** `app.security.cors.allowed-origins`, `allowed-methods`, `allowed-headers`, `exposed-headers`, `allow-credentials`, `max-age`
 
