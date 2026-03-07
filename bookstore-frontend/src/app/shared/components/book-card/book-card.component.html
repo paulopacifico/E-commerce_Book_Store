@@ -1,0 +1,27 @@
+<article class="book-card">
+  <div class="card-image-wrap">
+    @if (book.imageUrl) {
+      <img [src]="book.imageUrl" [alt]="book.title" class="card-image" loading="lazy" />
+    } @else {
+      <div class="card-image-placeholder" aria-hidden="true">📖</div>
+    }
+    @if (book.stockQuantity === 0) {
+      <span class="badge out-of-stock">Out of Stock</span>
+    }
+  </div>
+
+  <div class="card-body">
+    <h3 class="card-title" [title]="book.title">{{ book.title }}</h3>
+    <p class="card-author">{{ book.author }}</p>
+    <p class="card-price">{{ book.price | currency : 'EUR' }}</p>
+
+    <button
+      type="button"
+      class="btn-add"
+      [disabled]="book.stockQuantity === 0"
+      (click)="onAddToCart()"
+    >
+      Add to Cart
+    </button>
+  </div>
+</article>
