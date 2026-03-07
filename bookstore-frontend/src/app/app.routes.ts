@@ -8,7 +8,11 @@ export const routes: Routes = [
       import('./features/books/book-list/book-list.component').then((m) => m.BookListComponent),
   },
   { path: 'categories', redirectTo: 'books', pathMatch: 'full' },
-  { path: 'login', redirectTo: 'books', pathMatch: 'full' },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+  },
   { path: 'register', redirectTo: 'books', pathMatch: 'full' },
   { path: 'cart', redirectTo: 'books', pathMatch: 'full' },
   { path: 'orders', redirectTo: 'books', pathMatch: 'full' },

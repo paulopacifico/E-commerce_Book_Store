@@ -1,0 +1,66 @@
+<div class="login-card">
+  <h1 class="login-title">Login</h1>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+    <div class="field">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        autocomplete="username"
+        placeholder="Enter username"
+        class="input"
+      />
+      @if (username?.invalid && username?.touched) {
+        <div class="error" role="alert">
+          @if (username?.errors?.['required']) {
+            Username is required.
+          }
+          @if (username?.errors?.['minlength']) {
+            Username must be at least 3 characters.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        placeholder="Enter password"
+        class="input"
+      />
+      @if (password?.invalid && password?.touched) {
+        <div class="error" role="alert">
+          @if (password?.errors?.['required']) {
+            Password is required.
+          }
+          @if (password?.errors?.['minlength']) {
+            Password must be at least 6 characters.
+          }
+        </div>
+      }
+    </div>
+
+    @if (errorMessage(); as msg) {
+      <div class="error-banner" role="alert">{{ msg }}</div>
+    }
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <span class="spinner" aria-hidden="true"></span>
+        Logging in...
+      } @else {
+        Login
+      }
+    </button>
+  </form>
+
+  <p class="register-link">
+    Don't have an account? <a routerLink="/register">Register</a>
+  </p>
+</div>
