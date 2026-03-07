@@ -7,6 +7,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/books/book-list/book-list.component').then((m) => m.BookListComponent),
   },
+  {
+    path: 'books/:id',
+    loadComponent: () =>
+      import('./features/books/book-detail/book-detail.component').then((m) => m.BookDetailComponent),
+  },
   { path: 'categories', redirectTo: 'books', pathMatch: 'full' },
   {
     path: 'login',
