@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import type { LoginRequest, RegisterRequest, AuthResponse } from '../models/auth.interface';
+import type { AuthResponse } from '../models/auth.interface';
 
 const TOKEN_KEY = 'authToken';
 
@@ -12,24 +13,37 @@ const TOKEN_KEY = 'authToken';
 export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router
+  ) {}
 
-  login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap((res) => this.storeToken(res)),
-      catchError(this.handleError)
-    );
+  login(username: string, password: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, { email: username, password })
+      .pipe(
+        tap((res) => this.storeToken(res)),
+        catchError(this.handleError)
+      );
   }
 
-  register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, request).pipe(
-      tap((res) => this.storeToken(res)),
-      catchError(this.handleError)
-    );
+  register(username: string, email: string, password: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/register`, {
+        email,
+        password,
+        firstName: username,
+        lastName: username,
+      })
+      .pipe(
+        tap((res) => this.storeToken(res)),
+        catchError(this.handleError)
+      );
   }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
+    this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
