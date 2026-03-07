@@ -2,7 +2,7 @@ package com.bookstore.mapper;
 
 import com.bookstore.dto.CategoryDTO;
 import com.bookstore.entity.Category;
-import com.bookstore.repository.CategoryWithCount;
+import com.bookstore.domain.projection.CategoryWithCount;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,5 +24,15 @@ public class CategoryMapper {
                 .description(projection.getDescription())
                 .bookCount((int) projection.getBookCount())
                 .build();
+    }
+
+    /**
+     * Maps DTO to entity (name and description only). Used for create and update payloads.
+     */
+    public Category toEntity(CategoryDTO dto) {
+        Category category = new Category();
+        category.setName(dto.getName());
+        category.setDescription(dto.getDescription());
+        return category;
     }
 }

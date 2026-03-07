@@ -1,5 +1,6 @@
 package com.bookstore.repository;
 
+import com.bookstore.domain.projection.CategoryWithCount;
 import com.bookstore.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

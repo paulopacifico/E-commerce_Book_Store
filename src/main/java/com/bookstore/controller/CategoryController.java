@@ -69,10 +69,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO,
             Authentication authentication) {
-        Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
-        Category created = categoryService.createCategory(category);
+        Category created = categoryService.createCategory(categoryMapper.toEntity(categoryDTO));
         auditLogger.log("CATEGORY_CREATE", authentication.getName(), "CATEGORY", "SUCCESS", "categoryId=" + created.getId());
         return new ResponseEntity<>(categoryMapper.toDTO(created), HttpStatus.CREATED);
     }
@@ -91,10 +88,7 @@ public class CategoryController {
             @PathVariable Long id,
             @Valid @RequestBody CategoryDTO categoryDTO,
             Authentication authentication) {
-        Category updates = new Category();
-        updates.setName(categoryDTO.getName());
-        updates.setDescription(categoryDTO.getDescription());
-        Category updated = categoryService.updateCategory(id, updates);
+        Category updated = categoryService.updateCategory(id, categoryMapper.toEntity(categoryDTO));
         auditLogger.log("CATEGORY_UPDATE", authentication.getName(), "CATEGORY", "SUCCESS", "categoryId=" + id);
         return ResponseEntity.ok(categoryMapper.toDTO(updated));
     }

@@ -1,4 +1,4 @@
-package com.bookstore.repository;
+package com.bookstore.domain.projection;
 
 /**
  * Projection for Category with book count without loading the books collection.

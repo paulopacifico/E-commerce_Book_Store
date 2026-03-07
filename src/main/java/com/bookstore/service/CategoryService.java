@@ -3,8 +3,8 @@ package com.bookstore.service;
 import com.bookstore.entity.Category;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
+import com.bookstore.domain.projection.CategoryWithCount;
 import com.bookstore.repository.CategoryRepository;
-import com.bookstore.repository.CategoryWithCount;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

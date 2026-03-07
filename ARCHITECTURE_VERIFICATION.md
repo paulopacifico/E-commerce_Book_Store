@@ -11,12 +11,12 @@ com.bookstore
 ├── BookstoreApplication.java
 ├── config/          (SecurityConfig, OpenApiConfig, CorsProperties, RateLimitProperties, PostgresDataSeeder)
 ├── controller/      (Auth, Book, Cart, Category, Order)
-├── domain/          (AuthResult, CartSummary)        — value objects / result types
+├── domain/          (AuthResult, CartSummary; projection/ CategoryWithCount) — value objects, result types, projections
 ├── dto/              (request/response DTOs)
 ├── entity/           (JPA entities)
 ├── exception/        (custom exceptions + GlobalExceptionHandler, ApiErrorResponse)
 ├── mapper/           (Entity ↔ DTO conversion)
-├── repository/       (JPA repositories + CategoryWithCount projection)
+├── repository/       (JPA repositories)
 ├── security/         (JWT, filters, UserPrincipal, CustomUserDetailsService)
 ├── service/          (business logic)
 └── validation/       (StockValidator, OwnershipValidator, NoHtml)
@@ -47,18 +47,17 @@ com.bookstore
 - **Repositories** depend only on **entity**. No inversions.
 - **Services** depend on entity, repository, exception, validation, domain, and (in one case) security. No dependency on controller or dto.
 - **Controllers** depend on dto, service, mapper, domain, and in some cases entity (for mapper input) and security. No direct dependency on repository.
-- **Mappers** depend on dto and entity (and in one case `CategoryWithCount`; see below).
+- **Mappers** depend on dto, entity, and domain.projection (e.g. `CategoryWithCount`).
 - **Validators** depend on entity and exception only.
 
 ---
 
 ## 3. Minor inconsistencies (structure still clean)
 
-### 3.1 CategoryWithCount in `repository` package
+### 3.1 CategoryWithCount projection
 
-- **Current:** Interface `CategoryWithCount` lives in `repository` and is used by `CategoryService` and `CategoryMapper`.
-- **Impact:** Mapper layer depends on the repository package for a type that is a read-model projection, not repository logic.
-- **Suggestion (optional):** Move `CategoryWithCount` to a shared package such as `com.bookstore.domain.projection` or `com.bookstore.projection` so that repository and mapper both depend on it, and the “repository” package does not export a non-repository type. This would make dependency direction even clearer.
+- **Current:** Interface `CategoryWithCount` lives in `com.bookstore.domain.projection` and is used by `CategoryRepository`, `CategoryService`, and `CategoryMapper`. Repository and mapper both depend on the domain projection package; mapper no longer depends on repository for this type.
+- **Status:** Addressed; dependency direction is clear.
 
 ### 3.2 Controllers holding entity references
 
@@ -91,6 +90,6 @@ com.bookstore
 | Services DTO-free         | OK     | Services use entities and domain types. |
 | Repository isolation      | OK     | Repositories depend only on entities. |
 | Single place for mapping  | OK     | Entity ↔ DTO conversion in mappers. |
-| Projection type location  | Minor  | `CategoryWithCount` in `repository` is acceptable; moving to `domain`/`projection` would slightly clarify layers. |
+| Projection type location  | OK     | `CategoryWithCount` is in `domain.projection`; repository and mapper depend on it. |
 
-**Conclusion:** The architecture is clean and the structure is consistent with a layered design. Dependency flow is correct (inward: controller → service → repository). The only optional improvement is to move the projection type `CategoryWithCount` to a neutral package if you want to avoid mapper depending on the repository package for that type.
+**Conclusion:** The architecture is clean and the structure is consistent with a layered design. Dependency flow is correct (inward: controller → service → repository). The projection type `CategoryWithCount` lives in `com.bookstore.domain.projection`, so mapper and repository both depend on domain, not on each other for that type.

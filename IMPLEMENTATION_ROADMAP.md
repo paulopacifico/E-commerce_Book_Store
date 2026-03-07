@@ -10,6 +10,8 @@ Consolidated view of what is **already implemented** vs **still to implement**, 
 |------|------|--------|
 | **Security** | JWT + refresh token flow | Done |
 | **Security** | JWT secret (and expiration) from env: `JWT_SECRET`, optional `JWT_EXPIRATION`/`JWT_REFRESH_EXPIRATION`; `prod` profile requires `JWT_SECRET` | Done |
+| **Consistency** | Category create/update: DTO → entity via CategoryMapper.toEntity(CategoryDTO); controller no longer builds entity | Done |
+| **Consistency** | CategoryWithCount in `domain.projection` (mapper no longer depends on repository for it) | Done |
 | **Security** | BCrypt, roles, CORS allow-list, rate limiting | Done |
 | **Security** | JwtTokenProvider: SLF4J Logger (no System.err) | Done |
 | **Security** | H2 console allowed only when profile `local` is active | Done |
@@ -43,8 +45,8 @@ Consolidated view of what is **already implemented** vs **still to implement**, 
 
 | # | Item | Description | Effort |
 |---|------|-------------|--------|
-| 3 | **DTO → Category in service or mapper** | Move “build Category from CategoryDTO” out of CategoryController into CategoryService (e.g. `createCategory(CategoryDTO dto)`) or CategoryMapper (`toEntity(CategoryDTO)`). Controller should only pass DTO and get back DTO. | Low |
-| 4 | **CategoryWithCount package** | Move `CategoryWithCount` from `repository` to `domain.projection` or `projection` so mapper does not depend on the repository package. | Low |
+| ~~3~~ | ~~**DTO → Category in service or mapper**~~ | **Done.** CategoryMapper.toEntity(CategoryDTO); controller create/update use it. | — |
+| ~~4~~ | ~~**CategoryWithCount package**~~ | **Done.** CategoryWithCount moved to `com.bookstore.domain.projection`. | — |
 | 5 | **CategoryService tests** | Add unit tests for create/update/delete and duplicate-name validation. | Medium |
 | 6 | **BookService tests** | Add unit tests for CRUD, getById (ResourceNotFoundException), search, and validation. | Medium |
 | 7 | **Order integration tests** | Test checkout with empty cart (400), insufficient stock (400), and cart cleared after successful checkout. | Medium |
