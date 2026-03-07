@@ -11,6 +11,10 @@ import type {
   UpdateCartRequest,
 } from '../models/cart.interface';
 
+/**
+ * Cart API service for backend integration.
+ * For MVP, the app uses CartStateService (local state); use this service when syncing with the backend.
+ */
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private readonly apiUrl = `${environment.apiUrl}/cart`;
@@ -26,16 +30,16 @@ export class CartService {
     return this.http.post<CartItem>(`${this.apiUrl}/add`, body).pipe(catchError(this.handleError));
   }
 
-  updateItem(cartItemId: number, quantity: number): Observable<CartItem> {
+  updateCartItem(itemId: number, quantity: number): Observable<CartItem> {
     const body: UpdateCartRequest = { quantity };
     return this.http
-      .put<CartItem>(`${this.apiUrl}/update/${cartItemId}`, body)
+      .put<CartItem>(`${this.apiUrl}/update/${itemId}`, body)
       .pipe(catchError(this.handleError));
   }
 
-  removeItem(cartItemId: number): Observable<void> {
+  removeCartItem(itemId: number): Observable<void> {
     return this.http
-      .delete<void>(`${this.apiUrl}/remove/${cartItemId}`)
+      .delete<void>(`${this.apiUrl}/remove/${itemId}`)
       .pipe(catchError(this.handleError));
   }
 
