@@ -1,0 +1,8 @@
+<a routerLink="/cart" class="cart-link" aria-label="Shopping cart">
+  <span class="cart-icon" aria-hidden="true">🛒</span>
+  @if (cartCount$ | async; as count) {
+    @if (count > 0) {
+      <span class="cart-badge">{{ count }}</span>
+    }
+  }
+</a>

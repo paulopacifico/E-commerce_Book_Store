@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -12,6 +12,10 @@ const TOKEN_KEY = 'authToken';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly apiUrl = `${environment.apiUrl}/auth`;
+  private readonly authSubject = new BehaviorSubject<boolean>(this.hasStoredToken());
+
+  /** Emits when authentication state changes (login/logout). */
+  readonly isAuthenticated$ = this.authSubject.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -22,7 +26,10 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/login`, { email: username, password })
       .pipe(
-        tap((res) => this.storeToken(res)),
+        tap((res) => {
+          this.storeToken(res);
+          this.authSubject.next(true);
+        }),
         catchError(this.handleError)
       );
   }
@@ -36,22 +43,35 @@ export class AuthService {
         lastName: username,
       })
       .pipe(
-        tap((res) => this.storeToken(res)),
+        tap((res) => {
+          this.storeToken(res);
+          this.authSubject.next(true);
+        }),
         catchError(this.handleError)
       );
   }
 
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
+    this.authSubject.next(false);
     this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
+    return this.hasStoredToken();
+  }
+
+  private hasStoredToken(): boolean {
     return !!localStorage.getItem(TOKEN_KEY);
   }
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
+  }
+
+  /** Sync subject with current storage (e.g. after page reload). */
+  refreshAuthState(): void {
+    this.authSubject.next(this.hasStoredToken());
   }
 
   private storeToken(response: AuthResponse): void {

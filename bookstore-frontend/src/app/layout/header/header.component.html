@@ -1,0 +1,59 @@
+<header class="header-toolbar" role="banner">
+  <div class="toolbar-row">
+    <a routerLink="/" class="logo" (click)="closeMobileMenu()" aria-label="Home">
+      📚 Book Store
+    </a>
+
+    <button
+      type="button"
+      class="hamburger"
+      [class.open]="mobileMenuOpen()"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-label="Toggle menu"
+      (click)="toggleMobileMenu()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-section" [class.open]="showNavLinks()">
+      <div class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">Home</a>
+        <a routerLink="/books" routerLinkActive="active" (click)="closeMobileMenu()">Books</a>
+        <a routerLink="/categories" routerLinkActive="active" (click)="closeMobileMenu()">Categories</a>
+      </div>
+
+      <div class="search-wrap">
+        <input
+          type="search"
+          class="search-input"
+          placeholder="Search books..."
+          aria-label="Search books"
+          readonly
+        />
+      </div>
+
+      <div class="actions">
+        <app-cart-icon></app-cart-icon>
+
+        @if (isAuthenticated$ | async) {
+          <div class="user-menu">
+            <button type="button" class="menu-trigger" aria-haspopup="true" [attr.aria-expanded]="userMenuOpen()" (click)="toggleUserMenu()">
+              Account ▾
+            </button>
+            <div class="dropdown" [class.show]="userMenuOpen()" role="menu">
+              <a routerLink="/orders" (click)="closeMobileMenu(); closeUserMenu()" role="menuitem">My Orders</a>
+              <button type="button" (click)="logout()" role="menuitem">Logout</button>
+            </div>
+          </div>
+        } @else {
+          <div class="auth-buttons">
+            <a routerLink="/login" class="btn btn-outline" (click)="closeMobileMenu()">Login</a>
+            <a routerLink="/register" class="btn btn-primary" (click)="closeMobileMenu()">Register</a>
+          </div>
+        }
+      </div>
+    </nav>
+  </div>
+</header>

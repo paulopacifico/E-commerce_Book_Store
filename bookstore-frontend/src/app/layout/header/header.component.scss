@@ -1,0 +1,259 @@
+.header-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1976d2;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  &.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  &.open span:nth-child(2) {
+    opacity: 0;
+  }
+  &.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+.nav-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  a {
+    padding: 0.5rem 0.75rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.search-wrap {
+  flex: 0 1 240px;
+  max-width: 280px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &.btn-outline {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.7);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &.btn-primary {
+    color: #1976d2;
+    background: #fff;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95);
+    }
+  }
+}
+
+.user-menu {
+  position: relative;
+
+  .menu-trigger {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: inherit;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    min-width: 160px;
+    padding: 0.25rem 0;
+    background: #fff;
+    color: #333;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    a, button {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      text-align: left;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+  }
+
+  &:hover .dropdown,
+  .dropdown.show {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-section {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 1rem;
+    background: #1976d2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+
+    &.open {
+      display: flex;
+    }
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: stretch;
+
+    a {
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  .search-wrap {
+    flex: none;
+    max-width: none;
+    width: 100%;
+  }
+
+  .actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .user-menu .dropdown {
+    position: static;
+    margin-top: 0.25rem;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .user-menu .dropdown.show {
+    display: block;
+  }
+}
