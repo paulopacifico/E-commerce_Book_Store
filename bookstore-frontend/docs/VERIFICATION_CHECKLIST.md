@@ -1,5 +1,7 @@
 # Verification Checklist - Angular E-commerce
 
+> Paths below are relative to `bookstore-frontend/src/app/`.
+
 ## ✅ Before Starting
 
 - [ ] Node.js installed (v18+)
@@ -282,5 +284,5 @@
 
 ---
 
-**Last updated**: 2026-03-07  
+**Last updated**: 2026-03-07
 **Version**: 1.0

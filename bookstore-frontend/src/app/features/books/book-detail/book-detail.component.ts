@@ -59,12 +59,11 @@ export class BookDetailComponent {
   }
 
   onAddToCart(book: Book): void {
+    const qty = this.quantity();
+    this.cartStateService.addItem(book, qty);
     this.addingToCart.set(true);
-    this.cartService.addToCart(book.id, this.quantity()).subscribe({
-      next: () => {
-        this.cartStateService.refresh();
-        this.addingToCart.set(false);
-      },
+    this.cartService.addToCart(book.id, qty).subscribe({
+      next: () => this.addingToCart.set(false),
       error: () => this.addingToCart.set(false),
     });
   }

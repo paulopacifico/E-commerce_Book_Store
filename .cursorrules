@@ -1,0 +1,117 @@
+# Angular E-commerce Bookstore - Cursor AI Rules
+
+## 🎯 Objective
+Develop production-ready Angular frontend for bookstore e-commerce API with clean, maintainable, and optimized code.
+
+## 📐 Architecture and Patterns
+
+### Directory Structure
+- `core/`: Singleton services, guards, interceptors (imported once in AppModule)
+- `shared/`: Reusable components, pipes, directives (imported in multiple modules)
+- `features/`: Isolated feature modules with lazy loading
+- `layout/`: Layout components (header, footer, sidebar)
+
+### Naming Conventions
+- Components: `book-list.component.ts`
+- Services: `auth.service.ts`
+- Guards: `auth.guard.ts`
+- Interceptors: `jwt.interceptor.ts`
+- Interfaces: `book.interface.ts` or `book.model.ts`
+- DTOs: `book-response.dto.ts`, `login-request.dto.ts`
+
+### Development Principles
+
+1. **Single Responsibility Principle**
+   - Each component has a single responsibility
+   - Services focused on a single business area
+
+2. **DRY (Don't Repeat Yourself)**
+   - Extract repeated logic to shared services
+   - Use shared components for common UI
+
+3. **Reactive Programming**
+   - Use Observables and RxJS operators
+   - Avoid subscribe chaining (use switchMap, mergeMap, etc)
+   - Use AsyncPipe whenever possible
+
+4. **Type Safety**
+   - ALWAYS define interfaces for API data
+   - Avoid `any` - use `unknown` if necessary
+   - Use generics where appropriate
+
+## 🔐 Authentication and Security
+
+### JWT Implementation
+- JWT interceptor adds `Authorization: Bearer {token}` from localStorage
+- Use canActivate for protected routes; canDeactivate for exit confirmation (e.g. cart)
+
+## 📡 Backend Integration
+
+### Base Endpoints
+- `apiUrl`: `http://localhost:8080/api` (from environment)
+- **Auth**: `/auth/register`, `/auth/login`
+- **Books**: `/books`, `/books/{id}`, `/books/search`
+- **Categories**: `/categories`, `/categories/{id}`
+- **Cart**: `/cart`, `/cart/items`, `/cart/checkout`
+- **Orders**: `/orders`, `/orders/{id}`
+
+### HTTP Service Pattern
+- Services: `@Injectable({ providedIn: 'root' })`, `private readonly apiUrl`, typed Observables
+- Centralized error handling with catchError; no subscribe inside services
+
+## 🎨 UI/UX Guidelines
+
+### Reusable Components
+- Book Card, Search Input, Pagination, Loading Spinner, Confirmation Modal, Toast/Snackbar
+
+### Responsiveness
+- Mobile-first; breakpoints: 640px (sm), 768px (md), 1024px (lg), 1280px (xl)
+- CSS Grid and Flexbox
+
+### Accessibility
+- ARIA labels, keyboard navigation, proper color contrast
+
+## 📊 State Management
+
+- Use BehaviorSubject for simple state (e.g. CartStateService with cart$).
+- **DO NOT USE NgRx** for this project.
+
+## ⚡ Performance
+
+- Lazy load feature modules in routing
+- Use ChangeDetectionStrategy.OnPush where possible
+- Always use trackBy in *ngFor
+
+## 🧪 Testing (Optional for MVP)
+
+- Unit tests for critical services; E2E for main flows (login, checkout)
+
+## 🚫 What to AVOID
+
+1. **DO NOT** use `subscribe()` inside `subscribe()`
+2. **DO NOT** forget to `unsubscribe()` (use AsyncPipe or takeUntil)
+3. **DO NOT** put business logic in components
+4. **DO NOT** use `any` without justification
+5. **DO NOT** make HTTP requests directly in components
+6. **DO NOT** add libraries unnecessarily (less is more)
+
+## ✅ Code Review Checklist
+
+Before committing: types for API data, error handling, no unmanaged subscriptions, single responsibility, Prettier, no console.log in production, lazy loading where possible.
+
+## 📝 Commit Convention
+
+- feat: / fix: / refactor: / style: (e.g. feat: add book listing)
+
+## 🎯 Development Priorities
+
+- Phase 1: Setup, auth, base layout
+- Phase 2: Book listing/search, details, categories
+- Phase 3: Cart, checkout
+- Phase 4: Orders, polish
+
+## 📚 References
+
+- Angular Style Guide, RxJS Best Practices
+- Backend API: http://localhost:8080/api
+- Postman: postman/ in repository

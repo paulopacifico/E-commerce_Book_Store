@@ -128,9 +128,7 @@ export class BookListComponent implements OnInit {
   }
 
   onAddToCart(book: Book): void {
-    this.cartService.addToCart(book.id, 1).subscribe({
-      next: () => this.cartStateService.refresh(),
-      error: () => {},
-    });
+    this.cartStateService.addItem(book, 1);
+    this.cartService.addToCart(book.id, 1).subscribe({ error: () => {} });
   }
 }
