@@ -23,7 +23,16 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
   },
-  { path: 'cart', redirectTo: 'books', pathMatch: 'full' },
+  {
+    path: 'cart',
+    loadComponent: () =>
+      import('./features/cart/cart.component').then((m) => m.CartComponent),
+  },
+  {
+    path: 'checkout',
+    loadComponent: () =>
+      import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent),
+  },
   { path: 'orders', redirectTo: 'books', pathMatch: 'full' },
   { path: '**', redirectTo: 'books' },
 ];

@@ -1,0 +1,136 @@
+<div class="cart-page">
+  <h1 class="page-title">Shopping Cart</h1>
+
+  @if (cart$ | async; as items) {
+    @if (items.length === 0) {
+      <div class="cart-empty">
+        <p class="cart-empty-message">Your cart is empty.</p>
+        <a routerLink="/books" class="btn btn-primary">Continue Shopping</a>
+      </div>
+    } @else {
+      <!-- Desktop: table -->
+      <div class="cart-table-wrap">
+        <table class="cart-table" aria-label="Cart items">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Subtotal</th>
+              <th scope="col"><span class="visually-hidden">Remove</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items; track trackByBookId($index, item)) {
+              <tr class="cart-row">
+                <td class="cell-product">
+                  <div class="product-info">
+                    <div class="product-image" aria-hidden="true">📖</div>
+                    <div>
+                      <span class="product-title">{{ item.bookTitle }}</span>
+                      <span class="product-author">{{ item.bookAuthor }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="cell-price">{{ item.bookPrice | currency : 'EUR' }}</td>
+                <td class="cell-quantity">
+                  <div class="quantity-controls">
+                    <button
+                      type="button"
+                      class="btn-qty"
+                      aria-label="Decrease quantity"
+                      (click)="decrement(item)"
+                    >
+                      −
+                    </button>
+                    <span class="quantity-value" aria-live="polite">{{ item.quantity }}</span>
+                    <button
+                      type="button"
+                      class="btn-qty"
+                      aria-label="Increase quantity"
+                      (click)="increment(item)"
+                    >
+                      +
+                    </button>
+                  </div>
+                </td>
+                <td class="cell-subtotal">{{ getSubtotal(item) | currency : 'EUR' }}</td>
+                <td class="cell-remove">
+                  <button
+                    type="button"
+                    class="btn-remove"
+                    aria-label="Remove from cart"
+                    (click)="removeItem(item)"
+                  >
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile: cards -->
+      <div class="cart-cards">
+        @for (item of items; track trackByBookId($index, item)) {
+          <article class="cart-card">
+            <div class="card-product">
+              <div class="product-image" aria-hidden="true">📖</div>
+              <div class="card-details">
+                <h2 class="product-title">{{ item.bookTitle }}</h2>
+                <p class="product-author">{{ item.bookAuthor }}</p>
+                <p class="product-price">{{ item.bookPrice | currency : 'EUR' }} each</p>
+              </div>
+            </div>
+            <div class="card-quantity">
+              <span class="label">Quantity</span>
+              <div class="quantity-controls">
+                <button
+                  type="button"
+                  class="btn-qty"
+                  aria-label="Decrease quantity"
+                  (click)="decrement(item)"
+                >
+                  −
+                </button>
+                <span class="quantity-value" aria-live="polite">{{ item.quantity }}</span>
+                <button
+                  type="button"
+                  class="btn-qty"
+                  aria-label="Increase quantity"
+                  (click)="increment(item)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div class="card-subtotal">
+              <span class="label">Subtotal</span>
+              <span class="value">{{ getSubtotal(item) | currency : 'EUR' }}</span>
+            </div>
+            <button
+              type="button"
+              class="btn-remove"
+              aria-label="Remove from cart"
+              (click)="removeItem(item)"
+            >
+              Remove
+            </button>
+          </article>
+        }
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-total">
+          <span class="total-label">Total</span>
+          <span class="total-value">{{ getCartTotal() | currency : 'EUR' }}</span>
+        </div>
+        <div class="cart-actions">
+          <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>
+          <a routerLink="/checkout" class="btn btn-primary">Proceed to Checkout</a>
+        </div>
+      </div>
+    }
+  }
+</div>
