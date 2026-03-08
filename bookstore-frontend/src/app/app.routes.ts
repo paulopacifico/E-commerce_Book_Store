@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { AuthGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'books', pathMatch: 'full' },
   {
@@ -32,6 +34,13 @@ export const routes: Routes = [
     path: 'checkout',
     loadComponent: () =>
       import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'orders/:id',
+    loadComponent: () =>
+      import('./features/orders/order-confirmation.component').then((m) => m.OrderConfirmationComponent),
+    canActivate: [AuthGuard],
   },
   { path: 'orders', redirectTo: 'books', pathMatch: 'full' },
   { path: '**', redirectTo: 'books' },
