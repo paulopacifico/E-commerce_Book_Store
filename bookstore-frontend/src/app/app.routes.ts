@@ -5,17 +5,6 @@ import { AuthGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'books', pathMatch: 'full' },
   {
-    path: 'books',
-    loadComponent: () =>
-      import('./features/books/book-list/book-list.component').then((m) => m.BookListComponent),
-  },
-  {
-    path: 'books/:id',
-    loadComponent: () =>
-      import('./features/books/book-detail/book-detail.component').then((m) => m.BookDetailComponent),
-  },
-  { path: 'categories', redirectTo: 'books', pathMatch: 'full' },
-  {
     path: 'login',
     loadComponent: () =>
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
@@ -26,9 +15,15 @@ export const routes: Routes = [
       import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
   },
   {
+    path: 'books',
+    loadChildren: () =>
+      import('./features/books/books.routes').then((m) => m.booksRoutes),
+  },
+  {
     path: 'cart',
     loadComponent: () =>
       import('./features/cart/cart.component').then((m) => m.CartComponent),
+    canActivate: [AuthGuard],
   },
   {
     path: 'checkout',
@@ -37,11 +32,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'orders/:id',
-    loadComponent: () =>
-      import('./features/orders/order-detail/order-detail.component').then((m) => m.OrderDetailComponent),
+    path: 'orders',
+    loadChildren: () =>
+      import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
     canActivate: [AuthGuard],
   },
-  { path: 'orders', redirectTo: 'books', pathMatch: 'full' },
-  { path: '**', redirectTo: 'books' },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];
