@@ -39,7 +39,7 @@ export const routes: Routes = [
   {
     path: 'orders/:id',
     loadComponent: () =>
-      import('./features/orders/order-confirmation.component').then((m) => m.OrderConfirmationComponent),
+      import('./features/orders/order-detail/order-detail.component').then((m) => m.OrderDetailComponent),
     canActivate: [AuthGuard],
   },
   { path: 'orders', redirectTo: 'books', pathMatch: 'full' },

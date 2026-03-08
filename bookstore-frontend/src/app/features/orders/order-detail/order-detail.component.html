@@ -1,0 +1,118 @@
+<div class="order-detail-page">
+  @if (order$ | async; as order) {
+    @if (order) {
+      <div class="detail-header">
+        <h1 class="page-title">Order #{{ order.id }}</h1>
+        <a routerLink="/orders" class="btn btn-secondary">Back to Orders</a>
+      </div>
+
+      <div class="detail-grid">
+        <section class="detail-card" aria-labelledby="status-heading">
+          <h2 id="status-heading" class="card-title">Status</h2>
+          <div class="status-timeline" role="list" aria-label="Order status">
+            @for (step of statusSteps; track step; let i = $index) {
+              <div
+                class="timeline-step"
+                role="listitem"
+                [class.completed]="isStepCompleted(getStatusIndex(order.status), i)"
+                [class.current]="isStepCurrent(getStatusIndex(order.status), i)"
+                [class.cancelled]="order.status === 'CANCELLED'"
+              >
+                <div class="step-marker">
+                  @if (isStepCompleted(getStatusIndex(order.status), i)) {
+                    <span class="step-icon" aria-hidden="true">✓</span>
+                  } @else {
+                    <span class="step-dot"></span>
+                  }
+                </div>
+                <span class="step-label">{{ step }}</span>
+                @if (i < statusSteps.length - 1) {
+                  <div class="step-connector"></div>
+                }
+              </div>
+            }
+          </div>
+          @if (order.status === 'CANCELLED') {
+            <p class="status-badge status-cancelled">Cancelled</p>
+          } @else {
+            <p class="status-badge">Current: {{ order.status }}</p>
+          }
+        </section>
+
+        <section class="detail-card" aria-labelledby="info-heading">
+          <h2 id="info-heading" class="card-title">Order information</h2>
+          <dl class="info-list">
+            <dt>Order number</dt>
+            <dd>{{ order.id }}</dd>
+            <dt>Date</dt>
+            <dd>{{ order.createdAt | date : 'medium' }}</dd>
+            <dt>Shipping address</dt>
+            <dd class="address">{{ order.shippingAddress }}</dd>
+            <dt>Payment</dt>
+            <dd>Card ending ****{{ getPaymentLastFour() }}</dd>
+          </dl>
+        </section>
+      </div>
+
+      <section class="detail-card items-section" aria-labelledby="items-heading">
+        <h2 id="items-heading" class="card-title">Ordered items</h2>
+        <div class="table-wrap">
+          <table class="items-table" aria-label="Order line items">
+            <thead>
+              <tr>
+                <th scope="col">Book</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of order.items; track trackByItemId($index, item)) {
+                <tr>
+                  <td class="cell-book">
+                    <span class="book-title">{{ item.bookTitle }}</span>
+                    <span class="book-author">{{ item.bookAuthor }}</span>
+                  </td>
+                  <td class="cell-qty">{{ item.quantity }}</td>
+                  <td class="cell-price">{{ item.priceAtPurchase | currency : 'EUR' }}</td>
+                  <td class="cell-subtotal">{{ getItemSubtotal(item) | currency : 'EUR' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="totals">
+          <div class="total-row">
+            <span>Subtotal</span>
+            <span>{{ getItemsSubtotal(order) | currency : 'EUR' }}</span>
+          </div>
+          <div class="total-row">
+            <span>Shipping</span>
+            <span>
+              @if (getShippingDisplay(order) === 'included') {
+                Included
+              } @else {
+                {{ getShippingDisplay(order) | currency : 'EUR' }}
+              }
+            </span>
+          </div>
+          <div class="total-row total-final">
+            <span>Total</span>
+            <span>{{ order.totalAmount | currency : 'EUR' }}</span>
+          </div>
+        </div>
+      </section>
+    } @else {
+      <div class="error-state">
+        <h1 class="page-title">Order not found</h1>
+        <p class="error-message">This order does not exist or you do not have access to it.</p>
+        <a routerLink="/books" class="btn btn-primary">Back to Books</a>
+      </div>
+    }
+  } @else {
+    <div class="loading-state" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p class="loading-text">Loading order…</p>
+    </div>
+  }
+</div>
