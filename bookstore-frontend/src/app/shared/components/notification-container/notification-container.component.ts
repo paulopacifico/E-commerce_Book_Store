@@ -1,13 +1,11 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
 
 import { NotificationService } from '../../../core/services/notification.service';
 import type { Notification, NotificationType } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-notification-container',
-  standalone: true,
-  imports: [AsyncPipe],
+  standalone: false,
   templateUrl: './notification-container.component.html',
   styleUrl: './notification-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

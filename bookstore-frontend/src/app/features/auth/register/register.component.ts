@@ -7,13 +7,12 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  ReactiveFormsModule,
   FormBuilder,
   Validators,
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
@@ -24,8 +23,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  standalone: false,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

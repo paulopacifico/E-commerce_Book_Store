@@ -7,9 +7,8 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { CartStateService, type LocalCartItem } from '../../core/services/cart-state.service';
 import { OrderService } from '../../core/services/order.service';
@@ -23,8 +22,7 @@ const CVV_PATTERN = /^\d{3}$/;
 
 @Component({
   selector: 'app-checkout',
-  standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe, RouterLink],
+  standalone: false,
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,12 +1,9 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { CartStateService, type LocalCartItem } from '../../core/services/cart-state.service';
 
 @Component({
   selector: 'app-cart',
-  standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, RouterLink],
+  standalone: false,
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,14 +1,11 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../../core/services/auth.service';
-import { CartIconComponent } from '../cart-icon/cart-icon.component';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, AsyncPipe, CartIconComponent],
+  standalone: false,
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
