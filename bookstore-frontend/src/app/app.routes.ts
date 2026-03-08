@@ -17,7 +17,7 @@ export const routes: Routes = [
   {
     path: 'books',
     loadChildren: () =>
-      import('./features/books/books.routes').then((m) => m.booksRoutes),
+      import('./features/books/books.module').then((m) => m.BooksModule),
   },
   {
     path: 'cart',
@@ -34,7 +34,7 @@ export const routes: Routes = [
   {
     path: 'orders',
     loadChildren: () =>
-      import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
+      import('./features/orders/orders.module').then((m) => m.OrdersModule),
     canActivate: [AuthGuard],
   },
   {

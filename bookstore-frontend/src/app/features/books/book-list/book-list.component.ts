@@ -6,7 +6,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { AsyncPipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { combineLatest, of } from 'rxjs';
 import {
@@ -22,7 +21,6 @@ import { BookService } from '../../../core/services/book.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { CartService } from '../../../core/services/cart.service';
 import { CartStateService } from '../../../core/services/cart-state.service';
-import { BookCardComponent } from '../../../shared/components/book-card/book-card.component';
 import type { Book } from '../../../core/models/book.interface';
 import type { Category } from '../../../core/models/category.interface';
 
@@ -30,8 +28,7 @@ const PAGE_SIZE = 12;
 
 @Component({
   selector: 'app-book-list',
-  standalone: true,
-  imports: [AsyncPipe, BookCardComponent],
+  standalone: false,
   templateUrl: './book-list.component.html',
   styleUrl: './book-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,6 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy, signal } from '@angular/core';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../../core/services/book.service';
@@ -10,8 +9,7 @@ import type { Book } from '../../../core/models/book.interface';
 
 @Component({
   selector: 'app-book-detail',
-  standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, RouterLink],
+  standalone: false,
   templateUrl: './book-detail.component.html',
   styleUrl: './book-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

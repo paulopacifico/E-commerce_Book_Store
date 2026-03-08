@@ -1,6 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AsyncPipe, CurrencyPipe, DatePipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 
@@ -11,8 +10,7 @@ const STATUS_STEPS = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
 
 @Component({
   selector: 'app-order-detail',
-  standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, DatePipe, RouterLink],
+  standalone: false,
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
