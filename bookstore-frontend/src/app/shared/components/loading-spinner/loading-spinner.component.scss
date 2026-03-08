@@ -1,0 +1,27 @@
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+.spinner-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
