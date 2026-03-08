@@ -1,7 +1,7 @@
 # Bookstore E‑commerce API
 
 [![CI](https://github.com/paulopacifico/E-commerce_Book_Store/actions/workflows/maven.yml/badge.svg)](https://github.com/paulopacifico/E-commerce_Book_Store/actions/workflows/maven.yml)
-![Java](https://img.shields.io/badge/Java-25-blue)
+![Java](https://img.shields.io/badge/Java-21-blue)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.2-brightgreen)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
@@ -27,7 +27,7 @@ A production‑minded Spring Boot backend for a digital bookstore. The system fo
 - Postman collection + environment included
 
 ## Tech Stack
-- **Language/Runtime:** Java 25
+- **Language/Runtime:** Java 21
 - **Framework:** Spring Boot 4.0.2
 - **Security:** Spring Security, JWT (jjwt 0.12.3)
 - **Persistence:** Spring Data JPA, H2 (local), PostgreSQL (Docker)
