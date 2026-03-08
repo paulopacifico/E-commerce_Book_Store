@@ -5,24 +5,24 @@
     <div class="success-banner" role="status">Registration successful. You can now log in.</div>
   }
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate>
     <div class="field">
-      <label for="username">Username</label>
+      <label for="email">Email</label>
       <input
-        id="username"
-        type="text"
-        formControlName="username"
-        autocomplete="username"
-        placeholder="Enter username"
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="Enter email"
         class="input"
       />
-      @if (username?.invalid && username?.touched) {
+      @if (email?.invalid && email?.touched) {
         <div class="error" role="alert">
-          @if (username?.errors?.['required']) {
-            Username is required.
+          @if (email?.errors?.['required']) {
+            Email is required.
           }
-          @if (username?.errors?.['minlength']) {
-            Username must be at least 3 characters.
+          @if (email?.errors?.['email']) {
+            Please enter a valid email address.
           }
         </div>
       }
@@ -65,6 +65,6 @@
   </form>
 
   <p class="register-link">
-    Don't have an account? <a routerLink="/register">Register</a>
+    Don't have an account? <a href="/register" (click)="goToRegister($event)">Register</a>
   </p>
 </div>

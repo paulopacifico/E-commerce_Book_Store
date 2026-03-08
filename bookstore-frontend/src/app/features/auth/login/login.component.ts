@@ -24,16 +24,21 @@ export class LoginComponent {
   readonly errorMessage = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  get username() {
-    return this.form.get('username');
+  get email() {
+    return this.form.get('email');
   }
 
   get password() {
     return this.form.get('password');
+  }
+
+  goToRegister(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(['/register']);
   }
 
   onSubmit(): void {
@@ -41,10 +46,10 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     this.loading.set(true);
-    const { username, password } = this.form.getRawValue();
+    const { email, password } = this.form.getRawValue();
 
     this.authService
-      .login(username, password)
+      .login(email.trim(), password)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -52,7 +57,13 @@ export class LoginComponent {
         },
         error: (err) => {
           this.loading.set(false);
-          const msg = err?.error?.message ?? err?.message ?? 'Login failed. Please try again.';
+          const body = err?.error;
+          const msg =
+            body?.errors?.['email']
+              ?? body?.errors?.['password']
+              ?? body?.message
+              ?? err?.message
+              ?? 'Login failed. Please try again.';
           this.errorMessage.set(msg);
         },
         complete: () => {

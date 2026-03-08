@@ -25,6 +25,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         const userMessage = this.getUserMessage(error);
         switch (error.status) {
           case 401:
+            this.notification.show(userMessage);
             this.authService.logout();
             return throwError(() => new Error(userMessage));
           case 403:

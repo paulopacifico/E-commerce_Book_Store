@@ -50,7 +50,7 @@
         } @else {
           <div class="auth-buttons">
             <a routerLink="/login" class="btn btn-outline" (click)="closeMobileMenu()">Login</a>
-            <a routerLink="/register" class="btn btn-primary" (click)="closeMobileMenu()">Register</a>
+            <a href="/register" class="btn btn-primary" (click)="goToRegister($event)">Register</a>
           </div>
         }
       </div>

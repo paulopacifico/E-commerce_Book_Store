@@ -8,7 +8,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "app.security.cors")
 public class CorsProperties {
 
-    private List<String> allowedOrigins = new ArrayList<>(List.of("http://localhost:3000"));
+    private List<String> allowedOrigins = new ArrayList<>(List.of("http://localhost:3000", "http://localhost:4200"));
     private List<String> allowedMethods = new ArrayList<>(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     private List<String> allowedHeaders = new ArrayList<>(List.of("Authorization", "Content-Type"));
     private List<String> exposedHeaders = new ArrayList<>(List.of("Authorization"));

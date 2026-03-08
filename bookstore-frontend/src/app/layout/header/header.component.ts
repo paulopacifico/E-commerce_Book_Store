@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../../core/services/auth.service';
 import { CartIconComponent } from '../cart-icon/cart-icon.component';
@@ -14,6 +14,7 @@ import { CartIconComponent } from '../cart-icon/cart-icon.component';
 })
 export class HeaderComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
@@ -35,6 +36,12 @@ export class HeaderComponent implements OnInit {
 
   closeMobileMenu(): void {
     this.mobileMenuOpen.set(false);
+  }
+
+  goToRegister(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(['/register']);
+    this.closeMobileMenu();
   }
 
   toggleUserMenu(): void {

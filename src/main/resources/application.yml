@@ -33,6 +33,7 @@ app:
     cors:
       allowed-origins:
         - http://localhost:3000
+        - http://localhost:4200
       allowed-methods:
         - GET
         - POST
