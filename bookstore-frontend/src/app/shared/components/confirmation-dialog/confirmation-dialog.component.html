@@ -1,0 +1,31 @@
+<div
+  class="confirmation-dialog"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="dialogTitleId"
+  [attr.aria-describedby]="dialogDescId"
+>
+  <h2 [id]="dialogTitleId" class="dialog-title">{{ title }}</h2>
+  <p [id]="dialogDescId" class="dialog-message">{{ message }}</p>
+  <div class="dialog-actions">
+    <button
+      type="button"
+      class="btn-cancel"
+      mat-button
+      [attr.aria-label]="cancelText"
+      (click)="onCancel()"
+    >
+      {{ cancelText }}
+    </button>
+    <button
+      type="button"
+      class="btn-confirm"
+      color="primary"
+      mat-raised-button
+      [attr.aria-label]="confirmText"
+      (click)="onConfirm()"
+    >
+      {{ confirmText }}
+    </button>
+  </div>
+</div>

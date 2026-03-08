@@ -1,0 +1,24 @@
+<div class="notification-container" aria-live="polite" aria-label="Notifications">
+  @for (notification of notifications$ | async; track trackById($index, notification)) {
+    <div
+      class="toast"
+      [class.toast-success]="notification.type === 'success'"
+      [class.toast-error]="notification.type === 'error'"
+      [class.toast-warning]="notification.type === 'warning'"
+      [class.toast-info]="notification.type === 'info'"
+      role="status"
+      [attr.aria-label]="notification.type + ': ' + notification.message"
+    >
+      <span class="toast-icon" aria-hidden="true">{{ getIcon(notification.type) }}</span>
+      <p class="toast-message">{{ notification.message }}</p>
+      <button
+        type="button"
+        class="toast-close"
+        [attr.aria-label]="'Dismiss notification'"
+        (click)="notificationService.dismiss(notification.id)"
+      >
+        ✕
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,32 @@
+.confirmation-dialog {
+  min-width: 320px;
+  max-width: 400px;
+  padding: 0;
+}
+
+.dialog-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.dialog-message {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn-cancel {
+  // Default/secondary style; Material primary used for confirm
+}
+
+.btn-confirm {
+  // mat-raised-button with color="primary"
+}

@@ -47,6 +47,8 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   private getUserMessage(error: HttpErrorResponse): string {
     switch (error.status) {
+      case 0:
+        return 'Unable to reach the server. Please check that the backend is running and try again.';
       case 401:
         return 'Session expired. Please log in again.';
       case 403:
@@ -56,7 +58,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       case 500:
         return 'Server error. Please try again later.';
       default:
-        return error.message || 'An unexpected error occurred.';
+        return error.error?.message ?? error.message ?? 'An unexpected error occurred.';
     }
   }
 }
