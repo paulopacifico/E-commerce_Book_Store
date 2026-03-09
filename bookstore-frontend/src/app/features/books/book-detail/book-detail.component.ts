@@ -1,4 +1,5 @@
-import { Component, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
@@ -25,6 +26,7 @@ export class BookDetailComponent {
   readonly loading = signal(true);
   readonly quantity = signal(1);
   readonly addingToCart = signal(false);
+  readonly imageError = signal(false);
 
   readonly bookResult$: Observable<{ book: Book } | { error: unknown } | null> =
     this.route.paramMap.pipe(
@@ -42,6 +44,15 @@ export class BookDetailComponent {
       finalize(() => this.loading.set(false))
     );
 
+  private readonly bookResult = toSignal(this.bookResult$, { initialValue: null as { book: Book } | { error: unknown } | null });
+
+  constructor() {
+    effect(() => {
+      this.bookResult();
+      this.imageError.set(false);
+    });
+  }
+
   setQuantity(value: number, book: Book | null): void {
     if (!book) return;
     const max = Math.max(1, book.stockQuantity);
@@ -56,6 +67,10 @@ export class BookDetailComponent {
 
   decrementQuantity(book: Book | null): void {
     this.setQuantity(this.quantity() - 1, book);
+  }
+
+  onImageError(): void {
+    this.imageError.set(true);
   }
 
   handleAddToCart(book: Book, quantity: number = 1): void {

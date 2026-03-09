@@ -14,6 +14,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { CartComponent } from './features/cart/cart.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
+import { CategoriesComponent } from './features/categories/categories.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { NotificationContainerComponent } from './shared/components/notification-container/notification-container.component';
 
@@ -31,6 +32,7 @@ import { GlobalErrorHandler } from './core/global-error.handler';
     RegisterComponent,
     CartComponent,
     CheckoutComponent,
+    CategoriesComponent,
     NotFoundComponent,
     NotificationContainerComponent,
   ],

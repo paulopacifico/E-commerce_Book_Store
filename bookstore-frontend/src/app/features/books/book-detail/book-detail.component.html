@@ -15,8 +15,13 @@
       @let book = result.book;
       <div class="detail-layout">
         <div class="image-section">
-          @if (book.imageUrl) {
-            <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
+          @if (book.imageUrl && !imageError()) {
+            <img
+              [src]="book.imageUrl"
+              [alt]="book.title"
+              class="book-image"
+              (error)="onImageError()"
+            />
           } @else {
             <div class="image-placeholder">📖</div>
           }

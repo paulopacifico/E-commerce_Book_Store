@@ -129,3 +129,13 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .login-card {
+    margin: 1rem;
+    padding: 1.25rem;
+    max-width: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

@@ -6,6 +6,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { CartComponent } from './features/cart/cart.component';
 import { CheckoutComponent } from './features/checkout/checkout.component';
+import { CategoriesComponent } from './features/categories/categories.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 
 const routes: Routes = [
@@ -22,6 +23,10 @@ const routes: Routes = [
     path: 'books',
     loadChildren: () =>
       import('./features/books/books.module').then((m) => m.BooksModule),
+  },
+  {
+    path: 'categories',
+    component: CategoriesComponent,
   },
   {
     path: 'cart',

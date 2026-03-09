@@ -88,7 +88,7 @@ public class PostgresDataSeeder implements ApplicationRunner {
                 .price(price)
                 .stockQuantity(stock)
                 .category(category)
-                .imageUrl("https://example.com/" + title.toLowerCase().replace(" ", "-") + ".jpg")
+                .imageUrl(null) // No cover URL in seed data; UI shows placeholder
                 .build();
         bookRepository.save(book);
     }

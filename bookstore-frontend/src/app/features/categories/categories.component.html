@@ -1,0 +1,26 @@
+<div class="categories-page">
+  <h1 class="page-title">Categories</h1>
+  <p class="intro">Browse books by category.</p>
+
+  @if (categories$ | async; as categories) {
+    @if (categories.length > 0) {
+      <div class="category-grid">
+        @for (cat of categories; track cat.id) {
+          <a [routerLink]="['/books']" [queryParams]="{ category: cat.id }" class="category-card">
+            <span class="category-name">{{ cat.name }}</span>
+            @if (cat.description) {
+              <span class="category-desc">{{ cat.description }}</span>
+            }
+          </a>
+        }
+      </div>
+    } @else {
+      <p class="empty">No categories available.</p>
+    }
+  } @else {
+    <div class="loading-wrap" aria-busy="true">
+      <span class="spinner"></span>
+      <span>Loading categories...</span>
+    </div>
+  }
+</div>

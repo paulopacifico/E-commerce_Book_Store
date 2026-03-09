@@ -80,10 +80,11 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .footer-inner {
     flex-direction: column;
     text-align: center;
+    gap: 1.25rem;
   }
 
   .footer-brand {
@@ -91,6 +92,10 @@
   }
 
   .footer-links {
+    justify-content: center;
+  }
+
+  .social {
     justify-content: center;
   }
 }

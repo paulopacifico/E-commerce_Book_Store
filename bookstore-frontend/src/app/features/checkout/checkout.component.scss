@@ -27,6 +27,7 @@
 
 .checkout-layout {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 2rem;
 
   @media (min-width: 900px) {
@@ -94,12 +95,17 @@
 
 .field-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .input {
   width: 100%;
+  max-width: 100%;
   padding: 0.625rem 0.75rem;
   font-size: 1rem;
   border: 1px solid #ccc;

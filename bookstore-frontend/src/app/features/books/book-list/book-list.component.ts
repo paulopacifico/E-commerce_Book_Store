@@ -110,6 +110,13 @@ export class BookListComponent implements OnInit {
         this.searchValue.set(search);
         this.searchInput$.next(search);
       }
+      const categoryIdParam = params.get('category');
+      if (categoryIdParam != null) {
+        const id = Number(categoryIdParam);
+        if (Number.isFinite(id)) {
+          this.selectedCategoryId.set(id);
+        }
+      }
     });
   }
 

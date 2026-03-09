@@ -9,6 +9,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 
 import { CartStateService, type LocalCartItem } from '../../core/services/cart-state.service';
 import { OrderService } from '../../core/services/order.service';
@@ -127,14 +128,16 @@ export class CheckoutComponent {
 
     this.orderService
       .createOrder({ shippingAddress })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: (order) => {
           this.cartState.clearCart();
           this.router.navigate(['/orders', order.id]);
         },
         error: (err) => {
-          this.loading.set(false);
           const msg =
             err?.error?.message ??
             err?.message ??
