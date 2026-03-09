@@ -5,6 +5,7 @@ import {
   signal,
   OnInit,
 } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
 import { combineLatest, of } from 'rxjs';
@@ -16,6 +17,7 @@ import {
   debounceTime,
   tap,
   finalize,
+  take,
 } from 'rxjs/operators';
 import { BookService } from '../../../core/services/book.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -35,6 +37,7 @@ const PAGE_SIZE = 12;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookListComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
   private readonly cartService = inject(CartService);
@@ -100,7 +103,15 @@ export class BookListComponent implements OnInit {
     map((r) => r.books)
   );
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.queryParamMap.pipe(take(1)).subscribe((params) => {
+      const search = params.get('search')?.trim() ?? '';
+      if (search) {
+        this.searchValue.set(search);
+        this.searchInput$.next(search);
+      }
+    });
+  }
 
   onSearchInput(value: string): void {
     this.searchValue.set(value);

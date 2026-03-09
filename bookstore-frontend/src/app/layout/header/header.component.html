@@ -29,9 +29,14 @@
           type="search"
           class="search-input"
           placeholder="Search books..."
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          (keydown.enter)="onSearch()"
           aria-label="Search books"
-          readonly
         />
+        <button type="button" class="search-btn" (click)="onSearch()" aria-label="Search">
+          Search
+        </button>
       </div>
 
       <div class="actions">

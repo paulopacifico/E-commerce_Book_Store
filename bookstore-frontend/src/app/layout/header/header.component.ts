@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../../core/services/auth.service';
+import { CartStateService } from '../../core/services/cart-state.service';
 
 @Component({
   selector: 'app-header',
@@ -13,11 +14,14 @@ export class HeaderComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly cartStateService = inject(CartStateService);
 
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
+  readonly cartCount$ = this.cartStateService.cartCount$;
   readonly mobileMenuOpen = signal(false);
   readonly userMenuOpen = signal(false);
   readonly isMobile = signal(false);
+  readonly searchQuery = signal('');
   readonly showNavLinks = computed(() => !this.isMobile() || this.mobileMenuOpen());
 
   ngOnInit(): void {
@@ -53,5 +57,13 @@ export class HeaderComponent implements OnInit {
     this.closeMobileMenu();
     this.closeUserMenu();
     this.authService.logout();
+  }
+
+  onSearch(): void {
+    const term = this.searchQuery().trim();
+    this.router.navigate(['/books'], {
+      queryParams: term ? { search: term } : {},
+    });
+    this.closeMobileMenu();
   }
 }
