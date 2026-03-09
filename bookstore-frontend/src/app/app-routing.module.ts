@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 
 import { AuthGuard } from './core/guards/auth.guard';
+import { HomeComponent } from './features/home/home.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { CartComponent } from './features/cart/cart.component';
@@ -10,7 +11,7 @@ import { CategoriesComponent } from './features/categories/categories.component'
 import { NotFoundComponent } from './features/not-found/not-found.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'books', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
   {
     path: 'login',
     component: LoginComponent,

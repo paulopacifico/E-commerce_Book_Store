@@ -7,6 +7,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { AppComponent } from './app';
+import { HomeComponent } from './features/home/home.component';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { CartIconComponent } from './layout/cart-icon/cart-icon.component';
@@ -43,6 +44,7 @@ import { GlobalErrorHandler } from './core/global-error.handler';
     LayoutModule,
     AppRoutingModule,
     SharedModule,
+    HomeComponent,
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErrorHandler },

@@ -1,0 +1,123 @@
+<main class="home-page" role="main">
+  <!-- A. Hero -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h1 id="hero-heading" class="hero-title">Discover Your Next Great Read</h1>
+      <p class="hero-subtitle">
+        Curated books for every taste. Browse bestsellers, explore categories, and get free shipping on orders over $50.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/books" class="btn btn-hero-primary">Browse Books</a>
+        <button type="button" class="btn btn-hero-secondary" (click)="scrollToCategories()">
+          View Categories
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- B. Featured Books -->
+  <section class="section featured-section" aria-labelledby="featured-heading">
+    <div class="section-inner">
+      <h2 id="featured-heading" class="section-title">Featured Books</h2>
+      <p class="section-desc">Newest arrivals — find your next favorite.</p>
+
+      @if (featuredLoading()) {
+        <div class="featured-skeletons" aria-busy="true" aria-label="Loading featured books">
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <div class="card-skeleton">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line short"></div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="featured-grid">
+          @for (book of featuredBooks(); track trackByBookId($index, book)) {
+            <app-book-card
+              [book]="book"
+              (addToCart)="handleAddToCart($event)"
+            />
+          }
+        </div>
+        @if (featuredBooks().length > 0) {
+          <div class="section-cta">
+            <a routerLink="/books" class="btn btn-outline">View All Books</a>
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- C. Categories -->
+  <section id="home-categories" class="section categories-section" aria-labelledby="categories-heading">
+    <div class="section-inner">
+      <h2 id="categories-heading" class="section-title">Browse by Category</h2>
+      <p class="section-desc">Explore our collection by category.</p>
+
+      @if (categoriesLoading()) {
+        <div class="categories-skeletons" aria-busy="true" aria-label="Loading categories">
+          @for (i of [1,2,3,4,5,6]; track i) {
+            <div class="category-skeleton"></div>
+          }
+        </div>
+      } @else {
+        <div class="categories-grid">
+          @for (cat of categories(); track trackByCategoryId($index, cat)) {
+            <a
+              [routerLink]="['/books']"
+              [queryParams]="{ category: cat.id }"
+              class="category-card"
+              [attr.aria-label]="'Browse ' + cat.name"
+            >
+              <span class="category-icon" aria-hidden="true">📚</span>
+              <span class="category-name">{{ cat.name }}</span>
+              @if (cat.bookCount != null) {
+                <span class="category-count">{{ cat.bookCount }} books</span>
+              }
+            </a>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- D. Value propositions -->
+  <section class="section features-section" aria-labelledby="features-heading">
+    <div class="section-inner">
+      <h2 id="features-heading" class="section-title">Why Shop With Us</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">🚚</span>
+          <h3 class="feature-title">Free Shipping</h3>
+          <p class="feature-desc">On orders over $50</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">🔒</span>
+          <h3 class="feature-title">Secure Payment</h3>
+          <p class="feature-desc">SSL encrypted checkout</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon" aria-hidden="true">↩️</span>
+          <h3 class="feature-title">Easy Returns</h3>
+          <p class="feature-desc">30-day money-back guarantee</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E. CTA Banner -->
+  <section class="section cta-section" aria-labelledby="cta-heading">
+    <div class="cta-banner">
+      <h2 id="cta-heading" class="cta-title">Join Our Community</h2>
+      <p class="cta-desc">Create an account to save your favorites, track orders, and get the best deals.</p>
+      @if (isAuthenticated$ | async) {
+        <a routerLink="/books" class="btn btn-cta">Start Shopping</a>
+      } @else {
+        <a routerLink="/register" class="btn btn-cta">Sign Up Now</a>
+      }
+    </div>
+  </section>
+</main>
