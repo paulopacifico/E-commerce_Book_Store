@@ -21,7 +21,7 @@ public class BookService {
     }
 
     public Book getBookById(Long id) {
-        return bookRepository.findById(id)
+        return bookRepository.findByIdWithCategory(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
     }
 
@@ -42,7 +42,7 @@ public class BookService {
     }
 
     public void deleteBook(Long id) {
-        Book book = bookRepository.findById(id)
+        Book book = bookRepository.findByIdWithCategory(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
         bookRepository.delete(book);
     }

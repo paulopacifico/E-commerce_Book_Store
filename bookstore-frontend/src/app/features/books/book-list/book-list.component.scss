@@ -1,40 +1,47 @@
 .book-list {
-  padding: 0.5rem 0;
+  padding: 0.75rem 0 2rem;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  align-items: center;
 }
 
 .search-input {
   flex: 1;
   min-width: 200px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(196, 92, 38, 0.18);
   }
 }
 
 .category-select {
   min-width: 180px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
 
   &:focus {
     outline: none;
-    border-color: #1976d2;
+    border-color: var(--color-border-focus);
   }
 }
 
@@ -43,16 +50,17 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 3rem 1rem;
-  color: #666;
+  padding: 3.5rem 1rem;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
 }
 
 .spinner {
   display: inline-block;
   width: 1.5rem;
   height: 1.5rem;
-  border: 2px solid #e0e0e0;
-  border-top-color: #1976d2;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -66,7 +74,7 @@
 .book-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 @media (min-width: 480px) {
@@ -78,20 +86,23 @@
 @media (min-width: 768px) {
   .book-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .book-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 }
 
 .empty {
-  padding: 3rem 1rem;
+  padding: 3.5rem 1rem;
   text-align: center;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 1.125rem;
+  font-family: var(--font-display);
 }
 
 .pagination {
@@ -99,21 +110,25 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
-  padding: 1rem 0;
+  margin-top: 2.5rem;
+  padding: 1.25rem 0;
 }
 
 .page-btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  color: #1976d2;
-  background: #fff;
-  border: 1px solid #1976d2;
-  border-radius: 4px;
+  padding: 0.5rem 1.125rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 
   &:hover:not(:disabled) {
-    background: #e3f2fd;
+    background: rgba(196, 92, 38, 0.08);
+    border-color: var(--color-primary-dark);
+    color: var(--color-primary-dark);
   }
 
   &:disabled {
@@ -123,6 +138,6 @@
 }
 
 .page-info {
-  font-size: 0.875rem;
-  color: #666;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
 }

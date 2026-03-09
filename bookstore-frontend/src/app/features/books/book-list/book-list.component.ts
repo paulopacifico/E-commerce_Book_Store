@@ -119,22 +119,16 @@ export class BookListComponent implements OnInit {
     this.currentPage.set(0);
   }
 
-  categorySelectValue(select: HTMLSelectElement): number | null {
-    const v = select.value;
-    return v === '' ? null : Number(v);
-  }
-
-  onCategoryChange(categoryId: number | null): void {
+  onCategoryChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const v = select?.value ?? '';
+    const categoryId = v === '' ? null : Number(v);
     this.selectedCategoryId.set(categoryId);
     this.currentPage.set(0);
   }
 
   goToPage(page: number): void {
     this.currentPage.set(page);
-  }
-
-  trackByBookId(_index: number, book: Book): number {
-    return book.id;
   }
 
   handleAddToCart(book: Book, quantity: number = 1): void {

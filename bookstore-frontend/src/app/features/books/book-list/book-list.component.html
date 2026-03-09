@@ -11,7 +11,7 @@
     <select
       class="category-select"
       [value]="selectedCategoryId() ?? ''"
-      (change)="onCategoryChange(categorySelectValue($any($event.target)))"
+      (change)="onCategoryChange($event)"
       aria-label="Filter by category"
     >
       <option value="">All categories</option>
@@ -30,7 +30,7 @@
     @let bookList = books$ | async;
     @if (bookList && bookList.length > 0) {
       <div class="book-grid">
-        @for (book of bookList; track trackByBookId($index, book)) {
+        @for (book of bookList; track book.id) {
           <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
         }
       </div>

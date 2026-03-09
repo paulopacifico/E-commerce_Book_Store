@@ -13,6 +13,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
@@ -64,6 +65,7 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
+    if (this.loading()) return;
     this.errorMessage.set(null);
     if (this.form.invalid) return;
 
@@ -72,7 +74,10 @@ export class RegisterComponent {
 
     this.authService
       .register(username, email, password)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: () => {
           this.router.navigate(['/login'], {
@@ -80,13 +85,9 @@ export class RegisterComponent {
           });
         },
         error: (err) => {
-          this.loading.set(false);
           const msg =
             err?.error?.message ?? err?.message ?? 'Registration failed. Please try again.';
           this.errorMessage.set(msg);
-        },
-        complete: () => {
-          this.loading.set(false);
         },
       });
   }

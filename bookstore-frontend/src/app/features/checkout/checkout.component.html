@@ -121,10 +121,10 @@
       <aside class="order-summary" aria-labelledby="summary-heading">
         <h2 id="summary-heading" class="section-title">Order Summary</h2>
         <div class="summary-items">
-          @for (item of cartItems(); track trackByBookId($index, item)) {
+          @for (item of cartItems(); track item.bookId) {
             <div class="summary-row">
               <span class="summary-item-desc">{{ item.bookTitle }} × {{ item.quantity }}</span>
-              <span class="summary-item-value">{{ getSubtotal(item) | currency : 'EUR' }}</span>
+              <span class="summary-item-value">{{ item | cartSubtotal | currency : 'EUR' }}</span>
             </div>
           }
         </div>

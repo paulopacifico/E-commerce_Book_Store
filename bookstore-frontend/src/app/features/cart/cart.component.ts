@@ -1,4 +1,5 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CartStateService, type LocalCartItem } from '../../core/services/cart-state.service';
 
 @Component({
@@ -11,13 +12,11 @@ import { CartStateService, type LocalCartItem } from '../../core/services/cart-s
 export class CartComponent {
   protected readonly cartState = inject(CartStateService);
 
-  get cart$() {
-    return this.cartState.cart$;
-  }
-
-  getCartTotal(): number {
-    return this.cartState.getCartTotal();
-  }
+  readonly cart$ = this.cartState.cart$;
+  private readonly cartItems = toSignal(this.cartState.cart$, { initialValue: [] as LocalCartItem[] });
+  readonly cartTotal = computed(() =>
+    this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0)
+  );
 
   updateQuantity(bookId: number, quantity: number): void {
     this.cartState.updateQuantity(bookId, quantity);
@@ -35,13 +34,5 @@ export class CartComponent {
   removeItem(item: LocalCartItem): void {
     if (!confirm(`Remove "${item.bookTitle}" from your cart?`)) return;
     this.cartState.removeItem(item.bookId);
-  }
-
-  getSubtotal(item: LocalCartItem): number {
-    return item.bookPrice * item.quantity;
-  }
-
-  trackByBookId(_index: number, item: LocalCartItem): number {
-    return item.bookId;
   }
 }

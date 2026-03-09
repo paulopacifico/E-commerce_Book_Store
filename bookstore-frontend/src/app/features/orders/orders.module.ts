@@ -8,11 +8,12 @@ import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 
 @NgModule({
-  declarations: [OrderListComponent, OrderDetailComponent],
+  declarations: [OrderListComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(ordersRoutes),
     SharedModule,
+    OrderDetailComponent,
   ],
 })
 export class OrdersModule {}

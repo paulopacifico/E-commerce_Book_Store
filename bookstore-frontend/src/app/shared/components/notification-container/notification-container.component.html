@@ -1,5 +1,5 @@
 <div class="notification-container" aria-live="polite" aria-label="Notifications">
-  @for (notification of notifications$ | async; track trackById($index, notification)) {
+  @for (notification of notifications$ | async; track notification.id) {
     <div
       class="toast"
       [class.toast-success]="notification.type === 'success'"
@@ -9,7 +9,7 @@
       role="status"
       [attr.aria-label]="notification.type + ': ' + notification.message"
     >
-      <span class="toast-icon" aria-hidden="true">{{ getIcon(notification.type) }}</span>
+      <span class="toast-icon" aria-hidden="true">{{ iconMap[notification.type] ?? '•' }}</span>
       <p class="toast-message">{{ notification.message }}</p>
       <button
         type="button"

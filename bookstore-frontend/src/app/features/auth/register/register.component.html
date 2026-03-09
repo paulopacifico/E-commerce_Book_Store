@@ -11,6 +11,7 @@
         autocomplete="username"
         placeholder="Enter username"
         class="input"
+        [disabled]="loading()"
       />
       @if (username?.invalid && username?.touched) {
         <div class="error" role="alert">
@@ -33,6 +34,7 @@
         autocomplete="email"
         placeholder="Enter email"
         class="input"
+        [disabled]="loading()"
       />
       @if (email?.invalid && email?.touched) {
         <div class="error" role="alert">
@@ -55,6 +57,7 @@
         autocomplete="new-password"
         placeholder="Enter password (min 6 characters)"
         class="input"
+        [disabled]="loading()"
       />
       @if (password?.invalid && password?.touched) {
         <div class="error" role="alert">
@@ -77,6 +80,7 @@
         autocomplete="new-password"
         placeholder="Confirm password"
         class="input"
+        [disabled]="loading()"
       />
       @if (confirmPassword?.invalid && confirmPassword?.touched) {
         <div class="error" role="alert">

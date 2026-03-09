@@ -9,6 +9,11 @@ import { BookCardComponent } from './components/book-card/book-card.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import { CartSubtotalPipe } from './pipes/cart-subtotal.pipe';
+import { OrderItemSubtotalPipe } from './pipes/order-item-subtotal.pipe';
+import { OrderSubtotalPipe } from './pipes/order-subtotal.pipe';
+import { ShippingDisplayPipe } from './pipes/shipping-display.pipe';
+import { StatusIndexPipe } from './pipes/status-index.pipe';
 
 @NgModule({
   imports: [
@@ -20,6 +25,11 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     LoadingSpinnerComponent,
     ConfirmationDialogComponent,
     PaginationComponent,
+    CartSubtotalPipe,
+    OrderItemSubtotalPipe,
+    OrderSubtotalPipe,
+    ShippingDisplayPipe,
+    StatusIndexPipe,
   ],
   exports: [
     CommonModule,
@@ -30,6 +40,11 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     LoadingSpinnerComponent,
     ConfirmationDialogComponent,
     PaginationComponent,
+    CartSubtotalPipe,
+    OrderItemSubtotalPipe,
+    OrderSubtotalPipe,
+    ShippingDisplayPipe,
+    StatusIndexPipe,
   ],
 })
 export class SharedModule {}

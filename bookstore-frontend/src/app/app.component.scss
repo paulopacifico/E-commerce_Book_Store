@@ -29,7 +29,7 @@
 .loading-bar {
   height: 3px;
   width: 40%;
-  background: var(--loading-bar-color, #1976d2);
+  background: var(--color-primary, #c45c26);
   animation: loading-bar 1s ease-in-out infinite;
 }
 

@@ -104,14 +104,6 @@ export class CheckoutComponent {
     return this.paymentForm.get('cvv');
   }
 
-  trackByBookId(_index: number, item: LocalCartItem): number {
-    return item.bookId;
-  }
-
-  getSubtotal(item: LocalCartItem): number {
-    return item.bookPrice * item.quantity;
-  }
-
   /** Build single shipping address string for API (backend expects one field). */
   private buildShippingAddress(): string {
     const v = this.shippingForm.getRawValue();

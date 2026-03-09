@@ -21,7 +21,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (item of items; track trackByBookId($index, item)) {
+            @for (item of items; track item.bookId) {
               <tr class="cart-row">
                 <td class="cell-product">
                   <div class="product-info">
@@ -54,7 +54,7 @@
                     </button>
                   </div>
                 </td>
-                <td class="cell-subtotal">{{ getSubtotal(item) | currency : 'EUR' }}</td>
+                <td class="cell-subtotal">{{ item | cartSubtotal | currency : 'EUR' }}</td>
                 <td class="cell-remove">
                   <button
                     type="button"
@@ -73,7 +73,7 @@
 
       <!-- Mobile: cards -->
       <div class="cart-cards">
-        @for (item of items; track trackByBookId($index, item)) {
+        @for (item of items; track item.bookId) {
           <article class="cart-card">
             <div class="card-product">
               <div class="product-image" aria-hidden="true">📖</div>
@@ -107,7 +107,7 @@
             </div>
             <div class="card-subtotal">
               <span class="label">Subtotal</span>
-              <span class="value">{{ getSubtotal(item) | currency : 'EUR' }}</span>
+              <span class="value">{{ item | cartSubtotal | currency : 'EUR' }}</span>
             </div>
             <button
               type="button"
@@ -124,7 +124,7 @@
       <div class="cart-footer">
         <div class="cart-total">
           <span class="total-label">Total</span>
-          <span class="total-value">{{ getCartTotal() | currency : 'EUR' }}</span>
+          <span class="total-value">{{ cartTotal() | currency : 'EUR' }}</span>
         </div>
         <div class="cart-actions">
           <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>
