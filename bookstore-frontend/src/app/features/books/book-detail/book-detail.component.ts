@@ -5,6 +5,7 @@ import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../../core/services/book.service';
 import { CartService } from '../../../core/services/cart.service';
 import { CartStateService } from '../../../core/services/cart-state.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import type { Book } from '../../../core/models/book.interface';
 
 @Component({
@@ -19,6 +20,7 @@ export class BookDetailComponent {
   private readonly bookService = inject(BookService);
   private readonly cartService = inject(CartService);
   private readonly cartStateService = inject(CartStateService);
+  private readonly notificationService = inject(NotificationService);
 
   readonly loading = signal(true);
   readonly quantity = signal(1);
@@ -56,11 +58,11 @@ export class BookDetailComponent {
     this.setQuantity(this.quantity() - 1, book);
   }
 
-  onAddToCart(book: Book): void {
-    const qty = this.quantity();
-    this.cartStateService.addItem(book, qty);
+  handleAddToCart(book: Book, quantity: number = 1): void {
+    this.cartStateService.addItem(book, quantity);
+    this.notificationService.success('Book added to cart');
     this.addingToCart.set(true);
-    this.cartService.addToCart(book.id, qty).subscribe({
+    this.cartService.addToCart(book.id, quantity).subscribe({
       next: () => this.addingToCart.set(false),
       error: () => this.addingToCart.set(false),
     });

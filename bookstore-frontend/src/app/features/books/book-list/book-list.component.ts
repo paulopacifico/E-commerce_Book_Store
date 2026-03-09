@@ -21,6 +21,7 @@ import { BookService } from '../../../core/services/book.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { CartService } from '../../../core/services/cart.service';
 import { CartStateService } from '../../../core/services/cart-state.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import type { Book } from '../../../core/models/book.interface';
 import type { Category } from '../../../core/models/category.interface';
 
@@ -38,6 +39,7 @@ export class BookListComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly cartService = inject(CartService);
   private readonly cartStateService = inject(CartStateService);
+  private readonly notificationService = inject(NotificationService);
 
   private readonly searchInput$ = new Subject<string>();
   readonly searchValue = signal('');
@@ -124,8 +126,9 @@ export class BookListComponent implements OnInit {
     return book.id;
   }
 
-  onAddToCart(book: Book): void {
-    this.cartStateService.addItem(book, 1);
-    this.cartService.addToCart(book.id, 1).subscribe({ error: () => {} });
+  handleAddToCart(book: Book, quantity: number = 1): void {
+    this.cartStateService.addItem(book, quantity);
+    this.notificationService.success('Book added to cart');
+    this.cartService.addToCart(book.id, quantity).subscribe({ error: () => {} });
   }
 }

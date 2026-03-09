@@ -79,7 +79,7 @@
               type="button"
               class="btn-add"
               [disabled]="addingToCart()"
-              (click)="onAddToCart(book)"
+              (click)="handleAddToCart(book, quantity())"
             >
               @if (addingToCart()) {
                 <span class="spinner small"></span>

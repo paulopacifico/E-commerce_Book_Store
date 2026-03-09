@@ -1,0 +1,11 @@
+<div class="app-layout">
+  <div class="global-loading" *ngIf="isNavigating" role="status" aria-live="polite">
+    <div class="loading-bar"></div>
+  </div>
+  <app-header></app-header>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+  <app-notification-container></app-notification-container>
+</div>

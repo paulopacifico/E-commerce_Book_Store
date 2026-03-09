@@ -31,7 +31,7 @@
     @if (bookList && bookList.length > 0) {
       <div class="book-grid">
         @for (book of bookList; track trackByBookId($index, book)) {
-          <app-book-card [book]="book" (addToCart)="onAddToCart($event)" />
+          <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
         }
       </div>
       @if ((totalPages()) > 1) {
