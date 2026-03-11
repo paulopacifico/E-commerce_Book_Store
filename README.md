@@ -6,6 +6,10 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/Security-JWT-000000?logo=jsonwebtokens)
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white)
+![Angular Material](https://img.shields.io/badge/Angular%20Material-21-FF4081?logo=angular&logoColor=white)
 
 ## Overview
 A production‑minded Spring Boot backend for a digital bookstore. The system focuses on secure transactions, inventory management, and clean, maintainable architecture. It’s designed to be easy to run locally (H2) or in Docker with PostgreSQL, and it ships with a full Postman collection for API exploration.
