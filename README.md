@@ -12,9 +12,9 @@
 ![Angular Material](https://img.shields.io/badge/Angular%20Material-21-FF4081?logo=angular&logoColor=white)
 
 ## Overview
-A production‑minded Spring Boot backend for a digital bookstore. The system focuses on secure transactions, inventory management, and clean, maintainable architecture. It’s designed to be easy to run locally (H2) or in Docker with PostgreSQL, and it ships with a full Postman collection for API exploration.
+Full‑stack bookstore e‑commerce: a production‑minded Spring Boot API plus an Angular SPA. The backend focuses on secure transactions, inventory management, and clean architecture; the frontend delivers catalog browsing, cart, checkout, and order history with a responsive UI. Run the API locally (H2) or in Docker with PostgreSQL; the repo includes the Angular app in `bookstore-frontend` and a full Postman collection for API exploration.
 
-**Portfolio:** This project demonstrates core Java Backend skills for recruiters: layered architecture with Spring Boot, JPA persistence (H2/PostgreSQL), REST API with full OpenAPI/Swagger documentation, JWT security, validation, error handling, and tests.
+**Portfolio:** This project demonstrates full‑stack skills for recruiters. **Backend:** layered architecture with Spring Boot, JPA persistence (H2/PostgreSQL), REST API with OpenAPI/Swagger, JWT security, validation, error handling, and tests. **Frontend:** Angular 21 with standalone components and signals, Angular Router, reactive state with RxJS, Angular Material, and responsive layout (mobile‑first).
 
 ## Highlights
 - Stateless authentication with JWT and Spring Security
