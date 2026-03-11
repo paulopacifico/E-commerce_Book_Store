@@ -110,7 +110,7 @@ GitHub Actions runs the test suite on JDK 21.
 - **Orders:** checkout, list, get by id
 
 ## Frontend
-A React-based frontend application is available for this API, providing a full e‑commerce experience for browsing, cart, checkout, and order management.
+An Angular-based frontend application is available for this API, providing a full e‑commerce experience for browsing, cart, checkout, and order management.
 
 ### Key features
 - Browse and search book catalog with category filters
@@ -118,14 +118,14 @@ A React-based frontend application is available for this API, providing a full e
 - User authentication and registration with JWT
 - Complete checkout and order placement
 - Order history tracking
-- Responsive design with Tailwind CSS
+- Responsive design (mobile-first, breakpoints for 320px–1440px)
 
 ### Tech stack
-- React 18+ with Vite
-- Tailwind CSS for styling
-- Axios for API communication
-- React Router v6 for navigation
-- Context API or Redux for state management
+- Angular 21+ (standalone components, signals)
+- Angular Router for navigation
+- Angular HttpClient for API communication
+- RxJS for reactive state and HTTP
+- Angular Material & CDK; custom SCSS for theme and layout
 
 ### Getting started
 **Prerequisites:** Node.js 18+, npm or yarn
@@ -133,12 +133,12 @@ A React-based frontend application is available for this API, providing a full e
 **Installation**
 ```bash
 git clone <frontend-repo-url>
-cd <frontend-directory>
+cd bookstore-frontend
 npm install
-# Configure .env with API base URL (e.g. VITE_API_URL=http://localhost:8080/api)
-npm run dev
+# Set API base URL in src/environments/environment.ts (e.g. apiUrl: 'http://localhost:8080/api')
+npm start
 ```
-Default dev server: `http://localhost:5173` (Vite). The app connects to the backend API at `http://localhost:8080/api` by default.
+Default dev server: `http://localhost:4200`. The app connects to the backend API at `http://localhost:8080/api` by default.
 
 **Production build**
 ```bash
