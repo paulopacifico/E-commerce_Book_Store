@@ -109,6 +109,47 @@ GitHub Actions runs the test suite on JDK 21.
 - **Cart:** add/update/remove/clear, summary totals
 - **Orders:** checkout, list, get by id
 
+## Frontend
+A React-based frontend application is available for this API, providing a full e‑commerce experience for browsing, cart, checkout, and order management.
+
+### Key features
+- Browse and search book catalog with category filters
+- Shopping cart management with real-time updates
+- User authentication and registration with JWT
+- Complete checkout and order placement
+- Order history tracking
+- Responsive design with Tailwind CSS
+
+### Tech stack
+- React 18+ with Vite
+- Tailwind CSS for styling
+- Axios for API communication
+- React Router v6 for navigation
+- Context API or Redux for state management
+
+### Getting started
+**Prerequisites:** Node.js 18+, npm or yarn
+
+**Installation**
+```bash
+git clone <frontend-repo-url>
+cd <frontend-directory>
+npm install
+# Configure .env with API base URL (e.g. VITE_API_URL=http://localhost:8080/api)
+npm run dev
+```
+Default dev server: `http://localhost:5173` (Vite). The app connects to the backend API at `http://localhost:8080/api` by default.
+
+**Production build**
+```bash
+npm run build
+```
+
+### Integration
+The frontend consumes this backend’s REST API: auth (`/api/auth/*`), books and categories (`/api/books`, `/api/categories`), cart (`/api/cart`), and orders (`/api/orders`). JWT access tokens are sent via `Authorization: Bearer <token>`; refresh is handled via `/api/auth/refresh`.
+
+**Frontend repository:** [Frontend app](https://github.com/example/bookstore-frontend) (placeholder)
+
 ## Response Contracts
 - **Paged endpoints (`/api/books`, `/api/books/search`, `/api/books/category/{id}`):**
   return `PageResponse<T>` with: `content`, `page`, `size`, `totalElements`, `totalPages`, `first`, `last`, `hasNext`, `hasPrevious`.
