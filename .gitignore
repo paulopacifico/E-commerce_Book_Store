@@ -11,3 +11,6 @@ Thumbs.db
 *.log
 # Environment variables
 .env
+
+# Local AI config artifacts
+cursor-angular-config-en/
