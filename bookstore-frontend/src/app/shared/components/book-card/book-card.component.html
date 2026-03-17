@@ -1,5 +1,18 @@
 <article class="book-card">
-  <div class="card-image-wrap">
+  <a
+    class="card-image-wrap"
+    [routerLink]="detailLink()"
+    [attr.aria-label]="'View details for ' + book.title"
+  >
+    <span class="badge badge-category">{{ categoryLabel }}</span>
+    <span
+      class="badge badge-stock"
+      [class.low-stock]="stockState === 'low'"
+      [class.out-of-stock]="stockState === 'out'"
+    >
+      {{ stockBadgeLabel }}
+    </span>
+
     @if (book.imageUrl && !imageError()) {
       <img
         [src]="book.imageUrl"
@@ -9,25 +22,59 @@
         (error)="onImageError()"
       />
     } @else {
-      <div class="card-image-placeholder" aria-hidden="true">📖</div>
+      <div class="card-image-placeholder" aria-hidden="true">
+        <span class="placeholder-glow"></span>
+        <span class="placeholder-bookmark"></span>
+        <span class="placeholder-monogram">{{ fallbackMonogram }}</span>
+        <span class="placeholder-label">{{ fallbackLabel }}</span>
+      </div>
     }
-    @if (book.stockQuantity === 0) {
-      <span class="badge out-of-stock">Out of Stock</span>
-    }
-  </div>
+
+    <span class="card-image-sheen" aria-hidden="true"></span>
+  </a>
 
   <div class="card-body">
-    <h3 class="card-title" [title]="book.title">{{ book.title }}</h3>
-    <p class="card-author">{{ book.author }}</p>
-    <p class="card-price">{{ book.price | currency: 'EUR' }}</p>
+    <div class="card-copy">
+      <h3 class="card-title" [title]="book.title">
+        <a [routerLink]="detailLink()" class="card-title-link">{{ book.title }}</a>
+      </h3>
+      <p class="card-author">by {{ book.author }}</p>
+      <p
+        class="card-availability"
+        [class.low-stock]="stockState === 'low'"
+        [class.out-of-stock]="stockState === 'out'"
+      >
+        {{ availabilityMessage }}
+      </p>
+    </div>
 
-    <button
-      type="button"
-      class="btn-add"
-      [disabled]="book.stockQuantity === 0"
-      (click)="onAddToCart()"
-    >
-      Add to Cart
-    </button>
+    <div class="card-footer">
+      <div class="price-block">
+        <p class="card-price">{{ book.price | currency: 'EUR' }}</p>
+        <p class="card-stock-count">
+          @if (book.stockQuantity === 0) {
+            Not available now
+          } @else {
+            {{ book.stockQuantity }} copies in stock
+          }
+        </p>
+      </div>
+
+      <div class="card-actions">
+        <a [routerLink]="detailLink()" class="btn-detail">Preview</a>
+        <button
+          type="button"
+          class="btn-add"
+          [disabled]="book.stockQuantity === 0"
+          (click)="onAddToCart()"
+        >
+          @if (book.stockQuantity === 0) {
+            Sold Out
+          } @else {
+            Add to Cart
+          }
+        </button>
+      </div>
+    </div>
   </div>
 </article>
