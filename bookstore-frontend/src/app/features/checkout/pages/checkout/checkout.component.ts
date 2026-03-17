@@ -13,6 +13,7 @@ import { finalize } from 'rxjs/operators';
 
 import { CartStateService, type LocalCartItem } from '../../../cart/data-access/cart-state.service';
 import { OrderService } from '../../../orders/data-access/order.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 const SHIPPING_COST = 4.99;
 
@@ -34,6 +35,7 @@ export class CheckoutComponent {
   private readonly orderService = inject(OrderService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationService = inject(NotificationService);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -124,15 +126,28 @@ export class CheckoutComponent {
 
     this.loading.set(true);
     const shippingAddress = this.buildShippingAddress();
+    const progressId = this.notificationService.progress(
+      'Reviewing your cart and placing the order securely.',
+      { title: 'Placing Order' },
+    );
 
     this.orderService
       .createOrder({ shippingAddress })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.loading.set(false)),
+        finalize(() => {
+          this.loading.set(false);
+          this.notificationService.dismiss(progressId);
+        }),
       )
       .subscribe({
         next: (order) => {
+          this.notificationService.success(
+            'Order placed successfully. Redirecting to the order detail.',
+            {
+              title: 'Order Confirmed',
+            },
+          );
           this.cartState.clearCart();
           this.router.navigate(['/orders', order.id]);
         },

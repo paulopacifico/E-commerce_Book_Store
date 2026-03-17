@@ -1,16 +1,32 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+export type NotificationType = 'success' | 'error' | 'warning' | 'info' | 'progress';
+
+export interface NotificationOptions {
+  title?: string;
+  durationMs?: number | null;
+  persistent?: boolean;
+}
 
 export interface Notification {
   id: number;
   type: NotificationType;
+  title: string;
   message: string;
+  durationMs: number | null;
+  persistent: boolean;
 }
 
 const AUTO_DISMISS_MS = 3000;
 const MAX_NOTIFICATIONS = 3;
+const DEFAULT_TITLES: Record<NotificationType, string> = {
+  success: 'Success',
+  error: 'Error',
+  warning: 'Warning',
+  info: 'Heads Up',
+  progress: 'In Progress',
+};
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -20,34 +36,51 @@ export class NotificationService {
 
   readonly notifications$: Observable<Notification[]> = this.notificationsSubject.asObservable();
 
-  success(message: string): void {
-    this.add('success', message);
+  success(message: string, options?: NotificationOptions): number {
+    return this.add('success', message, options);
   }
 
-  error(message: string): void {
-    this.add('error', message);
+  error(message: string, options?: NotificationOptions): number {
+    return this.add('error', message, options);
   }
 
-  warning(message: string): void {
-    this.add('warning', message);
+  warning(message: string, options?: NotificationOptions): number {
+    return this.add('warning', message, options);
   }
 
-  info(message: string): void {
-    this.add('info', message);
+  info(message: string, options?: NotificationOptions): number {
+    return this.add('info', message, options);
+  }
+
+  progress(message: string, options?: NotificationOptions): number {
+    return this.add('progress', message, {
+      title: options?.title,
+      durationMs: null,
+      persistent: true,
+    });
   }
 
   /** Alias for error(); used by ErrorInterceptor. */
-  show(message: string): void {
-    this.error(message);
+  show(message: string, options?: NotificationOptions): number {
+    return this.error(message, options);
   }
 
   dismiss(id: number): void {
     this.remove(id);
   }
 
-  private add(type: NotificationType, message: string): void {
+  private add(type: NotificationType, message: string, options?: NotificationOptions): number {
     const id = ++this.nextId;
-    const notification: Notification = { id, type, message };
+    const persistent = options?.persistent ?? type === 'progress';
+    const durationMs = persistent ? null : (options?.durationMs ?? AUTO_DISMISS_MS);
+    const notification: Notification = {
+      id,
+      type,
+      title: options?.title ?? DEFAULT_TITLES[type],
+      message,
+      durationMs,
+      persistent,
+    };
     const current = this.notificationsSubject.value;
     const next = [...current, notification].slice(-MAX_NOTIFICATIONS);
     const removedIds = current.map((n) => n.id).filter((nid) => !next.some((n) => n.id === nid));
@@ -60,11 +93,15 @@ export class NotificationService {
     });
     this.notificationsSubject.next(next);
 
-    const timeoutId = setTimeout(() => {
-      this.remove(id);
-      this.dismissTimeouts.delete(id);
-    }, AUTO_DISMISS_MS);
-    this.dismissTimeouts.set(id, timeoutId);
+    if (durationMs != null) {
+      const timeoutId = setTimeout(() => {
+        this.remove(id);
+        this.dismissTimeouts.delete(id);
+      }, durationMs);
+      this.dismissTimeouts.set(id, timeoutId);
+    }
+
+    return id;
   }
 
   private remove(id: number): void {

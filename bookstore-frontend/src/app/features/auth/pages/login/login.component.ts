@@ -2,7 +2,9 @@ import { Component, signal, inject, ChangeDetectionStrategy, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../data-access/auth.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +19,7 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly route = inject(ActivatedRoute);
+  private readonly notificationService = inject(NotificationService);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -40,16 +43,30 @@ export class LoginComponent {
 
     this.loading.set(true);
     const { email, password } = this.form.getRawValue();
+    const progressId = this.notificationService.progress(
+      'Signing you in to your bookstore account.',
+      {
+        title: 'Signing In',
+      },
+    );
 
     this.authService
       .login(email.trim(), password)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loading.set(false);
+          this.notificationService.dismiss(progressId);
+        }),
+      )
       .subscribe({
         next: () => {
+          this.notificationService.success('Welcome back. Redirecting you to the catalog.', {
+            title: 'Signed In',
+          });
           this.router.navigate(['/books']);
         },
         error: (err) => {
-          this.loading.set(false);
           const body = err?.error;
           const msg =
             body?.errors?.['email'] ??
@@ -58,9 +75,6 @@ export class LoginComponent {
             err?.message ??
             'Login failed. Please try again.';
           this.errorMessage.set(msg);
-        },
-        complete: () => {
-          this.loading.set(false);
         },
       });
   }

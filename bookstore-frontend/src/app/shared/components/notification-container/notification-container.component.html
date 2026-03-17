@@ -6,11 +6,33 @@
       [class.toast-error]="notification.type === 'error'"
       [class.toast-warning]="notification.type === 'warning'"
       [class.toast-info]="notification.type === 'info'"
-      role="status"
-      [attr.aria-label]="notification.type + ': ' + notification.message"
+      [class.toast-progress]="notification.type === 'progress'"
+      [attr.role]="roleMap[notification.type]"
+      [attr.aria-live]="liveMap[notification.type]"
+      [attr.aria-label]="notification.title + ': ' + notification.message"
     >
-      <span class="toast-icon" aria-hidden="true">{{ iconMap[notification.type] }}</span>
-      <p class="toast-message">{{ notification.message }}</p>
+      <div class="toast-icon-shell" [class.is-progress]="notification.type === 'progress'">
+        <span class="toast-icon" aria-hidden="true">{{ iconMap[notification.type] }}</span>
+      </div>
+
+      <div class="toast-body">
+        <p class="toast-title">{{ notification.title }}</p>
+        <p class="toast-message">{{ notification.message }}</p>
+
+        @if (notification.type === 'progress') {
+          <div class="toast-progress-track" aria-hidden="true">
+            <span class="toast-progress-indicator"></span>
+          </div>
+        } @else if (notification.durationMs != null) {
+          <div class="toast-timer-track" aria-hidden="true">
+            <span
+              class="toast-timer-indicator"
+              [style.animation-duration.ms]="notification.durationMs"
+            ></span>
+          </div>
+        }
+      </div>
+
       <button
         type="button"
         class="toast-close"

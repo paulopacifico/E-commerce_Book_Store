@@ -4,6 +4,7 @@ import { FormBuilder, Validators, AbstractControl, ValidationErrors } from '@ang
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../data-access/auth.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -23,6 +24,7 @@ export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly notificationService = inject(NotificationService);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -60,15 +62,25 @@ export class RegisterComponent {
 
     this.loading.set(true);
     const { username, email, password } = this.form.getRawValue();
+    const progressId = this.notificationService.progress(
+      'Creating your account and preparing your library access.',
+      { title: 'Creating Account' },
+    );
 
     this.authService
       .register(username, email, password)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.loading.set(false)),
+        finalize(() => {
+          this.loading.set(false);
+          this.notificationService.dismiss(progressId);
+        }),
       )
       .subscribe({
         next: () => {
+          this.notificationService.success('Your account is ready. Sign in to start shopping.', {
+            title: 'Account Created',
+          });
           this.router.navigate(['/login'], {
             queryParams: { registered: 'true' },
           });

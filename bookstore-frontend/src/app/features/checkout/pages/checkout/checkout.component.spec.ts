@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { NotificationService } from '../../../../core/services/notification.service';
 import { CartStateService, type LocalCartItem } from '../../../cart/data-access/cart-state.service';
 import { OrderService } from '../../../orders/data-access/order.service';
 import type { Order } from '../../../orders/models/order.interface';
@@ -18,6 +19,9 @@ describe('CheckoutComponent', () => {
   let createOrderMock: ReturnType<typeof vi.fn>;
   let navigateMock: ReturnType<typeof vi.fn>;
   let clearCartMock: ReturnType<typeof vi.fn>;
+  let progressMock: ReturnType<typeof vi.fn>;
+  let dismissMock: ReturnType<typeof vi.fn>;
+  let successMock: ReturnType<typeof vi.fn>;
   let cartStateService: { cart$: BehaviorSubject<LocalCartItem[]>; clearCart: () => void };
   let cartItems$: BehaviorSubject<LocalCartItem[]>;
 
@@ -52,6 +56,9 @@ describe('CheckoutComponent', () => {
     createOrderMock = vi.fn();
     navigateMock = vi.fn();
     clearCartMock = vi.fn();
+    progressMock = vi.fn().mockReturnValue(501);
+    dismissMock = vi.fn();
+    successMock = vi.fn();
     cartStateService = {
       cart$: cartItems$,
       clearCart: clearCartMock as unknown as () => void,
@@ -70,6 +77,14 @@ describe('CheckoutComponent', () => {
           useValue: { createOrder: createOrderMock } as Pick<OrderService, 'createOrder'>,
         },
         { provide: Router, useValue: { navigate: navigateMock } as Pick<Router, 'navigate'> },
+        {
+          provide: NotificationService,
+          useValue: {
+            progress: progressMock,
+            dismiss: dismissMock,
+            success: successMock,
+          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success'>,
+        },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -106,6 +121,15 @@ describe('CheckoutComponent', () => {
     expect(createOrderMock).toHaveBeenCalledWith({
       shippingAddress: 'Ada Lovelace | 123 Main St | Toronto, ON, M5V 2T6 | +1 416 555 1212',
     });
+    expect(progressMock).toHaveBeenCalledWith(
+      'Reviewing your cart and placing the order securely.',
+      { title: 'Placing Order' },
+    );
+    expect(successMock).toHaveBeenCalledWith(
+      'Order placed successfully. Redirecting to the order detail.',
+      { title: 'Order Confirmed' },
+    );
+    expect(dismissMock).toHaveBeenCalledWith(501);
     expect(clearCartMock).toHaveBeenCalled();
     expect(navigateMock).toHaveBeenCalledWith(['/orders', 42]);
     expect(component.errorMessage()).toBeNull();
