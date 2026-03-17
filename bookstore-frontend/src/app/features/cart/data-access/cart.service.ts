@@ -12,8 +12,8 @@ import type {
 } from '../models/cart.interface';
 
 /**
- * Cart API service for backend integration.
- * For MVP, the app uses CartStateService (local state); use this service when syncing with the backend.
+ * Backend adapter for cart endpoints.
+ * UI cart state should flow through CartStateService to avoid duplicate sources of truth.
  */
 @Injectable({ providedIn: 'root' })
 export class CartService {

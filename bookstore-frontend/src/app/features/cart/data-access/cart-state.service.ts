@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import type { Book } from '../../books/models/book.interface';
 
-/** Local cart item for state and localStorage (no backend id). */
+/** UI cart source of truth, persisted locally for the storefront experience. */
 export interface LocalCartItem {
   bookId: number;
   bookTitle: string;
@@ -26,10 +26,9 @@ export class CartStateService {
     map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
   );
 
-  /** Call after modifying cart via API (e.g. login sync). No-op when using local-only state. */
-  refresh(): void {
-    this.persist(this.cartSubject.value);
-    this.cartSubject.next([...this.cartSubject.value]);
+  /** Replace the whole cart state when hydrating from an external source. */
+  replaceCart(items: LocalCartItem[]): void {
+    this.setState(items);
   }
 
   addItem(book: Book, quantity: number): void {

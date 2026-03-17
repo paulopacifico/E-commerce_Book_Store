@@ -21,7 +21,6 @@ import {
 } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
-import { CartService } from '../../../cart/data-access/cart.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import type { Book } from '../../models/book.interface';
@@ -40,7 +39,6 @@ export class BookListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
-  private readonly cartService = inject(CartService);
   private readonly cartStateService = inject(CartStateService);
   private readonly notificationService = inject(NotificationService);
 
@@ -141,6 +139,5 @@ export class BookListComponent implements OnInit {
   handleAddToCart(book: Book, quantity: number = 1): void {
     this.cartStateService.addItem(book, quantity);
     this.notificationService.success('Book added to cart');
-    this.cartService.addToCart(book.id, quantity).subscribe({ error: () => {} });
   }
 }

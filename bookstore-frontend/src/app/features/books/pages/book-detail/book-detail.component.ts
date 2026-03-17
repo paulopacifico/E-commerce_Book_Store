@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
-import { CartService } from '../../../cart/data-access/cart.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import type { Book } from '../../models/book.interface';
@@ -19,7 +18,6 @@ import type { Book } from '../../models/book.interface';
 export class BookDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
-  private readonly cartService = inject(CartService);
   private readonly cartStateService = inject(CartStateService);
   private readonly notificationService = inject(NotificationService);
 
@@ -76,10 +74,6 @@ export class BookDetailComponent {
   handleAddToCart(book: Book, quantity: number = 1): void {
     this.cartStateService.addItem(book, quantity);
     this.notificationService.success('Book added to cart');
-    this.addingToCart.set(true);
-    this.cartService.addToCart(book.id, quantity).subscribe({
-      next: () => this.addingToCart.set(false),
-      error: () => this.addingToCart.set(false),
-    });
+    this.addingToCart.set(false);
   }
 }

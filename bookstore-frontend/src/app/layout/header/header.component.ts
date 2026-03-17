@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit {
   readonly showNavLinks = computed(() => !this.isMobile() || this.mobileMenuOpen());
 
   ngOnInit(): void {
-    this.authService.refreshAuthState();
     this.breakpointObserver
       .observe('(max-width: 768px)')
       .subscribe((state) => this.isMobile.set(state.matches));

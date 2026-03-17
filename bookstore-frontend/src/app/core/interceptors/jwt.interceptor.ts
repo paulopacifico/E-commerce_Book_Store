@@ -4,13 +4,14 @@ import {
   HttpHandler,
   HttpEvent,
 } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-
-const TOKEN_KEY = 'authToken';
+import { AuthService } from '../../features/auth/data-access/auth.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
+  private readonly authService = inject(AuthService);
+
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler
@@ -18,7 +19,7 @@ export class JwtInterceptor implements HttpInterceptor {
     if (this.shouldSkipToken(req.url)) {
       return next.handle(req);
     }
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = this.authService.getToken();
     if (!token) {
       return next.handle(req);
     }
