@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import type { OrderItem } from '../../core/models/order.interface';
+import type { OrderItem } from '../../features/orders/models/order.interface';
 
 @Pipe({ name: 'orderItemSubtotal', standalone: true, pure: true })
 export class OrderItemSubtotalPipe implements PipeTransform {

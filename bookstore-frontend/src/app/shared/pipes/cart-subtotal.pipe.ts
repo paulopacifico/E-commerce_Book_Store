@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import type { LocalCartItem } from '../../core/services/cart-state.service';
+import type { LocalCartItem } from '../../features/cart/data-access/cart-state.service';
 
 @Pipe({ name: 'cartSubtotal', standalone: true, pure: true })
 export class CartSubtotalPipe implements PipeTransform {

@@ -10,12 +10,12 @@ import { AppComponent } from './app';
 import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { CartIconComponent } from './layout/cart-icon/cart-icon.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { CartComponent } from './features/cart/cart.component';
-import { CheckoutComponent } from './features/checkout/checkout.component';
-import { CategoriesComponent } from './features/categories/categories.component';
-import { NotFoundComponent } from './features/not-found/not-found.component';
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { RegisterComponent } from './features/auth/pages/register/register.component';
+import { CartComponent } from './features/cart/pages/cart/cart.component';
+import { CheckoutComponent } from './features/checkout/pages/checkout/checkout.component';
+import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
+import { NotFoundComponent } from './features/not-found/pages/not-found/not-found.component';
 import { NotificationContainerComponent } from './shared/components/notification-container/notification-container.component';
 
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';

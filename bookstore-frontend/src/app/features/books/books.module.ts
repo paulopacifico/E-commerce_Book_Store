@@ -4,8 +4,8 @@ import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../../shared/shared.module';
 import { booksRoutes } from './books.routes';
-import { BookListComponent } from './book-list/book-list.component';
-import { BookDetailComponent } from './book-detail/book-detail.component';
+import { BookListComponent } from './pages/book-list/book-list.component';
+import { BookDetailComponent } from './pages/book-detail/book-detail.component';
 
 @NgModule({
   declarations: [BookListComponent, BookDetailComponent],

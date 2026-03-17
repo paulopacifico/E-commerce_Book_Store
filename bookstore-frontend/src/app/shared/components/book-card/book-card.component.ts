@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import type { Book } from '../../../core/models/book.interface';
+import type { Book } from '../../../features/books/models/book.interface';
 
 @Component({
   selector: 'app-book-card',

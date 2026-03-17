@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { AuthService } from '../../core/services/auth.service';
-import { CartStateService } from '../../core/services/cart-state.service';
+import { AuthService } from '../../features/auth/data-access/auth.service';
+import { CartStateService } from '../../features/cart/data-access/cart-state.service';
 
 @Component({
   selector: 'app-header',

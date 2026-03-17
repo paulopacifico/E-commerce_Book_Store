@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CartStateService } from '../../core/services/cart-state.service';
+import { CartStateService } from '../../features/cart/data-access/cart-state.service';
 
 @Component({
   selector: 'app-cart-icon',

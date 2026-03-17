@@ -387,10 +387,10 @@ Create a basic unit test for [ServiceName] that verifies:
 
 ```bash
 # Generate component
-ng generate component features/books/book-list --skip-tests
+ng generate component features/books/pages/book-list --skip-tests
 
 # Generate service
-ng generate service core/services/auth --skip-tests
+ng generate service features/auth/data-access/auth --skip-tests
 
 # Generate guard
 ng generate guard core/guards/auth --implements CanActivate

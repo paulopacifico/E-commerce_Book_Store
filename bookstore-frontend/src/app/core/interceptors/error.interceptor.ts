@@ -8,7 +8,7 @@ import {
 import { Injectable, inject } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../features/auth/data-access/auth.service';
 import { NotificationService } from '../services/notification.service';
 
 @Injectable()

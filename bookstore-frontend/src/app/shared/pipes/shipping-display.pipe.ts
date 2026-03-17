@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import type { Order } from '../../core/models/order.interface';
+import type { Order } from '../../features/orders/models/order.interface';
 
 @Pipe({ name: 'shippingDisplay', standalone: true, pure: true })
 export class ShippingDisplayPipe implements PipeTransform {

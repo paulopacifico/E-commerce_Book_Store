@@ -15,18 +15,10 @@
 ## 📁 File Structure Created
 
 ### Core Module
-- [ ] `core/services/auth.service.ts`
-- [ ] `core/services/book.service.ts`
-- [ ] `core/services/cart-state.service.ts`
-- [ ] `core/services/order.service.ts`
 - [ ] `core/services/notification.service.ts`
 - [ ] `core/guards/auth.guard.ts`
 - [ ] `core/interceptors/jwt.interceptor.ts`
 - [ ] `core/interceptors/error.interceptor.ts`
-- [ ] `core/models/user.interface.ts`
-- [ ] `core/models/book.interface.ts`
-- [ ] `core/models/cart.interface.ts`
-- [ ] `core/models/order.interface.ts`
 
 ### Shared Module
 - [ ] `shared/components/book-card/book-card.component.ts`
@@ -35,14 +27,28 @@
 - [ ] `shared/components/pagination/pagination.component.ts`
 
 ### Features
-- [ ] `features/auth/login/login.component.ts`
-- [ ] `features/auth/register/register.component.ts`
-- [ ] `features/books/book-list/book-list.component.ts`
-- [ ] `features/books/book-detail/book-detail.component.ts`
-- [ ] `features/cart/cart.component.ts`
-- [ ] `features/orders/order-list/order-list.component.ts`
-- [ ] `features/orders/order-detail/order-detail.component.ts`
-- [ ] `features/checkout/checkout.component.ts`
+- [ ] `features/auth/data-access/auth.service.ts`
+- [ ] `features/auth/models/auth.interface.ts`
+- [ ] `features/auth/pages/login/login.component.ts`
+- [ ] `features/auth/pages/register/register.component.ts`
+- [ ] `features/books/data-access/book.service.ts`
+- [ ] `features/books/models/book.interface.ts`
+- [ ] `features/books/pages/book-list/book-list.component.ts`
+- [ ] `features/books/pages/book-detail/book-detail.component.ts`
+- [ ] `features/cart/data-access/cart.service.ts`
+- [ ] `features/cart/data-access/cart-state.service.ts`
+- [ ] `features/cart/models/cart.interface.ts`
+- [ ] `features/cart/pages/cart/cart.component.ts`
+- [ ] `features/categories/data-access/category.service.ts`
+- [ ] `features/categories/models/category.interface.ts`
+- [ ] `features/categories/pages/categories/categories.component.ts`
+- [ ] `features/checkout/pages/checkout/checkout.component.ts`
+- [ ] `features/home/pages/home/home.component.ts`
+- [ ] `features/orders/data-access/order.service.ts`
+- [ ] `features/orders/models/order.interface.ts`
+- [ ] `features/orders/pages/order-list/order-list.component.ts`
+- [ ] `features/orders/pages/order-detail/order-detail.component.ts`
+- [ ] `features/orders/pages/order-confirmation/order-confirmation.component.ts`
 
 ### Layout
 - [ ] `layout/header/header.component.ts`

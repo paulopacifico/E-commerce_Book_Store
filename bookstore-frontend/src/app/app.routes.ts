@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 
 import { AuthGuard } from './core/guards/auth.guard';
-import { HomeComponent } from './features/home/home.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { CartComponent } from './features/cart/cart.component';
-import { CheckoutComponent } from './features/checkout/checkout.component';
-import { CategoriesComponent } from './features/categories/categories.component';
-import { NotFoundComponent } from './features/not-found/not-found.component';
+import { HomeComponent } from './features/home/pages/home/home.component';
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { RegisterComponent } from './features/auth/pages/register/register.component';
+import { CartComponent } from './features/cart/pages/cart/cart.component';
+import { CheckoutComponent } from './features/checkout/pages/checkout/checkout.component';
+import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
+import { NotFoundComponent } from './features/not-found/pages/not-found/not-found.component';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
