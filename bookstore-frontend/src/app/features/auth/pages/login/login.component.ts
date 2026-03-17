@@ -34,11 +34,6 @@ export class LoginComponent {
     return this.form.get('password');
   }
 
-  goToRegister(event: Event): void {
-    event.preventDefault();
-    this.router.navigate(['/register']);
-  }
-
   onSubmit(): void {
     this.errorMessage.set(null);
     if (this.form.invalid) return;
