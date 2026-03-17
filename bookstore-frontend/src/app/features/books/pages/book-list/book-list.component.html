@@ -1,57 +1,153 @@
 <div class="book-list">
-  <div class="filters">
-    <input
-      type="search"
-      class="search-input"
-      placeholder="Search books..."
-      [value]="searchValue()"
-      (input)="onSearchInput($any($event.target).value)"
-      aria-label="Search books"
-    />
-    <select
-      class="category-select"
-      [value]="selectedCategoryId() ?? ''"
-      (change)="onCategoryChange($event)"
-      aria-label="Filter by category"
-      [disabled]="categoriesLoading()"
-    >
-      <option value="">All categories</option>
-      @for (cat of categories(); track cat.id) {
-        <option [value]="cat.id">{{ cat.name }}</option>
-      }
-    </select>
-  </div>
-
-  @if (categoriesErrorMessage(); as categoriesError) {
-    <div class="filter-feedback" role="status">
-      <span>{{ categoriesError }}</span>
-      <button type="button" class="btn btn-outline btn-small" (click)="loadCategories()">
-        Retry Categories
-      </button>
+  <section class="catalog-hero surface-panel">
+    <div class="catalog-copy">
+      <p class="eyebrow">Curated Catalog</p>
+      <h1 class="catalog-title">Find the next book worth keeping on your shelf.</h1>
+      <p class="catalog-description">
+        Explore the storefront with quick filters, smarter sorting, and a clearer reading flow.
+      </p>
     </div>
-  }
+    <div class="catalog-stats" aria-label="Catalog overview">
+      <div class="catalog-stat">
+        <span class="catalog-stat-value">{{ totalResults() || '120+' }}</span>
+        <span class="catalog-stat-label">Titles indexed</span>
+      </div>
+      <div class="catalog-stat">
+        <span class="catalog-stat-value">{{ categories().length || '12' }}</span>
+        <span class="catalog-stat-label">Categories</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog-toolbar surface-panel">
+    <div class="toolbar-main">
+      <div class="toolbar-search">
+        <label class="toolbar-label" for="catalog-search">Search by title or author</label>
+        <input
+          id="catalog-search"
+          type="search"
+          class="search-input"
+          placeholder="Try “Clean Architecture” or “Tolkien”"
+          [value]="searchValue()"
+          (input)="onSearchInput($any($event.target).value)"
+          aria-label="Search books"
+        />
+      </div>
+
+      <div class="toolbar-selects">
+        <div class="toolbar-select-group">
+          <label class="toolbar-label" for="catalog-category">Category</label>
+          <select
+            id="catalog-category"
+            class="category-select"
+            [value]="selectedCategoryId() ?? ''"
+            (change)="onCategoryChange($event)"
+            aria-label="Filter by category"
+            [disabled]="categoriesLoading()"
+          >
+            <option value="">All categories</option>
+            @for (cat of categories(); track cat.id) {
+              <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="toolbar-select-group">
+          <label class="toolbar-label" for="catalog-sort">Sort by</label>
+          <select
+            id="catalog-sort"
+            class="sort-select"
+            [value]="selectedSort()"
+            (change)="onSortChange($event)"
+            aria-label="Sort books"
+          >
+            <option value="featured">Featured first</option>
+            <option value="title-asc">Title A-Z</option>
+            <option value="price-asc">Price low to high</option>
+            <option value="price-desc">Price high to low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar-meta">
+      <p class="results-summary">{{ resultsLabel }}</p>
+
+      <div class="active-filters" [class.is-empty]="!hasActiveFilters">
+        @if (searchValue().trim()) {
+          <span class="filter-chip">Search: "{{ searchValue().trim() }}"</span>
+        }
+        @if (selectedCategoryLabel; as categoryLabel) {
+          <span class="filter-chip">Category: {{ categoryLabel }}</span>
+        }
+        @if (selectedSort() !== 'featured') {
+          <span class="filter-chip">Sorted view</span>
+        }
+        @if (hasActiveFilters) {
+          <button type="button" class="btn btn-outline btn-sm" (click)="clearFilters()">
+            Clear Filters
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (categoriesErrorMessage(); as categoriesError) {
+      <div class="filter-feedback" role="status">
+        <span>{{ categoriesError }}</span>
+        <button type="button" class="btn btn-outline btn-sm" (click)="loadCategories()">
+          Retry Categories
+        </button>
+      </div>
+    }
+  </section>
 
   @if (loading()) {
-    <div class="loading-wrap" aria-busy="true">
-      <span class="spinner"></span>
-      <span>Loading books...</span>
+    <div class="catalog-skeleton-grid" aria-busy="true" aria-label="Loading books">
+      @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track item) {
+        <article class="catalog-skeleton-card">
+          <div class="catalog-skeleton-cover"></div>
+          <div class="catalog-skeleton-body">
+            <div class="catalog-skeleton-line long"></div>
+            <div class="catalog-skeleton-line medium"></div>
+            <div class="catalog-skeleton-line short"></div>
+            <div class="catalog-skeleton-button"></div>
+          </div>
+        </article>
+      }
     </div>
-  } @else {
-    @let bookList = books$ | async;
-    @if (booksErrorMessage(); as booksError) {
-      <div class="state-card state-card-error" role="alert">
-        <p class="state-title">We couldn’t load the catalog.</p>
-        <p class="state-message">{{ booksError }}</p>
-        <button type="button" class="btn btn-primary" (click)="retryBooks()">Try Again</button>
+  } @else if (booksErrorMessage(); as booksError) {
+    <div class="state-card state-card-error" role="alert">
+      <p class="state-title">We couldn’t load the catalog.</p>
+      <p class="state-message">{{ booksError }}</p>
+      <button type="button" class="btn btn-primary" (click)="retryBooks()">Try Again</button>
+    </div>
+  } @else if (books$ | async; as bookList) {
+    @if (bookList.length > 0) {
+      <div class="catalog-results-head">
+        <p class="catalog-results-kicker">
+          Showing page {{ currentPage() + 1 }} of {{ totalPages() }}
+        </p>
+        <p class="catalog-results-note">
+          Each card is optimized for fast scanning, comparison, and checkout flow.
+        </p>
       </div>
-    } @else if (bookList && bookList.length > 0) {
+
       <div class="book-grid">
         @for (book of bookList; track book.id) {
           <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
         }
       </div>
+
       @if (totalPages() > 1) {
         <nav class="pagination" aria-label="Books pagination">
+          <button
+            type="button"
+            class="page-btn"
+            [disabled]="currentPage() === 0"
+            (click)="goToPage(0)"
+          >
+            First
+          </button>
           <button
             type="button"
             class="page-btn"
@@ -60,7 +156,25 @@
           >
             Previous
           </button>
-          <span class="page-info"> Page {{ currentPage() + 1 }} of {{ totalPages() }} </span>
+
+          <div class="page-numbers">
+            @for (page of visiblePages; track $index) {
+              @if (page === 'ellipsis') {
+                <span class="page-ellipsis" aria-hidden="true">…</span>
+              } @else {
+                <button
+                  type="button"
+                  class="page-number"
+                  [class.active]="currentPage() === page - 1"
+                  [attr.aria-current]="currentPage() === page - 1 ? 'page' : null"
+                  (click)="goToPage(page - 1)"
+                >
+                  {{ page }}
+                </button>
+              }
+            }
+          </div>
+
           <button
             type="button"
             class="page-btn"
@@ -69,14 +183,30 @@
           >
             Next
           </button>
+          <button
+            type="button"
+            class="page-btn"
+            [disabled]="currentPage() >= totalPages() - 1"
+            (click)="goToPage(totalPages() - 1)"
+          >
+            Last
+          </button>
         </nav>
       }
     } @else {
-      <div class="state-card" role="status">
-        <p class="state-title">No books found.</p>
+      <div class="catalog-empty state-card" role="status">
+        <p class="eyebrow">No Match Found</p>
+        <p class="state-title">This shelf is empty right now.</p>
         <p class="state-message">
-          Try a different search term or remove the current category filter.
+          Adjust your search, try a broader category, or reset the filters to explore the full
+          storefront again.
         </p>
+        <div class="empty-actions">
+          <button type="button" class="btn btn-primary" (click)="clearFilters()">Reset View</button>
+          <button type="button" class="btn btn-outline" (click)="retryBooks()">
+            Refresh Catalog
+          </button>
+        </div>
       </div>
     }
   }

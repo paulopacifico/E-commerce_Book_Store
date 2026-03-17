@@ -1787,3 +1787,363 @@ textarea.ng-invalid.ng-touched,
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* --------------------------------------------------------------------------
+   Catalog page – books listing experience
+   -------------------------------------------------------------------------- */
+.book-list {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-3) 0 var(--space-8);
+}
+
+.book-list .catalog-hero,
+.book-list .catalog-toolbar {
+  padding: var(--space-5);
+}
+
+.book-list .catalog-hero {
+  display: grid;
+  gap: var(--space-5);
+  background:
+    radial-gradient(circle at top right, rgba(196, 92, 38, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 246, 243, 0.96));
+}
+
+.book-list .catalog-copy {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.book-list .catalog-title {
+  margin: 0;
+  max-width: 32rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+}
+
+.book-list .catalog-description {
+  max-width: 42rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-loose);
+}
+
+.book-list .catalog-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.book-list .catalog-stat {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border: 1px solid rgba(196, 92, 38, 0.16);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.book-list .catalog-stat-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1;
+  color: var(--color-primary-dark);
+}
+
+.book-list .catalog-stat-label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.book-list .catalog-toolbar {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.book-list .toolbar-main {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.book-list .toolbar-search,
+.book-list .toolbar-select-group {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.book-list .toolbar-label {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.book-list .toolbar-selects {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.book-list .toolbar-meta {
+  display: grid;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.book-list .results-summary {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.book-list .active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.book-list .active-filters.is-empty {
+  min-height: 2.25rem;
+}
+
+.book-list .filter-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: rgba(196, 92, 38, 0.08);
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.book-list .filter-feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(13, 71, 161, 0.06);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.book-list .catalog-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.book-list .catalog-skeleton-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.book-list .catalog-skeleton-cover,
+.book-list .catalog-skeleton-line,
+.book-list .catalog-skeleton-button {
+  background: linear-gradient(
+    90deg,
+    rgba(229, 226, 220, 0.9) 25%,
+    rgba(248, 246, 243, 0.95) 50%,
+    rgba(229, 226, 220, 0.9) 75%
+  );
+  background-size: 220% 100%;
+  animation: skeleton-shine 1.2s ease-in-out infinite;
+}
+
+.book-list .catalog-skeleton-cover {
+  aspect-ratio: 4 / 5;
+}
+
+.book-list .catalog-skeleton-body {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.book-list .catalog-skeleton-line {
+  height: 0.85rem;
+  border-radius: var(--radius-pill);
+}
+
+.book-list .catalog-skeleton-line.long {
+  width: 88%;
+}
+
+.book-list .catalog-skeleton-line.medium {
+  width: 68%;
+}
+
+.book-list .catalog-skeleton-line.short {
+  width: 42%;
+}
+
+.book-list .catalog-skeleton-button {
+  width: 100%;
+  height: 2.75rem;
+  margin-top: var(--space-2);
+  border-radius: var(--radius-md);
+}
+
+.book-list .catalog-results-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.book-list .catalog-results-kicker,
+.book-list .catalog-results-note {
+  margin: 0;
+}
+
+.book-list .catalog-results-kicker {
+  color: var(--color-primary-dark);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.book-list .catalog-results-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.book-list .book-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.book-list .catalog-empty {
+  padding-block: var(--space-10);
+}
+
+.book-list .empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.book-list .pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.book-list .page-btn,
+.book-list .page-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.book-list .page-btn:hover:not(:disabled),
+.book-list .page-number:hover {
+  transform: translateY(-1px);
+  border-color: rgba(196, 92, 38, 0.28);
+  background: rgba(196, 92, 38, 0.08);
+  color: var(--color-primary-dark);
+}
+
+.book-list .page-number.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.book-list .page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.book-list .page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.book-list .page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 640px) {
+  .book-list .toolbar-selects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .book-list .catalog-skeleton-grid,
+  .book-list .book-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .book-list .catalog-hero {
+    grid-template-columns: minmax(0, 1.7fr) minmax(18rem, 0.9fr);
+    align-items: end;
+  }
+
+  .book-list .toolbar-main {
+    grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.9fr);
+    align-items: end;
+  }
+}
+
+@media (min-width: 1024px) {
+  .book-list .catalog-skeleton-grid,
+  .book-list .book-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .book-list .catalog-skeleton-grid,
+  .book-list .book-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

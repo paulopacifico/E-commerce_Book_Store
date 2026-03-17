@@ -101,6 +101,7 @@ describe('BookListComponent', () => {
     expect(getCategoriesMock).toHaveBeenCalled();
     expect(getBooksMock).toHaveBeenCalledWith(0, 12);
     expect(component.categories()).toEqual(categories);
+    expect(fixture.nativeElement.textContent).toContain('1 titles available in the catalog.');
     expect(fixture.nativeElement.querySelectorAll('app-book-card').length).toBe(1);
   });
 
@@ -140,6 +141,51 @@ describe('BookListComponent', () => {
 
     expect(component.categoriesErrorMessage()).toBe('Categories are unavailable at the moment.');
     expect(fixture.nativeElement.textContent).toContain('Retry Categories');
-    expect(fixture.nativeElement.textContent).toContain('No books found.');
+    expect(fixture.nativeElement.textContent).toContain('This shelf is empty right now.');
+  });
+
+  it('supports sorting and clearing catalog filters', async () => {
+    const catalogBooks: Book[] = [
+      { id: 1, title: 'Domain-Driven Design', author: 'Eric Evans', price: 54.9, stockQuantity: 3 },
+      { id: 2, title: 'Clean Code', author: 'Robert C. Martin', price: 42.5, stockQuantity: 8 },
+      {
+        id: 3,
+        title: 'The Pragmatic Programmer',
+        author: 'Andrew Hunt',
+        price: 47.9,
+        stockQuantity: 0,
+      },
+    ];
+
+    getBooksMock.mockReturnValue(of(pageResponse(catalogBooks)));
+    getBooksByCategoryMock.mockReturnValue(of(pageResponse(catalogBooks)));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const renderedBooks: Book[][] = [];
+    const subscription = component.books$.subscribe((value) => renderedBooks.push(value));
+
+    component.searchValue.set('clean');
+    component.selectedCategoryId.set(2);
+    component.onSortChange({ target: { value: 'price-desc' } } as unknown as Event);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(renderedBooks.at(-1)?.map((book) => book.id)).toEqual([1, 3, 2]);
+    expect(component.hasActiveFilters).toBe(true);
+
+    component.clearFilters();
+
+    expect(component.searchValue()).toBe('');
+    expect(component.selectedCategoryId()).toBeNull();
+    expect(component.selectedSort()).toBe('featured');
+    expect(component.currentPage()).toBe(0);
+    expect(component.hasActiveFilters).toBe(false);
+
+    subscription.unsubscribe();
   });
 });
