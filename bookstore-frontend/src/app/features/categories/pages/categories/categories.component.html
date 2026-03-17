@@ -2,25 +2,32 @@
   <h1 class="page-title">Categories</h1>
   <p class="intro">Browse books by category.</p>
 
-  @if (categories$ | async; as categories) {
-    @if (categories.length > 0) {
-      <div class="category-grid">
-        @for (cat of categories; track cat.id) {
-          <a [routerLink]="['/books']" [queryParams]="{ category: cat.id }" class="category-card">
-            <span class="category-name">{{ cat.name }}</span>
-            @if (cat.description) {
-              <span class="category-desc">{{ cat.description }}</span>
-            }
-          </a>
-        }
-      </div>
-    } @else {
-      <p class="empty">No categories available.</p>
-    }
-  } @else {
+  @if (loading()) {
     <div class="loading-wrap" aria-busy="true">
       <span class="spinner"></span>
       <span>Loading categories...</span>
+    </div>
+  } @else if (errorMessage(); as errorMessage) {
+    <div class="state-card state-card-error" role="alert">
+      <p class="state-title">We couldn’t load categories.</p>
+      <p class="state-message">{{ errorMessage }}</p>
+      <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
+    </div>
+  } @else if (categories().length > 0) {
+    <div class="category-grid">
+      @for (cat of categories(); track cat.id) {
+        <a [routerLink]="['/books']" [queryParams]="{ category: cat.id }" class="category-card">
+          <span class="category-name">{{ cat.name }}</span>
+          @if (cat.description) {
+            <span class="category-desc">{{ cat.description }}</span>
+          }
+        </a>
+      }
+    </div>
+  } @else {
+    <div class="state-card" role="status">
+      <p class="state-title">No categories available.</p>
+      <p class="state-message">Please check back later to explore the catalog by category.</p>
     </div>
   }
 </div>

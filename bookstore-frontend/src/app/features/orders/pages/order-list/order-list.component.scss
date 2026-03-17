@@ -8,15 +8,28 @@
   font-weight: 600;
 }
 
-.empty-state {
-  text-align: center;
+.loading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
   padding: 3rem 1rem;
-  background: #f5f5f5;
-  border-radius: 8px;
+  color: var(--color-text-secondary);
+}
 
-  .empty-message {
-    margin: 0 0 1rem;
-    color: #555;
+.spinner {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

@@ -33,18 +33,29 @@
             </div>
           }
         </div>
-      } @else {
-        <div class="featured-grid">
-          @for (book of featuredBooks(); track trackByBookId($index, book)) {
-            <app-book-card
-              [book]="book"
-              (addToCart)="handleAddToCart($event)"
-            />
-          }
+      } @else if (featuredErrorMessage(); as featuredError) {
+        <div class="state-card state-card-error" role="alert">
+          <p class="state-title">We couldn’t load featured books.</p>
+          <p class="state-message">{{ featuredError }}</p>
+          <button type="button" class="btn btn-primary" (click)="loadFeaturedBooks()">Try Again</button>
         </div>
+      } @else {
         @if (featuredBooks().length > 0) {
+          <div class="featured-grid">
+            @for (book of featuredBooks(); track trackByBookId($index, book)) {
+              <app-book-card
+                [book]="book"
+                (addToCart)="handleAddToCart($event)"
+              />
+            }
+          </div>
           <div class="section-cta">
             <a routerLink="/books" class="btn btn-outline">View All Books</a>
+          </div>
+        } @else {
+          <div class="state-card" role="status">
+            <p class="state-title">No featured books available.</p>
+            <p class="state-message">New arrivals will appear here when the catalog is updated.</p>
           </div>
         }
       }
@@ -63,23 +74,36 @@
             <div class="category-skeleton"></div>
           }
         </div>
-      } @else {
-        <div class="categories-grid">
-          @for (cat of categories(); track trackByCategoryId($index, cat)) {
-            <a
-              [routerLink]="['/books']"
-              [queryParams]="{ category: cat.id }"
-              class="category-card"
-              [attr.aria-label]="'Browse ' + cat.name"
-            >
-              <span class="category-icon" aria-hidden="true">📚</span>
-              <span class="category-name">{{ cat.name }}</span>
-              @if (cat.bookCount != null) {
-                <span class="category-count">{{ cat.bookCount }} books</span>
-              }
-            </a>
-          }
+      } @else if (categoriesErrorMessage(); as categoriesError) {
+        <div class="state-card state-card-error" role="alert">
+          <p class="state-title">We couldn’t load categories.</p>
+          <p class="state-message">{{ categoriesError }}</p>
+          <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
         </div>
+      } @else {
+        @if (categories().length > 0) {
+          <div class="categories-grid">
+            @for (cat of categories(); track trackByCategoryId($index, cat)) {
+              <a
+                [routerLink]="['/books']"
+                [queryParams]="{ category: cat.id }"
+                class="category-card"
+                [attr.aria-label]="'Browse ' + cat.name"
+              >
+                <span class="category-icon" aria-hidden="true">📚</span>
+                <span class="category-name">{{ cat.name }}</span>
+                @if (cat.bookCount != null) {
+                  <span class="category-count">{{ cat.bookCount }} books</span>
+                }
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="state-card" role="status">
+            <p class="state-title">No categories available.</p>
+            <p class="state-message">Please check back later to browse the catalog by category.</p>
+          </div>
+        }
       }
     </div>
   </section>

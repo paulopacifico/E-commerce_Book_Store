@@ -39,24 +39,45 @@ export class HomeComponent implements OnInit {
   readonly categories = signal<Category[]>([]);
   readonly featuredLoading = signal(true);
   readonly categoriesLoading = signal(true);
+  readonly featuredErrorMessage = signal<string | null>(null);
+  readonly categoriesErrorMessage = signal<string | null>(null);
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
 
   ngOnInit(): void {
+    this.loadFeaturedBooks();
+    this.loadCategories();
+  }
+
+  loadFeaturedBooks(): void {
+    this.featuredLoading.set(true);
+    this.featuredErrorMessage.set(null);
     this.bookService
       .getBooks(0, 8, 'id,desc')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => this.featuredBooks.set(res.content),
-        error: () => this.featuredBooks.set([]),
+        error: () => {
+          this.featuredBooks.set([]);
+          this.featuredErrorMessage.set('Featured books are unavailable right now.');
+          this.featuredLoading.set(false);
+        },
         complete: () => this.featuredLoading.set(false),
       });
+  }
 
+  loadCategories(): void {
+    this.categoriesLoading.set(true);
+    this.categoriesErrorMessage.set(null);
     this.categoryService
       .getCategories()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (list) => this.categories.set(list),
-        error: () => this.categories.set([]),
+        error: () => {
+          this.categories.set([]);
+          this.categoriesErrorMessage.set('Categories are unavailable right now.');
+          this.categoriesLoading.set(false);
+        },
         complete: () => this.categoriesLoading.set(false),
       });
   }

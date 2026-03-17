@@ -13,13 +13,23 @@
       [value]="selectedCategoryId() ?? ''"
       (change)="onCategoryChange($event)"
       aria-label="Filter by category"
+      [disabled]="categoriesLoading()"
     >
       <option value="">All categories</option>
-      @for (cat of categories$ | async; track cat.id) {
+      @for (cat of categories(); track cat.id) {
         <option [value]="cat.id">{{ cat.name }}</option>
       }
     </select>
   </div>
+
+  @if (categoriesErrorMessage(); as categoriesError) {
+    <div class="filter-feedback" role="status">
+      <span>{{ categoriesError }}</span>
+      <button type="button" class="btn btn-outline btn-small" (click)="loadCategories()">
+        Retry Categories
+      </button>
+    </div>
+  }
 
   @if (loading()) {
     <div class="loading-wrap" aria-busy="true">
@@ -28,7 +38,13 @@
     </div>
   } @else {
     @let bookList = books$ | async;
-    @if (bookList && bookList.length > 0) {
+    @if (booksErrorMessage(); as booksError) {
+      <div class="state-card state-card-error" role="alert">
+        <p class="state-title">We couldn’t load the catalog.</p>
+        <p class="state-message">{{ booksError }}</p>
+        <button type="button" class="btn btn-primary" (click)="retryBooks()">Try Again</button>
+      </div>
+    } @else if (bookList && bookList.length > 0) {
       <div class="book-grid">
         @for (book of bookList; track book.id) {
           <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
@@ -58,7 +74,10 @@
         </nav>
       }
     } @else {
-      <p class="empty">No books found.</p>
+      <div class="state-card" role="status">
+        <p class="state-title">No books found.</p>
+        <p class="state-message">Try a different search term or remove the current category filter.</p>
+      </div>
     }
   }
 </div>

@@ -103,12 +103,19 @@
   }
 }
 
-.empty {
-  padding: 3.5rem 1rem;
-  text-align: center;
+.filter-feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: -0.5rem 0 1.25rem;
   color: var(--color-text-secondary);
-  font-size: 1.125rem;
-  font-family: var(--font-display);
+  font-size: 0.9375rem;
+}
+
+.btn-small {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
 }
 
 .pagination {
