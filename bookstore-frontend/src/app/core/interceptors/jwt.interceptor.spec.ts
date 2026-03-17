@@ -21,7 +21,10 @@ describe('JwtInterceptor', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: { getToken: getTokenMock } as Pick<AuthService, 'getToken'> },
+        {
+          provide: AuthService,
+          useValue: { getToken: getTokenMock } as Pick<AuthService, 'getToken'>,
+        },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
@@ -49,7 +52,9 @@ describe('JwtInterceptor', () => {
   it('skips the token for auth endpoints', () => {
     getTokenMock.mockReturnValue('token-123');
 
-    http.post('/api/auth/login', { email: 'reader@example.com', password: 'secret123' }).subscribe();
+    http
+      .post('/api/auth/login', { email: 'reader@example.com', password: 'secret123' })
+      .subscribe();
 
     const req = httpController.expectOne('/api/auth/login');
     expect(req.request.headers.has('Authorization')).toBe(false);

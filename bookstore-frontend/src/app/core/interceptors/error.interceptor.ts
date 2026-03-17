@@ -16,10 +16,7 @@ export class ErrorInterceptor implements HttpInterceptor {
   private readonly authService = inject(AuthService);
   private readonly notification = inject(NotificationService);
 
-  intercept(
-    req: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         const userMessage = this.getUserMessage(error);
@@ -41,7 +38,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.notification.show(userMessage);
             return throwError(() => new Error(userMessage));
         }
-      })
+      }),
     );
   }
 

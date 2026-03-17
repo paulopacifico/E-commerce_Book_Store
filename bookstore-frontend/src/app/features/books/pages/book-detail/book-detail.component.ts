@@ -36,13 +36,15 @@ export class BookDetailComponent {
         }
         return this.bookService.getBookById(id).pipe(
           map((book) => ({ book })),
-          catchError((err) => of({ error: err }))
+          catchError((err) => of({ error: err })),
         );
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
 
-  private readonly bookResult = toSignal(this.bookResult$, { initialValue: null as { book: Book } | { error: unknown } | null });
+  private readonly bookResult = toSignal(this.bookResult$, {
+    initialValue: null as { book: Book } | { error: unknown } | null,
+  });
 
   constructor() {
     effect(() => {

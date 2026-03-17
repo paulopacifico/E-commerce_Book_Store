@@ -94,7 +94,8 @@ body {
   min-height: 100%;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   font-family: var(--font-display);
   font-size: 1.875rem;
   font-weight: 600;
@@ -107,7 +108,8 @@ h1, .h1 {
   }
 }
 
-h2, .h2 {
+h2,
+.h2 {
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 600;
@@ -120,7 +122,8 @@ h2, .h2 {
   }
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
@@ -129,7 +132,8 @@ h3, .h3 {
   color: var(--color-ink);
 }
 
-p, .body {
+p,
+.body {
   font-size: 1rem;
   line-height: 1.55;
   margin: 0 0 0.75rem;
@@ -174,60 +178,150 @@ $spacing-scale: (
 );
 
 @each $name, $value in $spacing-scale {
-  .m-#{$name} { margin: $value; }
-  .mt-#{$name} { margin-top: $value; }
-  .mr-#{$name} { margin-right: $value; }
-  .mb-#{$name} { margin-bottom: $value; }
-  .ml-#{$name} { margin-left: $value; }
-  .mx-#{$name} { margin-left: $value; margin-right: $value; }
-  .my-#{$name} { margin-top: $value; margin-bottom: $value; }
-  .p-#{$name} { padding: $value; }
-  .pt-#{$name} { padding-top: $value; }
-  .pr-#{$name} { padding-right: $value; }
-  .pb-#{$name} { padding-bottom: $value; }
-  .pl-#{$name} { padding-left: $value; }
-  .px-#{$name} { padding-left: $value; padding-right: $value; }
-  .py-#{$name} { padding-top: $value; padding-bottom: $value; }
+  .m-#{$name} {
+    margin: $value;
+  }
+  .mt-#{$name} {
+    margin-top: $value;
+  }
+  .mr-#{$name} {
+    margin-right: $value;
+  }
+  .mb-#{$name} {
+    margin-bottom: $value;
+  }
+  .ml-#{$name} {
+    margin-left: $value;
+  }
+  .mx-#{$name} {
+    margin-left: $value;
+    margin-right: $value;
+  }
+  .my-#{$name} {
+    margin-top: $value;
+    margin-bottom: $value;
+  }
+  .p-#{$name} {
+    padding: $value;
+  }
+  .pt-#{$name} {
+    padding-top: $value;
+  }
+  .pr-#{$name} {
+    padding-right: $value;
+  }
+  .pb-#{$name} {
+    padding-bottom: $value;
+  }
+  .pl-#{$name} {
+    padding-left: $value;
+  }
+  .px-#{$name} {
+    padding-left: $value;
+    padding-right: $value;
+  }
+  .py-#{$name} {
+    padding-top: $value;
+    padding-bottom: $value;
+  }
 }
 
-.gap-1 { gap: 0.25rem; }
-.gap-2 { gap: 0.5rem; }
-.gap-3 { gap: 0.75rem; }
-.gap-4 { gap: 1rem; }
-.gap-6 { gap: 1.5rem; }
+.gap-1 {
+  gap: 0.25rem;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 0.75rem;
+}
+.gap-4 {
+  gap: 1rem;
+}
+.gap-6 {
+  gap: 1.5rem;
+}
 
 /* --------------------------------------------------------------------------
    Utility classes – alignment & display
    -------------------------------------------------------------------------- */
-.d-flex { display: flex; }
-.d-block { display: block; }
-.d-inline-block { display: inline-block; }
-.d-none { display: none; }
-.d-grid { display: grid; }
+.d-flex {
+  display: flex;
+}
+.d-block {
+  display: block;
+}
+.d-inline-block {
+  display: inline-block;
+}
+.d-none {
+  display: none;
+}
+.d-grid {
+  display: grid;
+}
 
-.flex-row { flex-direction: row; }
-.flex-column { flex-direction: column; }
-.flex-wrap { flex-wrap: wrap; }
-.flex-1 { flex: 1; }
-.flex-grow-0 { flex-grow: 0; }
+.flex-row {
+  flex-direction: row;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-grow-0 {
+  flex-grow: 0;
+}
 
-.justify-start { justify-content: flex-start; }
-.justify-end { justify-content: flex-end; }
-.justify-center { justify-content: center; }
-.justify-between { justify-content: space-between; }
-.justify-around { justify-content: space-around; }
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-around {
+  justify-content: space-around;
+}
 
-.align-start { align-items: flex-start; }
-.align-end { align-items: flex-end; }
-.align-center { align-items: center; }
-.align-stretch { align-items: stretch; }
+.align-start {
+  align-items: flex-start;
+}
+.align-end {
+  align-items: flex-end;
+}
+.align-center {
+  align-items: center;
+}
+.align-stretch {
+  align-items: stretch;
+}
 
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
 
-.w-100 { width: 100%; }
-.min-w-0 { min-width: 0; }
+.w-100 {
+  width: 100%;
+}
+.min-w-0 {
+  min-width: 0;
+}
 
 /* --------------------------------------------------------------------------
    Buttons (primary, secondary, outline, disabled)
@@ -246,7 +340,11 @@ $spacing-scale: (
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
   white-space: nowrap;
   user-select: none;
 
@@ -352,7 +450,7 @@ $spacing-scale: (
 /* --------------------------------------------------------------------------
    Form inputs (text, email, number, etc.) + focus states
    -------------------------------------------------------------------------- */
-input:not([type="checkbox"]):not([type="radio"]),
+input:not([type='checkbox']):not([type='radio']),
 select,
 textarea {
   display: block;
@@ -367,7 +465,9 @@ textarea {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 
   &::placeholder {
     color: var(--color-text-secondary);
@@ -414,7 +514,9 @@ label {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
+  transition:
+    box-shadow var(--transition-normal),
+    border-color var(--transition-normal);
 }
 
 .card-elevated {
@@ -479,7 +581,8 @@ label {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {

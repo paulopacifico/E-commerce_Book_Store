@@ -5,7 +5,8 @@
     <div class="hero-content">
       <h1 id="hero-heading" class="hero-title">Discover Your Next Great Read</h1>
       <p class="hero-subtitle">
-        Curated books for every taste. Browse bestsellers, explore categories, and get free shipping on orders over $50.
+        Curated books for every taste. Browse bestsellers, explore categories, and get free shipping
+        on orders over $50.
       </p>
       <div class="hero-actions">
         <a routerLink="/books" class="btn btn-hero-primary">Browse Books</a>
@@ -24,7 +25,7 @@
 
       @if (featuredLoading()) {
         <div class="featured-skeletons" aria-busy="true" aria-label="Loading featured books">
-          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+          @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
             <div class="card-skeleton">
               <div class="skeleton-image"></div>
               <div class="skeleton-line"></div>
@@ -37,16 +38,15 @@
         <div class="state-card state-card-error" role="alert">
           <p class="state-title">We couldn’t load featured books.</p>
           <p class="state-message">{{ featuredError }}</p>
-          <button type="button" class="btn btn-primary" (click)="loadFeaturedBooks()">Try Again</button>
+          <button type="button" class="btn btn-primary" (click)="loadFeaturedBooks()">
+            Try Again
+          </button>
         </div>
       } @else {
         @if (featuredBooks().length > 0) {
           <div class="featured-grid">
             @for (book of featuredBooks(); track trackByBookId($index, book)) {
-              <app-book-card
-                [book]="book"
-                (addToCart)="handleAddToCart($event)"
-              />
+              <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
             }
           </div>
           <div class="section-cta">
@@ -63,14 +63,18 @@
   </section>
 
   <!-- C. Categories -->
-  <section id="home-categories" class="section categories-section" aria-labelledby="categories-heading">
+  <section
+    id="home-categories"
+    class="section categories-section"
+    aria-labelledby="categories-heading"
+  >
     <div class="section-inner">
       <h2 id="categories-heading" class="section-title">Browse by Category</h2>
       <p class="section-desc">Explore our collection by category.</p>
 
       @if (categoriesLoading()) {
         <div class="categories-skeletons" aria-busy="true" aria-label="Loading categories">
-          @for (i of [1,2,3,4,5,6]; track i) {
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
             <div class="category-skeleton"></div>
           }
         </div>
@@ -78,7 +82,9 @@
         <div class="state-card state-card-error" role="alert">
           <p class="state-title">We couldn’t load categories.</p>
           <p class="state-message">{{ categoriesError }}</p>
-          <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
+          <button type="button" class="btn btn-primary" (click)="loadCategories()">
+            Try Again
+          </button>
         </div>
       } @else {
         @if (categories().length > 0) {
@@ -136,7 +142,9 @@
   <section class="section cta-section" aria-labelledby="cta-heading">
     <div class="cta-banner">
       <h2 id="cta-heading" class="cta-title">Join Our Community</h2>
-      <p class="cta-desc">Create an account to save your favorites, track orders, and get the best deals.</p>
+      <p class="cta-desc">
+        Create an account to save your favorites, track orders, and get the best deals.
+      </p>
       @if (isAuthenticated$ | async) {
         <a routerLink="/books" class="btn btn-cta">Start Shopping</a>
       } @else {

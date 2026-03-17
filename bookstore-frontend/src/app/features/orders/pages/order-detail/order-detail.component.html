@@ -45,7 +45,7 @@
             <dt>Order number</dt>
             <dd>{{ order.id }}</dd>
             <dt>Date</dt>
-            <dd>{{ order.createdAt | date : 'medium' }}</dd>
+            <dd>{{ order.createdAt | date: 'medium' }}</dd>
             <dt>Shipping address</dt>
             <dd class="address">{{ order.shippingAddress }}</dd>
             <dt>Payment</dt>
@@ -74,8 +74,8 @@
                     <span class="book-author">{{ item.bookAuthor }}</span>
                   </td>
                   <td class="cell-qty">{{ item.quantity }}</td>
-                  <td class="cell-price">{{ item.priceAtPurchase | currency : 'EUR' }}</td>
-                  <td class="cell-subtotal">{{ item | orderItemSubtotal | currency : 'EUR' }}</td>
+                  <td class="cell-price">{{ item.priceAtPurchase | currency: 'EUR' }}</td>
+                  <td class="cell-subtotal">{{ item | orderItemSubtotal | currency: 'EUR' }}</td>
                 </tr>
               }
             </tbody>
@@ -84,7 +84,7 @@
         <div class="totals">
           <div class="total-row">
             <span>Subtotal</span>
-            <span>{{ order | orderSubtotal | currency : 'EUR' }}</span>
+            <span>{{ order | orderSubtotal | currency: 'EUR' }}</span>
           </div>
           <div class="total-row">
             <span>Shipping</span>
@@ -92,13 +92,13 @@
               @if ((order | shippingDisplay) === 'included') {
                 Included
               } @else {
-                {{ order | shippingDisplay | currency : 'EUR' }}
+                {{ order | shippingDisplay | currency: 'EUR' }}
               }
             </span>
           </div>
           <div class="total-row total-final">
             <span>Total</span>
-            <span>{{ order.totalAmount | currency : 'EUR' }}</span>
+            <span>{{ order.totalAmount | currency: 'EUR' }}</span>
           </div>
         </div>
       </section>

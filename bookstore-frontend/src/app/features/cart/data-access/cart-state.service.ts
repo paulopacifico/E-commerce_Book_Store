@@ -23,7 +23,7 @@ export class CartStateService {
 
   /** Total number of items (sum of quantities). Used by cart icon. */
   readonly cartCount$: Observable<number> = this.cart$.pipe(
-    map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
+    map((items) => items.reduce((sum, item) => sum + item.quantity, 0)),
   );
 
   /** Replace the whole cart state when hydrating from an external source. */
@@ -36,11 +36,7 @@ export class CartStateService {
     const items = this.cartSubject.value;
     const existing = items.find((i) => i.bookId === book.id);
     const next: LocalCartItem[] = existing
-      ? items.map((i) =>
-          i.bookId === book.id
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
-        )
+      ? items.map((i) => (i.bookId === book.id ? { ...i, quantity: i.quantity + quantity } : i))
       : [
           ...items,
           {
@@ -64,9 +60,7 @@ export class CartStateService {
       this.removeItem(bookId);
       return;
     }
-    const next = this.cartSubject.value.map((i) =>
-      i.bookId === bookId ? { ...i, quantity } : i
-    );
+    const next = this.cartSubject.value.map((i) => (i.bookId === bookId ? { ...i, quantity } : i));
     this.setState(next);
   }
 
@@ -75,10 +69,7 @@ export class CartStateService {
   }
 
   getCartTotal(): number {
-    return this.cartSubject.value.reduce(
-      (sum, item) => sum + item.bookPrice * item.quantity,
-      0
-    );
+    return this.cartSubject.value.reduce((sum, item) => sum + item.bookPrice * item.quantity, 0);
   }
 
   getCartItemCount(): number {
@@ -111,7 +102,7 @@ export class CartStateService {
           typeof item.quantity === 'number' &&
           typeof item.bookPrice === 'number' &&
           typeof item.bookTitle === 'string' &&
-          typeof item.bookAuthor === 'string'
+          typeof item.bookAuthor === 'string',
       );
     } catch {
       return [];

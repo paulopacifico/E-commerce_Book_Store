@@ -15,18 +15,21 @@
 ## 📁 File Structure Created
 
 ### Core Module
+
 - [ ] `core/services/notification.service.ts`
 - [ ] `core/guards/auth.guard.ts`
 - [ ] `core/interceptors/jwt.interceptor.ts`
 - [ ] `core/interceptors/error.interceptor.ts`
 
 ### Shared Module
+
 - [ ] `shared/components/book-card/book-card.component.ts`
 - [ ] `shared/components/loading-spinner/loading-spinner.component.ts`
 - [ ] `shared/components/confirmation-dialog/confirmation-dialog.component.ts`
 - [ ] `shared/components/pagination/pagination.component.ts`
 
 ### Features
+
 - [ ] `features/auth/data-access/auth.service.ts`
 - [ ] `features/auth/models/auth.interface.ts`
 - [ ] `features/auth/pages/login/login.component.ts`
@@ -51,6 +54,7 @@
 - [ ] `features/orders/pages/order-confirmation/order-confirmation.component.ts`
 
 ### Layout
+
 - [ ] `layout/header/header.component.ts`
 - [ ] `layout/footer/footer.component.ts`
 - [ ] `layout/cart-icon/cart-icon.component.ts`
@@ -60,6 +64,7 @@
 ## 🔍 Code Quality Checklist
 
 ### For each Service created
+
 - [ ] Uses `@Injectable({ providedIn: 'root' })`
 - [ ] Methods return typed `Observable<T>`
 - [ ] Implements error handling with `catchError`
@@ -67,6 +72,7 @@
 - [ ] No subscribe inside service
 
 ### For each Component created
+
 - [ ] Uses `ChangeDetectionStrategy.OnPush` (when possible)
 - [ ] Implements `OnInit` if necessary
 - [ ] Implements `OnDestroy` if using subscriptions
@@ -76,6 +82,7 @@
 - [ ] Template uses `trackBy` in `*ngFor` with arrays
 
 ### For each Form created
+
 - [ ] Uses `ReactiveFormsModule`
 - [ ] Validations implemented
 - [ ] Error messages displayed
@@ -116,7 +123,7 @@
 - [ ] Lazy loading implemented in modules
 - [ ] OnPush change detection where possible
 - [ ] Async pipe instead of subscribe
-- [ ] TrackBy functions in *ngFor
+- [ ] TrackBy functions in \*ngFor
 - [ ] Debounce on searches (300ms)
 - [ ] ShareReplay on shared Observables
 - [ ] No memory leaks (unsubscribe/takeUntil)
@@ -150,17 +157,20 @@
 ## 🐛 Debug Checklist
 
 ### If API doesn't respond:
+
 - [ ] Is backend running?
 - [ ] Is API URL correct in environment?
 - [ ] Is CORS configured in backend?
 - [ ] Is JWT token being sent?
 
 ### If component doesn't update:
+
 - [ ] Using async pipe?
 - [ ] ChangeDetectorRef.markForCheck() called if using OnPush?
 - [ ] Is Observable emitting values?
 
 ### If route doesn't work:
+
 - [ ] Route defined in routing module?
 - [ ] AuthGuard configured correctly?
 - [ ] Module imported in app.module?
@@ -171,16 +181,19 @@
 ## 📊 Quality Metrics
 
 ### Code Coverage (if implementing tests)
+
 - [ ] Services: >80%
 - [ ] Guards/Interceptors: >90%
 - [ ] Components: >60%
 
 ### Bundle Size Targets
+
 - [ ] Initial Bundle: <500KB (gzipped)
 - [ ] Lazy Chunks: <200KB each (gzipped)
 - [ ] Total: <2MB (gzipped)
 
 ### Performance (Lighthouse)
+
 - [ ] Performance: >90
 - [ ] Accessibility: >90
 - [ ] Best Practices: >90
@@ -191,11 +204,13 @@
 ## 🔄 Git Workflow
 
 ### Branches
+
 - [ ] `main` - stable production
 - [ ] `develop` - active development
 - [ ] `feature/feature-name` - individual features
 
 ### Commits
+
 - [ ] Descriptive messages
 - [ ] Convention: `feat:`, `fix:`, `refactor:`, `style:`
 - [ ] Small, focused commits
@@ -203,6 +218,7 @@
 - [ ] No console.log
 
 ### Pull Requests
+
 - [ ] Descriptive title
 - [ ] Description of what was implemented
 - [ ] Screenshots if visual changes
@@ -225,6 +241,7 @@
 ## 🎯 Milestone Checklist
 
 ### MVP (Minimum Viable Product)
+
 - [ ] Login/Register working
 - [ ] Book listing with search
 - [ ] Add to cart
@@ -233,6 +250,7 @@
 - [ ] Deploy to test environment
 
 ### V1.0
+
 - [ ] All MVP features
 - [ ] Unit tests implemented
 - [ ] Performance optimized
@@ -241,6 +259,7 @@
 - [ ] Production deployment
 
 ### Future Features (Backlog)
+
 - [ ] Wishlist (favorites)
 - [ ] Book reviews
 - [ ] Personalized recommendations
@@ -271,21 +290,27 @@
 ## 📞 Troubleshooting Guide
 
 ### Problem: "NullInjectorError"
+
 **Solution**: Service is not in `providedIn: 'root'` or module was not imported
 
 ### Problem: "Cannot read property of undefined"
+
 **Solution**: Use optional chaining (`?.`) or check with `*ngIf`
 
 ### Problem: "CORS error"
+
 **Solution**: Configure CORS in Spring Boot backend
 
 ### Problem: "404 on page refresh"
+
 **Solution**: Configure fallback to index.html on server
 
 ### Problem: "Memory leak detected"
+
 **Solution**: Use `takeUntil` or `async pipe` to unsubscribe
 
 ### Problem: "Change detection not working"
+
 **Solution**: Remove `OnPush` or call `markForCheck()`
 
 ---

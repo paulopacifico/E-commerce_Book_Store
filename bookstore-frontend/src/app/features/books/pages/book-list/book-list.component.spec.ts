@@ -118,9 +118,9 @@ describe('BookListComponent', () => {
     expect(component.booksErrorMessage()).toBe('Unable to load books right now. Please try again.');
     expect(fixture.nativeElement.textContent).toContain('We couldn’t load the catalog.');
 
-    const retryButton = fixture.nativeElement.querySelector('.state-card-error button') as
-      | HTMLButtonElement
-      | null;
+    const retryButton = fixture.nativeElement.querySelector(
+      '.state-card-error button',
+    ) as HTMLButtonElement | null;
     retryButton?.click();
     fixture.detectChanges();
 

@@ -9,10 +9,6 @@ import { BookDetailComponent } from './pages/book-detail/book-detail.component';
 
 @NgModule({
   declarations: [BookListComponent, BookDetailComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(booksRoutes),
-    SharedModule,
-  ],
+  imports: [CommonModule, RouterModule.forChild(booksRoutes), SharedModule],
 })
 export class BooksModule {}

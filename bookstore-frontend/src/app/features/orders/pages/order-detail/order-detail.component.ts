@@ -36,10 +36,8 @@ export class OrderDetailComponent {
     switchMap((params) => {
       const id = Number(params.get('id'));
       if (!Number.isFinite(id)) return of(null);
-      return this.orderService.getOrderById(id).pipe(
-        catchError(() => of(null))
-      );
-    })
+      return this.orderService.getOrderById(id).pipe(catchError(() => of(null)));
+    }),
   );
 
   readonly statusSteps = STATUS_STEPS;

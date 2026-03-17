@@ -1,8 +1,6 @@
 <header class="header-toolbar" role="banner">
   <div class="toolbar-row">
-    <a routerLink="/" class="logo" (click)="closeMobileMenu()" aria-label="Home">
-      📚 Book Store
-    </a>
+    <a routerLink="/" class="logo" (click)="closeMobileMenu()" aria-label="Home"> 📚 Book Store </a>
 
     <button
       type="button"
@@ -19,9 +17,17 @@
 
     <nav class="nav-section" [class.open]="showNavLinks()">
       <div class="nav-links">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMobileMenu()">Home</a>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMobileMenu()"
+          >Home</a
+        >
         <a routerLink="/books" routerLinkActive="active" (click)="closeMobileMenu()">Books</a>
-        <a routerLink="/categories" routerLinkActive="active" (click)="closeMobileMenu()">Categories</a>
+        <a routerLink="/categories" routerLinkActive="active" (click)="closeMobileMenu()"
+          >Categories</a
+        >
       </div>
 
       <div class="search-wrap">
@@ -44,11 +50,19 @@
 
         @if (isAuthenticated$ | async) {
           <div class="user-menu">
-            <button type="button" class="menu-trigger" aria-haspopup="true" [attr.aria-expanded]="userMenuOpen()" (click)="toggleUserMenu()">
+            <button
+              type="button"
+              class="menu-trigger"
+              aria-haspopup="true"
+              [attr.aria-expanded]="userMenuOpen()"
+              (click)="toggleUserMenu()"
+            >
               Account ▾
             </button>
             <div class="dropdown" [class.show]="userMenuOpen()" role="menu">
-              <a routerLink="/orders" (click)="closeMobileMenu(); closeUserMenu()" role="menuitem">My Orders</a>
+              <a routerLink="/orders" (click)="closeMobileMenu(); closeUserMenu()" role="menuitem"
+                >My Orders</a
+              >
               <button type="button" (click)="logout()" role="menuitem">Logout</button>
             </div>
           </div>

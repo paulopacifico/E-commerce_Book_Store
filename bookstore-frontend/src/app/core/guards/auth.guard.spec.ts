@@ -19,7 +19,10 @@ describe('AuthGuard', () => {
         AuthGuard,
         {
           provide: AuthService,
-          useValue: { isAuthenticated: isAuthenticatedMock } as Pick<AuthService, 'isAuthenticated'>,
+          useValue: { isAuthenticated: isAuthenticatedMock } as Pick<
+            AuthService,
+            'isAuthenticated'
+          >,
         },
         { provide: Router, useValue: { navigate: navigateMock } as Pick<Router, 'navigate'> },
       ],
@@ -33,7 +36,7 @@ describe('AuthGuard', () => {
 
     const allowed = guard.canActivate(
       {} as ActivatedRouteSnapshot,
-      { url: '/checkout' } as RouterStateSnapshot
+      { url: '/checkout' } as RouterStateSnapshot,
     );
 
     expect(allowed).toBe(true);
@@ -45,7 +48,7 @@ describe('AuthGuard', () => {
 
     const allowed = guard.canActivate(
       {} as ActivatedRouteSnapshot,
-      { url: '/orders/42' } as RouterStateSnapshot
+      { url: '/orders/42' } as RouterStateSnapshot,
     );
 
     expect(allowed).toBe(false);

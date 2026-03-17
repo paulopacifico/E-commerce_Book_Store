@@ -16,39 +16,79 @@
           <form [formGroup]="shippingForm" class="checkout-form">
             <div class="field">
               <label for="fullName">Full name <span class="required">*</span></label>
-              <input id="fullName" type="text" formControlName="fullName" autocomplete="name" class="input" />
+              <input
+                id="fullName"
+                type="text"
+                formControlName="fullName"
+                autocomplete="name"
+                class="input"
+              />
               @if (fullName?.invalid && fullName?.touched) {
                 <div class="error" role="alert">
-                  @if (fullName?.errors?.['required']) { Full name is required. }
-                  @if (fullName?.errors?.['minlength']) { At least 2 characters. }
+                  @if (fullName?.errors?.['required']) {
+                    Full name is required.
+                  }
+                  @if (fullName?.errors?.['minlength']) {
+                    At least 2 characters.
+                  }
                 </div>
               }
             </div>
             <div class="field">
               <label for="addressLine1">Address line 1 <span class="required">*</span></label>
-              <input id="addressLine1" type="text" formControlName="addressLine1" autocomplete="address-line1" class="input" />
+              <input
+                id="addressLine1"
+                type="text"
+                formControlName="addressLine1"
+                autocomplete="address-line1"
+                class="input"
+              />
               @if (addressLine1?.invalid && addressLine1?.touched) {
                 <div class="error" role="alert">
-                  @if (addressLine1?.errors?.['required']) { Address is required. }
-                  @if (addressLine1?.errors?.['minlength']) { At least 3 characters. }
+                  @if (addressLine1?.errors?.['required']) {
+                    Address is required.
+                  }
+                  @if (addressLine1?.errors?.['minlength']) {
+                    At least 3 characters.
+                  }
                 </div>
               }
             </div>
             <div class="field">
-              <label for="addressLine2">Address line 2 <span class="optional">(optional)</span></label>
-              <input id="addressLine2" type="text" formControlName="addressLine2" autocomplete="address-line2" class="input" />
+              <label for="addressLine2"
+                >Address line 2 <span class="optional">(optional)</span></label
+              >
+              <input
+                id="addressLine2"
+                type="text"
+                formControlName="addressLine2"
+                autocomplete="address-line2"
+                class="input"
+              />
             </div>
             <div class="field-row">
               <div class="field">
                 <label for="city">City <span class="required">*</span></label>
-                <input id="city" type="text" formControlName="city" autocomplete="address-level2" class="input" />
+                <input
+                  id="city"
+                  type="text"
+                  formControlName="city"
+                  autocomplete="address-level2"
+                  class="input"
+                />
                 @if (city?.invalid && city?.touched) {
                   <div class="error" role="alert">City is required.</div>
                 }
               </div>
               <div class="field">
                 <label for="state">State / Province <span class="required">*</span></label>
-                <input id="state" type="text" formControlName="state" autocomplete="address-level1" class="input" />
+                <input
+                  id="state"
+                  type="text"
+                  formControlName="state"
+                  autocomplete="address-level1"
+                  class="input"
+                />
                 @if (state?.invalid && state?.touched) {
                   <div class="error" role="alert">State is required.</div>
                 }
@@ -57,18 +97,35 @@
             <div class="field-row">
               <div class="field">
                 <label for="postalCode">Postal code <span class="required">*</span></label>
-                <input id="postalCode" type="text" formControlName="postalCode" autocomplete="postal-code" class="input" />
+                <input
+                  id="postalCode"
+                  type="text"
+                  formControlName="postalCode"
+                  autocomplete="postal-code"
+                  class="input"
+                />
                 @if (postalCode?.invalid && postalCode?.touched) {
                   <div class="error" role="alert">Postal code is required.</div>
                 }
               </div>
               <div class="field">
                 <label for="phone">Phone number <span class="required">*</span></label>
-                <input id="phone" type="tel" formControlName="phone" autocomplete="tel" class="input" placeholder="e.g. +1 234 567 8900" />
+                <input
+                  id="phone"
+                  type="tel"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  class="input"
+                  placeholder="e.g. +1 234 567 8900"
+                />
                 @if (phone?.invalid && phone?.touched) {
                   <div class="error" role="alert">
-                    @if (phone?.errors?.['required']) { Phone is required. }
-                    @if (phone?.errors?.['pattern']) { Enter a valid phone number (10–20 digits). }
+                    @if (phone?.errors?.['required']) {
+                      Phone is required.
+                    }
+                    @if (phone?.errors?.['pattern']) {
+                      Enter a valid phone number (10–20 digits).
+                    }
                   </div>
                 }
               </div>
@@ -78,21 +135,42 @@
 
         <!-- Payment (simulated) -->
         <section class="form-section" aria-labelledby="payment-heading">
-          <h2 id="payment-heading" class="section-title">Payment Information <span class="badge">Simulated</span></h2>
+          <h2 id="payment-heading" class="section-title">
+            Payment Information <span class="badge">Simulated</span>
+          </h2>
           <form [formGroup]="paymentForm" class="checkout-form">
             <div class="field">
               <label for="cardNumber">Card number <span class="required">*</span></label>
-              <input id="cardNumber" type="text" formControlName="cardNumber" inputmode="numeric" maxlength="16" placeholder="16 digits" class="input" autocomplete="cc-number" />
+              <input
+                id="cardNumber"
+                type="text"
+                formControlName="cardNumber"
+                inputmode="numeric"
+                maxlength="16"
+                placeholder="16 digits"
+                class="input"
+                autocomplete="cc-number"
+              />
               @if (cardNumber?.invalid && cardNumber?.touched) {
                 <div class="error" role="alert">
-                  @if (cardNumber?.errors?.['required']) { Card number is required. }
-                  @if (cardNumber?.errors?.['pattern']) { Enter exactly 16 digits. }
+                  @if (cardNumber?.errors?.['required']) {
+                    Card number is required.
+                  }
+                  @if (cardNumber?.errors?.['pattern']) {
+                    Enter exactly 16 digits.
+                  }
                 </div>
               }
             </div>
             <div class="field">
               <label for="cardholderName">Cardholder name <span class="required">*</span></label>
-              <input id="cardholderName" type="text" formControlName="cardholderName" autocomplete="cc-name" class="input" />
+              <input
+                id="cardholderName"
+                type="text"
+                formControlName="cardholderName"
+                autocomplete="cc-name"
+                class="input"
+              />
               @if (cardholderName?.invalid && cardholderName?.touched) {
                 <div class="error" role="alert">Cardholder name is required.</div>
               }
@@ -100,14 +178,31 @@
             <div class="field-row">
               <div class="field">
                 <label for="expiry">Expiry (MM/YY) <span class="required">*</span></label>
-                <input id="expiry" type="text" formControlName="expiry" placeholder="MM/YY" maxlength="5" class="input" autocomplete="cc-exp" />
+                <input
+                  id="expiry"
+                  type="text"
+                  formControlName="expiry"
+                  placeholder="MM/YY"
+                  maxlength="5"
+                  class="input"
+                  autocomplete="cc-exp"
+                />
                 @if (expiry?.invalid && expiry?.touched) {
                   <div class="error" role="alert">Use MM/YY format.</div>
                 }
               </div>
               <div class="field">
                 <label for="cvv">CVV <span class="required">*</span></label>
-                <input id="cvv" type="text" formControlName="cvv" inputmode="numeric" maxlength="3" placeholder="3 digits" class="input" autocomplete="cc-csc" />
+                <input
+                  id="cvv"
+                  type="text"
+                  formControlName="cvv"
+                  inputmode="numeric"
+                  maxlength="3"
+                  placeholder="3 digits"
+                  class="input"
+                  autocomplete="cc-csc"
+                />
                 @if (cvv?.invalid && cvv?.touched) {
                   <div class="error" role="alert">Enter 3 digits.</div>
                 }
@@ -124,22 +219,22 @@
           @for (item of cartItems(); track item.bookId) {
             <div class="summary-row">
               <span class="summary-item-desc">{{ item.bookTitle }} × {{ item.quantity }}</span>
-              <span class="summary-item-value">{{ item | cartSubtotal | currency : 'EUR' }}</span>
+              <span class="summary-item-value">{{ item | cartSubtotal | currency: 'EUR' }}</span>
             </div>
           }
         </div>
         <div class="summary-totals">
           <div class="summary-row">
             <span>Subtotal</span>
-            <span>{{ cartTotal() | currency : 'EUR' }}</span>
+            <span>{{ cartTotal() | currency: 'EUR' }}</span>
           </div>
           <div class="summary-row">
             <span>Shipping</span>
-            <span>{{ shippingCost | currency : 'EUR' }}</span>
+            <span>{{ shippingCost | currency: 'EUR' }}</span>
           </div>
           <div class="summary-row summary-final">
             <span>Total</span>
-            <span>{{ finalTotal() | currency : 'EUR' }}</span>
+            <span>{{ finalTotal() | currency: 'EUR' }}</span>
           </div>
         </div>
 

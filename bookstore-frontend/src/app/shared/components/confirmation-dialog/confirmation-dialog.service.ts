@@ -22,8 +22,6 @@ export class ConfirmationDialogService {
       role: 'alertdialog',
       ariaModal: true,
     });
-    return ref.afterClosed().pipe(
-      map((result) => result === true)
-    );
+    return ref.afterClosed().pipe(map((result) => result === true));
   }
 }

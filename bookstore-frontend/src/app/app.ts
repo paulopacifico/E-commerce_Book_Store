@@ -22,8 +22,8 @@ export class AppComponent implements OnInit, OnDestroy {
           (e) =>
             e instanceof NavigationStart ||
             e instanceof NavigationEnd ||
-            e instanceof NavigationError
-        )
+            e instanceof NavigationError,
+        ),
       )
       .subscribe((e) => {
         this.isNavigating = e instanceof NavigationStart;

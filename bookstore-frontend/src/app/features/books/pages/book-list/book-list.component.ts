@@ -73,24 +73,22 @@ export class BookListComponent implements OnInit {
           catchError(() => {
             this.booksErrorMessage.set('Unable to load books right now. Please try again.');
             return of({ books: [] as Book[], totalPages: 0, page: 0 });
-          })
+          }),
         );
       }
       if (catId != null) {
-        return this.bookService
-          .getBooksByCategory(catId, page, PAGE_SIZE)
-          .pipe(
-            map((res) => ({
-              books: res.content,
-              totalPages: res.totalPages,
-              page: res.page,
-            })),
-            finalize(() => this.loading.set(false)),
-            catchError(() => {
-              this.booksErrorMessage.set('Unable to load books right now. Please try again.');
-              return of({ books: [] as Book[], totalPages: 0, page: 0 });
-            })
-          );
+        return this.bookService.getBooksByCategory(catId, page, PAGE_SIZE).pipe(
+          map((res) => ({
+            books: res.content,
+            totalPages: res.totalPages,
+            page: res.page,
+          })),
+          finalize(() => this.loading.set(false)),
+          catchError(() => {
+            this.booksErrorMessage.set('Unable to load books right now. Please try again.');
+            return of({ books: [] as Book[], totalPages: 0, page: 0 });
+          }),
+        );
       }
       return this.bookService.getBooks(page, PAGE_SIZE).pipe(
         map((res) => ({
@@ -102,9 +100,9 @@ export class BookListComponent implements OnInit {
         catchError(() => {
           this.booksErrorMessage.set('Unable to load books right now. Please try again.');
           return of({ books: [] as Book[], totalPages: 0, page: 0 });
-        })
+        }),
       );
-    })
+    }),
   );
 
   readonly books$ = this.booksResult$.pipe(
@@ -112,7 +110,7 @@ export class BookListComponent implements OnInit {
       this.totalPages.set(r.totalPages);
       this.currentPage.set(r.page);
     }),
-    map((r) => r.books)
+    map((r) => r.books),
   );
 
   ngOnInit(): void {

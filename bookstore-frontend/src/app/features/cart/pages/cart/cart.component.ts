@@ -13,9 +13,11 @@ export class CartComponent {
   protected readonly cartState = inject(CartStateService);
 
   readonly cart$ = this.cartState.cart$;
-  private readonly cartItems = toSignal(this.cartState.cart$, { initialValue: [] as LocalCartItem[] });
+  private readonly cartItems = toSignal(this.cartState.cart$, {
+    initialValue: [] as LocalCartItem[],
+  });
   readonly cartTotal = computed(() =>
-    this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0)
+    this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0),
   );
 
   updateQuantity(bookId: number, quantity: number): void {

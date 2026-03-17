@@ -8,34 +8,34 @@ All instances below were **FIXED** by replacing method calls with pure propertie
 
 ## 1. order-detail.component.html (OrderDetailComponent)
 
-| Line | Problematic code | Type | Fix applied |
-|------|------------------|------|-------------|
-| 16–18, 22 | `[class.completed]="isStepCompleted(getStatusIndex(order.status), i)"`, `[class.current]="isStepCurrent(...)"`, `@if (isStepCompleted(...))` | Methods in [class] and @if | Use `(order.status \| statusIndex) > i` and `=== i` with StatusIndexPipe |
-| 50 | `{{ getPaymentLastFour() }}` | Method in interpolation | Replaced with pure property `paymentLastFour` |
-| 70 | `track trackByItemId($index, item)` | trackBy method | Replaced with `track item.id` |
-| 78 | `{{ getItemSubtotal(item) \| currency }}` | Method in interpolation | Replaced with `item \| orderItemSubtotal \| currency` |
-| 87 | `{{ getItemsSubtotal(order) \| currency }}` | Method in interpolation | Replaced with `order \| orderSubtotal \| currency` |
-| 94–96 | `getShippingDisplay(order) === 'included'`, `{{ getShippingDisplay(order) \| currency }}` | Method in @if and interpolation | Replaced with `order \| shippingDisplay` pipe |
+| Line      | Problematic code                                                                                                                             | Type                            | Fix applied                                                              |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------ |
+| 16–18, 22 | `[class.completed]="isStepCompleted(getStatusIndex(order.status), i)"`, `[class.current]="isStepCurrent(...)"`, `@if (isStepCompleted(...))` | Methods in [class] and @if      | Use `(order.status \| statusIndex) > i` and `=== i` with StatusIndexPipe |
+| 50        | `{{ getPaymentLastFour() }}`                                                                                                                 | Method in interpolation         | Replaced with pure property `paymentLastFour`                            |
+| 70        | `track trackByItemId($index, item)`                                                                                                          | trackBy method                  | Replaced with `track item.id`                                            |
+| 78        | `{{ getItemSubtotal(item) \| currency }}`                                                                                                    | Method in interpolation         | Replaced with `item \| orderItemSubtotal \| currency`                    |
+| 87        | `{{ getItemsSubtotal(order) \| currency }}`                                                                                                  | Method in interpolation         | Replaced with `order \| orderSubtotal \| currency`                       |
+| 94–96     | `getShippingDisplay(order) === 'included'`, `{{ getShippingDisplay(order) \| currency }}`                                                    | Method in @if and interpolation | Replaced with `order \| shippingDisplay` pipe                            |
 
 ---
 
 ## 2. cart.component.html (CartComponent)
 
-| Line | Problematic code | Type | Fix applied |
-|------|------------------|------|-------------|
-| 24, 76 | `track trackByBookId($index, item)` | trackBy method | Replaced with `track item.bookId` |
-| 57 | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Replaced with `item \| cartSubtotal \| currency` |
-| 110 | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Same pipe |
-| 127 | `{{ getCartTotal() \| currency }}` | Method in interpolation | Replaced with `cartTotal()` signal (computed from cart items) |
+| Line   | Problematic code                      | Type                    | Fix applied                                                   |
+| ------ | ------------------------------------- | ----------------------- | ------------------------------------------------------------- |
+| 24, 76 | `track trackByBookId($index, item)`   | trackBy method          | Replaced with `track item.bookId`                             |
+| 57     | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Replaced with `item \| cartSubtotal \| currency`              |
+| 110    | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Same pipe                                                     |
+| 127    | `{{ getCartTotal() \| currency }}`    | Method in interpolation | Replaced with `cartTotal()` signal (computed from cart items) |
 
 ---
 
 ## 3. checkout.component.html (CheckoutComponent)
 
-| Line | Problematic code | Type | Fix applied |
-|------|------------------|------|-------------|
-| 124 | `track trackByBookId($index, item)` | trackBy method | Replaced with `track item.bookId` |
-| 127 | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Replaced with `item \| cartSubtotal \| currency` |
+| Line | Problematic code                      | Type                    | Fix applied                                      |
+| ---- | ------------------------------------- | ----------------------- | ------------------------------------------------ |
+| 124  | `track trackByBookId($index, item)`   | trackBy method          | Replaced with `track item.bookId`                |
+| 127  | `{{ getSubtotal(item) \| currency }}` | Method in interpolation | Replaced with `item \| cartSubtotal \| currency` |
 
 **Note:** `cartItems()`, `cartTotal()`, `finalTotal()`, `isCartEmpty()` are **computed signals** – allowed.
 
@@ -43,9 +43,9 @@ All instances below were **FIXED** by replacing method calls with pure propertie
 
 ## 4. order-list.component.html (OrderListComponent)
 
-| Line | Problematic code | Type | Fix applied |
-|------|------------------|------|-------------|
-| 12 | `track trackById($index, order)` | trackBy method | Replaced with `track order.id` |
+| Line | Problematic code                 | Type           | Fix applied                    |
+| ---- | -------------------------------- | -------------- | ------------------------------ |
+| 12   | `track trackById($index, order)` | trackBy method | Replaced with `track order.id` |
 
 ---
 

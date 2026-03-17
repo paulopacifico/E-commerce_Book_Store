@@ -19,7 +19,9 @@
   border: 1px solid #1976d2;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
 
   &:hover:not(:disabled) {
     background: rgba(25, 118, 210, 0.08);
@@ -64,7 +66,10 @@
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s;
 
   &:hover:not(.active) {
     border-color: #1976d2;

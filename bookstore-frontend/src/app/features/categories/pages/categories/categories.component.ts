@@ -1,4 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit, DestroyRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  signal,
+  OnInit,
+  DestroyRef,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoryService } from '../../data-access/category.service';
 import type { Category } from '../../models/category.interface';

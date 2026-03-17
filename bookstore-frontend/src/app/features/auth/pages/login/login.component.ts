@@ -57,11 +57,11 @@ export class LoginComponent {
           this.loading.set(false);
           const body = err?.error;
           const msg =
-            body?.errors?.['email']
-              ?? body?.errors?.['password']
-              ?? body?.message
-              ?? err?.message
-              ?? 'Login failed. Please try again.';
+            body?.errors?.['email'] ??
+            body?.errors?.['password'] ??
+            body?.message ??
+            err?.message ??
+            'Login failed. Please try again.';
           this.errorMessage.set(msg);
         },
         complete: () => {

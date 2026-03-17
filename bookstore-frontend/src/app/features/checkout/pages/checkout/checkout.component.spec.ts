@@ -61,8 +61,14 @@ describe('CheckoutComponent', () => {
       declarations: [CheckoutComponent],
       imports: [CommonModule, ReactiveFormsModule, CartSubtotalPipe],
       providers: [
-        { provide: CartStateService, useValue: cartStateService as Pick<CartStateService, 'cart$' | 'clearCart'> },
-        { provide: OrderService, useValue: { createOrder: createOrderMock } as Pick<OrderService, 'createOrder'> },
+        {
+          provide: CartStateService,
+          useValue: cartStateService as Pick<CartStateService, 'cart$' | 'clearCart'>,
+        },
+        {
+          provide: OrderService,
+          useValue: { createOrder: createOrderMock } as Pick<OrderService, 'createOrder'>,
+        },
         { provide: Router, useValue: { navigate: navigateMock } as Pick<Router, 'navigate'> },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -79,7 +85,7 @@ describe('CheckoutComponent', () => {
 
     expect(component.isCartEmpty()).toBe(true);
     expect(fixture.nativeElement.querySelector('.cart-empty-message')?.textContent).toContain(
-      'Your cart is empty'
+      'Your cart is empty',
     );
   });
 

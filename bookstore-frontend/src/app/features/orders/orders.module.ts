@@ -9,11 +9,6 @@ import { OrderDetailComponent } from './pages/order-detail/order-detail.componen
 
 @NgModule({
   declarations: [OrderListComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(ordersRoutes),
-    SharedModule,
-    OrderDetailComponent,
-  ],
+  imports: [CommonModule, RouterModule.forChild(ordersRoutes), SharedModule, OrderDetailComponent],
 })
 export class OrdersModule {}

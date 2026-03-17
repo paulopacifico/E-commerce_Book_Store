@@ -6,7 +6,7 @@
     </div>
   } @else {
     @let result = bookResult$ | async;
-    @if (!result || ('error' in result)) {
+    @if (!result || 'error' in result) {
       <div class="error-block" role="alert">
         <p>Book not found or failed to load.</p>
         <a routerLink="/books" class="back-link">Back to Books</a>
@@ -35,7 +35,7 @@
           @if (book.description) {
             <p class="description">{{ book.description }}</p>
           }
-          <p class="price">{{ book.price | currency : 'EUR' }}</p>
+          <p class="price">{{ book.price | currency: 'EUR' }}</p>
           <p class="stock">
             @if (book.stockQuantity === 0) {
               <span class="out-of-stock">Out of Stock</span>

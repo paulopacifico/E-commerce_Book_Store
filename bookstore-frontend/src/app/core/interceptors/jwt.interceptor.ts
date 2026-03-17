@@ -1,9 +1,4 @@
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-} from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../features/auth/data-access/auth.service';
@@ -12,10 +7,7 @@ import { AuthService } from '../../features/auth/data-access/auth.service';
 export class JwtInterceptor implements HttpInterceptor {
   private readonly authService = inject(AuthService);
 
-  intercept(
-    req: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (this.shouldSkipToken(req.url)) {
       return next.handle(req);
     }

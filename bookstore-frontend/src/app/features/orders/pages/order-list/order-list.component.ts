@@ -1,4 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit, DestroyRef } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  signal,
+  OnInit,
+  DestroyRef,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Order } from '../../models/order.interface';
 

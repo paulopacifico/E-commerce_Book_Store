@@ -39,9 +39,11 @@ export class CheckoutComponent {
   readonly errorMessage = signal<string | null>(null);
 
   readonly cart$ = this.cartState.cart$;
-  protected readonly cartItems = toSignal(this.cartState.cart$, { initialValue: [] as LocalCartItem[] });
+  protected readonly cartItems = toSignal(this.cartState.cart$, {
+    initialValue: [] as LocalCartItem[],
+  });
   readonly cartTotal = computed(() =>
-    this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0)
+    this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0),
   );
   readonly finalTotal = computed(() => this.cartTotal() + SHIPPING_COST);
   readonly isCartEmpty = computed(() => this.cartItems().length === 0);
@@ -67,10 +69,7 @@ export class CheckoutComponent {
 
   get canSubmit(): boolean {
     return (
-      !this.loading() &&
-      this.shippingForm.valid &&
-      this.paymentForm.valid &&
-      !this.isCartEmpty()
+      !this.loading() && this.shippingForm.valid && this.paymentForm.valid && !this.isCartEmpty()
     );
   }
 
@@ -130,7 +129,7 @@ export class CheckoutComponent {
       .createOrder({ shippingAddress })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.loading.set(false))
+        finalize(() => this.loading.set(false)),
       )
       .subscribe({
         next: (order) => {
@@ -139,9 +138,7 @@ export class CheckoutComponent {
         },
         error: (err) => {
           const msg =
-            err?.error?.message ??
-            err?.message ??
-            'Unable to place order. Please try again.';
+            err?.error?.message ?? err?.message ?? 'Unable to place order. Please try again.';
           this.errorMessage.set(msg);
         },
       });

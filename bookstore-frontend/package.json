@@ -7,9 +7,13 @@
     "build": "CI=1 ng build",
     "build:prod": "CI=1 ng build --configuration production",
     "watch": "ng build --watch --configuration development",
+    "lint": "npm run lint:format && npm run typecheck",
+    "lint:format": "prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.spec.json",
     "test": "ng test",
     "test:ci": "ng test --watch=false",
-    "check": "npm run test:ci && npm run build:prod"
+    "check": "npm run lint && npm run test:ci && npm run build:prod"
   },
   "private": true,
   "packageManager": "npm@11.11.0",

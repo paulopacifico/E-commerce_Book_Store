@@ -32,7 +32,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="cell-price">{{ item.bookPrice | currency : 'EUR' }}</td>
+                <td class="cell-price">{{ item.bookPrice | currency: 'EUR' }}</td>
                 <td class="cell-quantity">
                   <div class="quantity-controls">
                     <button
@@ -54,7 +54,7 @@
                     </button>
                   </div>
                 </td>
-                <td class="cell-subtotal">{{ item | cartSubtotal | currency : 'EUR' }}</td>
+                <td class="cell-subtotal">{{ item | cartSubtotal | currency: 'EUR' }}</td>
                 <td class="cell-remove">
                   <button
                     type="button"
@@ -80,7 +80,7 @@
               <div class="card-details">
                 <h2 class="product-title">{{ item.bookTitle }}</h2>
                 <p class="product-author">{{ item.bookAuthor }}</p>
-                <p class="product-price">{{ item.bookPrice | currency : 'EUR' }} each</p>
+                <p class="product-price">{{ item.bookPrice | currency: 'EUR' }} each</p>
               </div>
             </div>
             <div class="card-quantity">
@@ -107,7 +107,7 @@
             </div>
             <div class="card-subtotal">
               <span class="label">Subtotal</span>
-              <span class="value">{{ item | cartSubtotal | currency : 'EUR' }}</span>
+              <span class="value">{{ item | cartSubtotal | currency: 'EUR' }}</span>
             </div>
             <button
               type="button"
@@ -124,7 +124,7 @@
       <div class="cart-footer">
         <div class="cart-total">
           <span class="total-label">Total</span>
-          <span class="total-value">{{ cartTotal() | currency : 'EUR' }}</span>
+          <span class="total-value">{{ cartTotal() | currency: 'EUR' }}</span>
         </div>
         <div class="cart-actions">
           <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>

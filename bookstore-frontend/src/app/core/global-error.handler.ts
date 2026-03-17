@@ -1,10 +1,4 @@
-import {
-  ErrorHandler,
-  Injectable,
-  Inject,
-  Optional,
-  InjectionToken,
-} from '@angular/core';
+import { ErrorHandler, Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { NotificationService } from './services/notification.service';
 import { environment } from '../../environments/environment';
 
@@ -17,7 +11,7 @@ export interface ErrorLoggingService {
 }
 
 export const ERROR_LOGGING_SERVICE = new InjectionToken<ErrorLoggingService>(
-  'ERROR_LOGGING_SERVICE'
+  'ERROR_LOGGING_SERVICE',
 );
 
 const USER_MESSAGE = 'Something went wrong. Please try again or refresh the page.';
@@ -26,7 +20,9 @@ const USER_MESSAGE = 'Something went wrong. Please try again or refresh the page
 export class GlobalErrorHandler implements ErrorHandler {
   constructor(
     private readonly notificationService: NotificationService,
-    @Optional() @Inject(ERROR_LOGGING_SERVICE) private readonly loggingService: ErrorLoggingService | null
+    @Optional()
+    @Inject(ERROR_LOGGING_SERVICE)
+    private readonly loggingService: ErrorLoggingService | null,
   ) {}
 
   handleError(error: unknown): void {

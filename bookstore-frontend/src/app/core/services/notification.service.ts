@@ -18,8 +18,7 @@ export class NotificationService {
   private readonly notificationsSubject = new BehaviorSubject<Notification[]>([]);
   private dismissTimeouts = new Map<number, ReturnType<typeof setTimeout>>();
 
-  readonly notifications$: Observable<Notification[]> =
-    this.notificationsSubject.asObservable();
+  readonly notifications$: Observable<Notification[]> = this.notificationsSubject.asObservable();
 
   success(message: string): void {
     this.add('success', message);

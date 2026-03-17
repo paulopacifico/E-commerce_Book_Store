@@ -12,11 +12,7 @@ export class BookService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getBooks(
-    page?: number,
-    size?: number,
-    sort?: string
-  ): Observable<PageResponse<Book>> {
+  getBooks(page?: number, size?: number, sort?: string): Observable<PageResponse<Book>> {
     let params = new HttpParams();
     if (page != null) params = params.set('page', page);
     if (size != null) params = params.set('size', size);
@@ -25,34 +21,28 @@ export class BookService {
       params = params.set('sortBy', sortBy.trim());
       params = params.set('sortDir', (sortDir?.trim() ?? 'asc').toLowerCase());
     }
-    return this.http.get<PageResponse<Book>>(this.apiUrl, { params }).pipe(
-      retry({ count: 2, delay: 500 }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<PageResponse<Book>>(this.apiUrl, { params })
+      .pipe(retry({ count: 2, delay: 500 }), catchError(this.handleError));
   }
 
   getBookById(id: number): Observable<Book> {
-    return this.http.get<Book>(`${this.apiUrl}/${id}`).pipe(
-      retry({ count: 2, delay: 500 }),
-      catchError(this.handleError),
-      shareReplay(1)
-    );
+    return this.http
+      .get<Book>(`${this.apiUrl}/${id}`)
+      .pipe(retry({ count: 2, delay: 500 }), catchError(this.handleError), shareReplay(1));
   }
 
   getBooksByCategory(
     categoryId: number,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<PageResponse<Book>> {
     let params = new HttpParams();
     if (page != null) params = params.set('page', page);
     if (size != null) params = params.set('size', size);
     return this.http
       .get<PageResponse<Book>>(`${this.apiUrl}/category/${categoryId}`, { params })
-      .pipe(
-        retry({ count: 2, delay: 500 }),
-        catchError(this.handleError)
-      );
+      .pipe(retry({ count: 2, delay: 500 }), catchError(this.handleError));
   }
 
   searchBooks(query: string, categoryId?: number): Observable<Book[]> {
@@ -64,20 +54,17 @@ export class BookService {
         .pipe(
           retry({ count: 2, delay: 500 }),
           map((res) => res.content),
-          catchError(this.handleError)
+          catchError(this.handleError),
         );
     }
     return this.http
       .get<PageResponse<Book>>(`${this.apiUrl}/search`, {
-        params: new HttpParams()
-          .set('keyword', query)
-          .set('page', 0)
-          .set('size', 100),
+        params: new HttpParams().set('keyword', query).set('page', 0).set('size', 100),
       })
       .pipe(
         retry({ count: 2, delay: 500 }),
         map((res) => res.content),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 

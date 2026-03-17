@@ -18,21 +18,19 @@ export class AuthService {
   /** Emits when authentication state changes (login/logout). */
   readonly isAuthenticated$ = this.token$.pipe(
     map((token) => token != null),
-    distinctUntilChanged()
+    distinctUntilChanged(),
   );
 
   constructor(
     private readonly http: HttpClient,
-    private readonly router: Router
+    private readonly router: Router,
   ) {}
 
   login(username: string, password: string): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.apiUrl}/login`, { email: username, password })
-      .pipe(
-        tap((res) => this.storeSession(res)),
-        catchError(this.handleError)
-      );
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email: username, password }).pipe(
+      tap((res) => this.storeSession(res)),
+      catchError(this.handleError),
+    );
   }
 
   register(username: string, email: string, password: string): Observable<AuthResponse> {
@@ -45,7 +43,7 @@ export class AuthService {
       })
       .pipe(
         tap((res) => this.storeSession(res)),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 

@@ -9,8 +9,12 @@ $home-neutral-200: #e5e7eb;
 $home-neutral-500: #6b7280;
 $home-neutral-700: #374151;
 $home-neutral-900: #111827;
-$home-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-$home-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+$home-shadow:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -2px rgba(0, 0, 0, 0.1);
+$home-shadow-hover:
+  0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  0 8px 10px -6px rgba(0, 0, 0, 0.1);
 $home-transition: 0.3s ease;
 
 .home-page {
@@ -77,7 +81,9 @@ $home-transition: 0.3s ease;
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
-  transition: transform $home-transition, box-shadow $home-transition;
+  transition:
+    transform $home-transition,
+    box-shadow $home-transition;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
@@ -189,7 +195,12 @@ $home-transition: 0.3s ease;
 .skeleton-image {
   width: 100%;
   aspect-ratio: 2/3;
-  background: linear-gradient(90deg, $home-neutral-200 25%, $home-neutral-100 50%, $home-neutral-200 75%);
+  background: linear-gradient(
+    90deg,
+    $home-neutral-200 25%,
+    $home-neutral-100 50%,
+    $home-neutral-200 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shine 1.2s ease-in-out infinite;
   border-radius: 6px;
@@ -198,7 +209,12 @@ $home-transition: 0.3s ease;
 
 .skeleton-line {
   height: 12px;
-  background: linear-gradient(90deg, $home-neutral-200 25%, $home-neutral-100 50%, $home-neutral-200 75%);
+  background: linear-gradient(
+    90deg,
+    $home-neutral-200 25%,
+    $home-neutral-100 50%,
+    $home-neutral-200 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shine 1.2s ease-in-out infinite;
   border-radius: 4px;
@@ -210,8 +226,12 @@ $home-transition: 0.3s ease;
 }
 
 @keyframes skeleton-shine {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .featured-grid {
@@ -243,7 +263,10 @@ $home-transition: 0.3s ease;
   border: 2px solid $home-primary;
   border-radius: 8px;
   text-decoration: none;
-  transition: background $home-transition, color $home-transition, transform $home-transition;
+  transition:
+    background $home-transition,
+    color $home-transition,
+    transform $home-transition;
 
   &:hover {
     background: $home-primary;
@@ -313,7 +336,12 @@ $home-transition: 0.3s ease;
 
 .category-skeleton {
   height: 120px;
-  background: linear-gradient(90deg, $home-neutral-200 25%, $home-neutral-100 50%, $home-neutral-200 75%);
+  background: linear-gradient(
+    90deg,
+    $home-neutral-200 25%,
+    $home-neutral-100 50%,
+    $home-neutral-200 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shine 1.2s ease-in-out infinite;
   border-radius: 8px;
@@ -336,7 +364,9 @@ $home-transition: 0.3s ease;
   box-shadow: $home-shadow;
   text-decoration: none;
   color: $home-neutral-900;
-  transition: transform $home-transition, box-shadow $home-transition;
+  transition:
+    transform $home-transition,
+    box-shadow $home-transition;
 
   &:hover {
     transform: scale(1.02);
@@ -478,7 +508,9 @@ $home-transition: 0.3s ease;
   border-radius: 8px;
   text-decoration: none;
   box-shadow: $home-shadow;
-  transition: transform $home-transition, box-shadow $home-transition;
+  transition:
+    transform $home-transition,
+    box-shadow $home-transition;
 
   &:hover {
     transform: scale(1.05);

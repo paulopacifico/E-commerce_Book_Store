@@ -24,10 +24,12 @@
         <a [routerLink]="['/orders', order.id]" class="order-card">
           <div class="order-card-main">
             <span class="order-id">Order #{{ order.id }}</span>
-            <span class="order-date">{{ order.createdAt | date : 'mediumDate' }}</span>
-            <span class="order-status" [class]="'status-' + order.status.toLowerCase()">{{ order.status }}</span>
+            <span class="order-date">{{ order.createdAt | date: 'mediumDate' }}</span>
+            <span class="order-status" [class]="'status-' + order.status.toLowerCase()">{{
+              order.status
+            }}</span>
           </div>
-          <span class="order-total">{{ order.totalAmount | currency : 'EUR' }}</span>
+          <span class="order-total">{{ order.totalAmount | currency: 'EUR' }}</span>
         </a>
       }
     </div>

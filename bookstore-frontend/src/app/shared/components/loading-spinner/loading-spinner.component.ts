@@ -14,11 +14,7 @@ const SIZE_PX: Record<SpinnerSize, number> = {
   template: `
     @if (overlay) {
       <div class="spinner-overlay" role="status" aria-label="Loading">
-        <div
-          class="spinner"
-          [style.width.px]="sizePx"
-          [style.height.px]="sizePx"
-        ></div>
+        <div class="spinner" [style.width.px]="sizePx" [style.height.px]="sizePx"></div>
       </div>
     } @else {
       <div

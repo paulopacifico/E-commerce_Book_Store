@@ -39,6 +39,27 @@ npm run build:prod
 Explicit non-interactive production build command for local verification and CI.
 
 ```bash
+npm run lint
+```
+
+Runs the engineering lint gate:
+
+1. Prettier formatting verification
+2. TypeScript type-checking for app and spec configurations
+
+```bash
+npm run format
+```
+
+Applies Prettier formatting across the repository.
+
+```bash
+npm run typecheck
+```
+
+Runs TypeScript compilation checks without emitting build artifacts.
+
+```bash
 npm test
 ```
 
@@ -56,8 +77,9 @@ npm run check
 
 Runs the required delivery gate:
 
-1. Unit tests in CI mode
-2. Production build
+1. Formatting and type checks
+2. Unit tests in CI mode
+3. Production build
 
 ## Quality gate
 

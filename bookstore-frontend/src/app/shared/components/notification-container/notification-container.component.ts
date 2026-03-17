@@ -24,4 +24,3 @@ export class NotificationContainerComponent {
   /** Pure lookup for template; no method calls during change detection. */
   protected readonly iconMap = ICON_MAP;
 }
-

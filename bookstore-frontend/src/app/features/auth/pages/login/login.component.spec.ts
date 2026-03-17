@@ -71,7 +71,7 @@ describe('LoginComponent', () => {
     loginMock.mockReturnValue(
       throwError(() => ({
         error: { message: 'Invalid email or password.' },
-      }))
+      })),
     );
     component.form.setValue({
       email: 'reader@example.com',
@@ -84,7 +84,7 @@ describe('LoginComponent', () => {
     expect(component.loading()).toBe(false);
     expect(component.errorMessage()).toBe('Invalid email or password.');
     expect(fixture.nativeElement.querySelector('.error-banner')?.textContent).toContain(
-      'Invalid email or password.'
+      'Invalid email or password.',
     );
   });
 });

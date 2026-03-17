@@ -24,7 +24,7 @@ import type { Order } from '../../models/order.interface';
               <dt>Status</dt>
               <dd>{{ order.status }}</dd>
               <dt>Total</dt>
-              <dd>{{ order.totalAmount | currency : 'EUR' }}</dd>
+              <dd>{{ order.totalAmount | currency: 'EUR' }}</dd>
             </dl>
             <a routerLink="/books" class="btn btn-primary">Continue Shopping</a>
           </div>
@@ -102,8 +102,6 @@ export class OrderConfirmationComponent {
 
   private orderId = Number(this.route.snapshot.paramMap.get('id'));
   readonly order$: Observable<Order | null> = Number.isFinite(this.orderId)
-    ? this.orderService.getOrderById(this.orderId).pipe(
-        catchError(() => of(null))
-      )
+    ? this.orderService.getOrderById(this.orderId).pipe(catchError(() => of(null)))
     : of(null);
 }

@@ -7,7 +7,7 @@ export class ShippingDisplayPipe implements PipeTransform {
     if (!order?.items?.length) return 'included';
     const subtotal = order.items.reduce(
       (sum, item) => sum + (item.subtotal ?? item.priceAtPurchase * item.quantity),
-      0
+      0,
     );
     const total = Number(order.totalAmount);
     return total > subtotal ? total - subtotal : 'included';

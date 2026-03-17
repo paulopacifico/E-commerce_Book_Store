@@ -65,7 +65,7 @@ describe('CartStateService', () => {
           bookId: 'broken',
           quantity: 4,
         },
-      ])
+      ]),
     );
 
     const service = setup();

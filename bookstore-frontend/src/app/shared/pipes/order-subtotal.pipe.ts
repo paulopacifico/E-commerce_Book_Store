@@ -7,7 +7,7 @@ export class OrderSubtotalPipe implements PipeTransform {
     if (!order?.items?.length) return 0;
     return order.items.reduce(
       (sum, item) => sum + (item.subtotal ?? item.priceAtPurchase * item.quantity),
-      0
+      0,
     );
   }
 }

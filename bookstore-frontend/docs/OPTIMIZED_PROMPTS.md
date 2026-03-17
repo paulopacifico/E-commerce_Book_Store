@@ -3,6 +3,7 @@
 ## 🚀 Phase 1: Setup and Initial Configuration
 
 ### 1.1 Base Structure
+
 ```
 Create Angular directory structure for a book e-commerce with:
 - core/ (guards, interceptors, services, models)
@@ -14,6 +15,7 @@ Generate only folder structure, no files yet.
 ```
 
 ### 1.2 Environment Configuration
+
 ```
 Create environment.ts and environment.prod.ts files with:
 - apiUrl: 'http://localhost:8080/api'
@@ -22,6 +24,7 @@ Create environment.ts and environment.prod.ts files with:
 ```
 
 ### 1.3 Models and Interfaces
+
 ```
 Create TypeScript interfaces for:
 1. User (id, username, email, role)
@@ -38,6 +41,7 @@ Based on the Spring Boot backend API.
 ## 🔐 Phase 2: Authentication
 
 ### 2.1 Auth Service
+
 ```
 Create an AuthService that:
 - Makes login POST /auth/login (username, password) returns JWT
@@ -50,6 +54,7 @@ Create an AuthService that:
 ```
 
 ### 2.2 JWT Interceptor
+
 ```
 Create a JwtInterceptor that:
 - Implements HttpInterceptor
@@ -59,6 +64,7 @@ Create a JwtInterceptor that:
 ```
 
 ### 2.3 Auth Guard
+
 ```
 Create an AuthGuard that:
 - Implements CanActivate
@@ -68,6 +74,7 @@ Create an AuthGuard that:
 ```
 
 ### 2.4 Login Component
+
 ```
 Create a login component with:
 - Reactive FormGroup with validation
@@ -84,6 +91,7 @@ Create a login component with:
 ## 📚 Phase 3: Books (Listing and Details)
 
 ### 3.1 Book Service
+
 ```
 Create a BookService with methods:
 - getBooks(page?, size?, sort?): Observable<PageResponse<Book>>
@@ -95,6 +103,7 @@ Create a BookService with methods:
 ```
 
 ### 3.2 Book List Component
+
 ```
 Create a book listing component that:
 - Lists books using async pipe
@@ -108,6 +117,7 @@ Create a book listing component that:
 ```
 
 ### 3.3 Book Detail Component
+
 ```
 Create a book detail component that:
 - Receives book ID from route (/books/:id)
@@ -119,6 +129,7 @@ Create a book detail component that:
 ```
 
 ### 3.4 Book Card Shared Component
+
 ```
 Create a reusable BookCardComponent that:
 - Receives @Input() book: Book
@@ -135,6 +146,7 @@ Create a reusable BookCardComponent that:
 ## 🛒 Phase 4: Shopping Cart
 
 ### 4.1 Cart State Service
+
 ```
 Create a CartStateService that:
 - Uses BehaviorSubject<CartItem[]> for cart state
@@ -146,6 +158,7 @@ Create a CartStateService that:
 ```
 
 ### 4.2 Cart Service (API)
+
 ```
 Create a CartService for API integration:
 - addToCart(bookId, quantity): Observable<Cart>
@@ -157,6 +170,7 @@ Create a CartService for API integration:
 ```
 
 ### 4.3 Cart Component
+
 ```
 Create a cart component that:
 - Lists all cart items
@@ -170,6 +184,7 @@ Create a cart component that:
 ```
 
 ### 4.4 Cart Icon Component (Header)
+
 ```
 Create a cart icon component that:
 - Shows cart icon in header
@@ -184,6 +199,7 @@ Create a cart icon component that:
 ## 📦 Phase 5: Checkout and Orders
 
 ### 5.1 Order Service
+
 ```
 Create an OrderService with:
 - checkout(cartItems): Observable<Order>
@@ -193,6 +209,7 @@ Create an OrderService with:
 ```
 
 ### 5.2 Checkout Component
+
 ```
 Create a checkout component that:
 - Displays cart items summary (readonly)
@@ -207,6 +224,7 @@ Create a checkout component that:
 ```
 
 ### 5.3 Order List Component
+
 ```
 Create an order history component that:
 - Lists all user orders
@@ -218,6 +236,7 @@ Create an order history component that:
 ```
 
 ### 5.4 Order Detail Component
+
 ```
 Create an order detail component that:
 - Receives ID from route (/orders/:id)
@@ -233,6 +252,7 @@ Create an order detail component that:
 ## 🏗️ Phase 6: Layout and Navigation
 
 ### 6.1 Header Component
+
 ```
 Create a header component that:
 - Store logo (clickable, goes to /)
@@ -245,6 +265,7 @@ Create a header component that:
 ```
 
 ### 6.2 Footer Component
+
 ```
 Create a footer component with:
 - Store information
@@ -255,6 +276,7 @@ Create a footer component with:
 ```
 
 ### 6.3 App Routing
+
 ```
 Configure app-routing.module.ts with:
 - / → redirect to /books
@@ -274,6 +296,7 @@ Configure app-routing.module.ts with:
 ## 🎨 Phase 7: UI/UX Enhancements
 
 ### 7.1 Loading Spinner Shared Component
+
 ```
 Create a loading spinner component that:
 - Receives @Input() size: 'small' | 'medium' | 'large'
@@ -283,6 +306,7 @@ Create a loading spinner component that:
 ```
 
 ### 7.2 Notification Service (Toast)
+
 ```
 Create a NotificationService that:
 - Displays success, error, warning, info messages
@@ -294,6 +318,7 @@ Create a NotificationService that:
 ```
 
 ### 7.3 Confirmation Dialog Component
+
 ```
 Create a confirmation dialog component that:
 - Receives title and message
@@ -305,6 +330,7 @@ Create a confirmation dialog component that:
 ```
 
 ### 7.4 Error Interceptor
+
 ```
 Create an ErrorInterceptor that:
 - Catches HTTP errors globally
@@ -320,6 +346,7 @@ Create an ErrorInterceptor that:
 ## ⚡ Phase 8: Optimizations
 
 ### 8.1 Lazy Loading Modules
+
 ```
 Convert features to lazy loaded modules:
 - BooksModule
@@ -331,6 +358,7 @@ Each module with its own routing.
 ```
 
 ### 8.2 OnPush Change Detection
+
 ```
 Add ChangeDetectionStrategy.OnPush to:
 - BookCardComponent
@@ -340,6 +368,7 @@ Add ChangeDetectionStrategy.OnPush to:
 ```
 
 ### 8.3 RxJS Optimizations
+
 ```
 Review all components to:
 - Use async pipe instead of subscribe
@@ -353,6 +382,7 @@ Review all components to:
 ## 📝 Prompts for Review and Refactoring
 
 ### Code Review
+
 ```
 Review [FileName] and suggest improvements for:
 1. Type safety (eliminate any)
@@ -363,6 +393,7 @@ Review [FileName] and suggest improvements for:
 ```
 
 ### Component Refactoring
+
 ```
 Refactor [ComponentName] to:
 - Extract logic to service
@@ -373,6 +404,7 @@ Refactor [ComponentName] to:
 ```
 
 ### Integration Test
+
 ```
 Create a basic unit test for [ServiceName] that verifies:
 - Correct HTTP calls
@@ -417,22 +449,28 @@ npx webpack-bundle-analyzer dist/stats.json
 ## 🎯 Cursor Usage Strategy
 
 ### 1️⃣ Start with Structure
+
 Use structure prompts first (folders, interfaces, configurations).
 
 ### 2️⃣ Develop by Layers
+
 - First: Models and Services
 - Second: Basic Components
 - Third: Integration and State
 - Fourth: UI/UX and polish
 
 ### 3️⃣ Reuse Patterns
+
 After creating first CRUD (Books), use:
+
 ```
 Create CategoryService using the same pattern as BookService
 ```
 
 ### 4️⃣ Incremental Iteration
+
 Don't ask for everything at once. Example:
+
 ```
 1. "Create basic BookListComponent structure"
 2. "Add pagination to BookListComponent"
@@ -440,7 +478,9 @@ Don't ask for everything at once. Example:
 ```
 
 ### 5️⃣ Constant Validation
+
 Every 2-3 components created:
+
 ```
 Review the last files created and check consistency with established pattern
 ```

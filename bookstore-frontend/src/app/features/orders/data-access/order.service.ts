@@ -23,15 +23,11 @@ export class OrderService {
   }
 
   getOrders(): Observable<Order[]> {
-    return this.http
-      .get<Order[]>(this.apiUrl)
-      .pipe(catchError(this.handleError));
+    return this.http.get<Order[]>(this.apiUrl).pipe(catchError(this.handleError));
   }
 
   getOrderById(id: number): Observable<Order> {
-    return this.http
-      .get<Order>(`${this.apiUrl}/${id}`)
-      .pipe(catchError(this.handleError));
+    return this.http.get<Order>(`${this.apiUrl}/${id}`).pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
