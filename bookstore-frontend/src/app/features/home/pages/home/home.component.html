@@ -1,27 +1,124 @@
 <main class="home-page" role="main">
-  <!-- A. Hero -->
   <section class="hero" aria-labelledby="hero-heading">
     <div class="hero-bg"></div>
-    <div class="hero-content">
-      <h1 id="hero-heading" class="hero-title">Discover Your Next Great Read</h1>
-      <p class="hero-subtitle">
-        Curated books for every taste. Browse bestsellers, explore categories, and get free shipping
-        on orders over $50.
-      </p>
-      <div class="hero-actions">
-        <a routerLink="/books" class="btn btn-hero-primary">Browse Books</a>
-        <button type="button" class="btn btn-hero-secondary" (click)="scrollToCategories()">
-          View Categories
-        </button>
+
+    <div class="hero-shell section-inner">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">Curated Bookstore</p>
+        <h1 id="hero-heading" class="hero-title">
+          A calmer way to discover, compare, and buy books online.
+        </h1>
+        <p class="hero-subtitle">
+          Built as a polished Angular storefront with responsive catalog browsing, connected cart
+          and auth flows, and a checkout journey that feels editorial instead of transactional.
+        </p>
+
+        <div class="hero-actions">
+          <a routerLink="/books" class="btn btn-hero-primary">Browse the Catalog</a>
+          <button type="button" class="btn btn-hero-secondary" (click)="scrollToCategories()">
+            Explore Categories
+          </button>
+        </div>
+
+        <div class="hero-signals" aria-label="Storefront highlights">
+          @for (signal of catalogSignals; track signal.label) {
+            <article class="signal-card">
+              <span class="signal-value">{{ signal.value }}</span>
+              <p class="signal-label">{{ signal.label }}</p>
+            </article>
+          }
+        </div>
+      </div>
+
+      <aside class="hero-spotlight surface-panel" aria-label="Editorial spotlight">
+        @if (spotlightBook(); as spotlight) {
+          <p class="spotlight-kicker">Editor&apos;s Spotlight</p>
+          <h2 class="spotlight-title">{{ spotlight.title }}</h2>
+          <p class="spotlight-author">by {{ spotlight.author }}</p>
+          <p class="spotlight-summary">
+            One-click access to detail, inventory, and checkout context keeps the path from
+            curiosity to purchase short and clear.
+          </p>
+
+          <div class="spotlight-meta">
+            <div class="spotlight-meta-card">
+              <span class="meta-label">Category</span>
+              <span class="meta-value">{{ spotlight.categoryName || 'Featured arrival' }}</span>
+            </div>
+            <div class="spotlight-meta-card">
+              <span class="meta-label">Price</span>
+              <span class="meta-value">{{ spotlight.price | currency: 'EUR' }}</span>
+            </div>
+          </div>
+
+          <div class="spotlight-actions">
+            <a [routerLink]="['/books', spotlight.id]" class="btn btn-hero-primary">Preview Book</a>
+            <button type="button" class="btn btn-ghost-light" (click)="handleAddToCart(spotlight)">
+              Add to Cart
+            </button>
+          </div>
+        } @else {
+          <p class="spotlight-kicker">Storefront Preview</p>
+          <h2 class="spotlight-title">Catalog, cart, and checkout stay connected.</h2>
+          <p class="spotlight-summary">
+            The homepage leads into a responsive shelf experience designed to feel like a real
+            product, not a placeholder demo.
+          </p>
+          <div class="spotlight-fallback-grid">
+            <div class="spotlight-fallback-card">
+              <span class="meta-label">Responsive UI</span>
+              <span class="meta-value">Mobile to desktop</span>
+            </div>
+            <div class="spotlight-fallback-card">
+              <span class="meta-label">Commerce flow</span>
+              <span class="meta-value">Browse to checkout</span>
+            </div>
+          </div>
+        }
+      </aside>
+    </div>
+  </section>
+
+  <section class="section journey-section" aria-labelledby="journey-heading">
+    <div class="section-inner">
+      <div class="section-heading">
+        <p class="section-kicker">Reading Journey</p>
+        <h2 id="journey-heading" class="section-title">
+          The homepage now explains how the storefront works.
+        </h2>
+        <p class="section-desc">
+          It frames the catalog as a guided product journey, so the project feels intentional in a
+          portfolio review and intuitive for a shopper at the same time.
+        </p>
+      </div>
+
+      <div class="journey-grid">
+        @for (step of purchaseJourney; track step.step) {
+          <article class="journey-card surface-panel">
+            <span class="journey-step">{{ step.step }}</span>
+            <h3 class="journey-title">{{ step.title }}</h3>
+            <p class="journey-detail">{{ step.detail }}</p>
+          </article>
+        }
       </div>
     </div>
   </section>
 
-  <!-- B. Featured Books -->
   <section class="section featured-section" aria-labelledby="featured-heading">
     <div class="section-inner">
-      <h2 id="featured-heading" class="section-title">Featured Books</h2>
-      <p class="section-desc">Newest arrivals — find your next favorite.</p>
+      <div class="section-heading section-heading-inline">
+        <div>
+          <p class="section-kicker">Fresh Picks</p>
+          <h2 id="featured-heading" class="section-title">
+            Featured books feel like a curated shelf, not a raw grid.
+          </h2>
+          <p class="section-desc">
+            The layout combines a lead recommendation with a full browsing rail so the storefront
+            has both merchandising and utility.
+          </p>
+        </div>
+        <a routerLink="/books" class="btn btn-outline">Browse Full Catalog</a>
+      </div>
 
       @if (featuredLoading()) {
         <div class="featured-skeletons" aria-busy="true" aria-label="Loading featured books">
@@ -44,13 +141,51 @@
         </div>
       } @else {
         @if (featuredBooks().length > 0) {
+          <div class="featured-editorial surface-panel">
+            @if (spotlightBook(); as spotlight) {
+              <div class="featured-lead">
+                <p class="lead-kicker">Lead Recommendation</p>
+                <h3 class="lead-title">{{ spotlight.title }}</h3>
+                <p class="lead-author">by {{ spotlight.author }}</p>
+                <p class="lead-copy">
+                  Use this section to spotlight recent arrivals and demonstrate a clearer hierarchy
+                  between hero merchandising and catalog browsing.
+                </p>
+                <div class="lead-actions">
+                  <a [routerLink]="['/books', spotlight.id]" class="btn btn-primary"
+                    >Read Details</a
+                  >
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    (click)="handleAddToCart(spotlight)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            }
+
+            <div class="featured-sidebar">
+              <p class="sidebar-kicker">Why it works</p>
+              <ul class="curated-list" aria-label="Featured shelf notes">
+                <li class="curated-item">
+                  Cards expose availability and price before opening the detail page.
+                </li>
+                <li class="curated-item">
+                  Secondary preview actions make navigation explicit and low-friction.
+                </li>
+                <li class="curated-item">
+                  Responsive spacing keeps the shelf legible across breakpoints.
+                </li>
+              </ul>
+            </div>
+          </div>
+
           <div class="featured-grid">
             @for (book of featuredBooks(); track trackByBookId($index, book)) {
               <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
             }
-          </div>
-          <div class="section-cta">
-            <a routerLink="/books" class="btn btn-outline">View All Books</a>
           </div>
         } @else {
           <div class="state-card" role="status">
@@ -62,15 +197,22 @@
     </div>
   </section>
 
-  <!-- C. Categories -->
   <section
     id="home-categories"
     class="section categories-section"
     aria-labelledby="categories-heading"
   >
     <div class="section-inner">
-      <h2 id="categories-heading" class="section-title">Browse by Category</h2>
-      <p class="section-desc">Explore our collection by category.</p>
+      <div class="section-heading">
+        <p class="section-kicker">Category Discovery</p>
+        <h2 id="categories-heading" class="section-title">
+          Categories now feel like entry points into the catalog.
+        </h2>
+        <p class="section-desc">
+          Each category card is framed as a shelf to explore, which makes the homepage read like a
+          real bookstore navigation experience instead of a neutral filter list.
+        </p>
+      </div>
 
       @if (categoriesLoading()) {
         <div class="categories-skeletons" aria-busy="true" aria-label="Loading categories">
@@ -87,20 +229,34 @@
           </button>
         </div>
       } @else {
-        @if (categories().length > 0) {
+        @if (categoryHighlights().length > 0) {
           <div class="categories-grid">
-            @for (cat of categories(); track trackByCategoryId($index, cat)) {
+            @for (
+              cat of categoryHighlights();
+              track trackByCategoryId($index, cat);
+              let idx = $index
+            ) {
               <a
                 [routerLink]="['/books']"
                 [queryParams]="{ category: cat.id }"
                 class="category-card"
+                [class.tone-clay]="categoryTone(idx) === 'clay'"
+                [class.tone-sage]="categoryTone(idx) === 'sage'"
+                [class.tone-ink]="categoryTone(idx) === 'ink'"
+                [class.tone-gold]="categoryTone(idx) === 'gold'"
                 [attr.aria-label]="'Browse ' + cat.name"
               >
-                <span class="category-icon" aria-hidden="true">📚</span>
+                <span class="category-icon" aria-hidden="true">{{ categoryIcon(cat.name) }}</span>
                 <span class="category-name">{{ cat.name }}</span>
-                @if (cat.bookCount != null) {
-                  <span class="category-count">{{ cat.bookCount }} books</span>
-                }
+                <span class="category-copy">
+                  {{
+                    cat.description || 'Explore a focused shelf of titles built around this topic.'
+                  }}
+                </span>
+                <span class="category-footer">
+                  <span class="category-count">{{ cat.bookCount ?? 0 }} books</span>
+                  <span class="category-link-text">Explore shelf</span>
+                </span>
               </a>
             }
           </div>
@@ -114,41 +270,43 @@
     </div>
   </section>
 
-  <!-- D. Value propositions -->
   <section class="section features-section" aria-labelledby="features-heading">
     <div class="section-inner">
-      <h2 id="features-heading" class="section-title">Why Shop With Us</h2>
+      <div class="section-heading section-heading-inline">
+        <div>
+          <p class="section-kicker">Store Confidence</p>
+          <h2 id="features-heading" class="section-title">
+            The interface now sells reliability as much as aesthetics.
+          </h2>
+        </div>
+      </div>
+
       <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">🚚</span>
-          <h3 class="feature-title">Free Shipping</h3>
-          <p class="feature-desc">On orders over $50</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">🔒</span>
-          <h3 class="feature-title">Secure Payment</h3>
-          <p class="feature-desc">SSL encrypted checkout</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon" aria-hidden="true">↩️</span>
-          <h3 class="feature-title">Easy Returns</h3>
-          <p class="feature-desc">30-day money-back guarantee</p>
-        </div>
+        @for (feature of serviceHighlights; track feature.title) {
+          <article class="feature-card">
+            <span class="feature-index" aria-hidden="true">{{ $index + 1 }}</span>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-desc">{{ feature.detail }}</p>
+          </article>
+        }
       </div>
     </div>
   </section>
 
-  <!-- E. CTA Banner -->
   <section class="section cta-section" aria-labelledby="cta-heading">
     <div class="cta-banner">
-      <h2 id="cta-heading" class="cta-title">Join Our Community</h2>
+      <p class="section-kicker section-kicker-light">Next Action</p>
+      <h2 id="cta-heading" class="cta-title">
+        From homepage to conversion, every step now feels deliberate.
+      </h2>
       <p class="cta-desc">
-        Create an account to save your favorites, track orders, and get the best deals.
+        The storefront emphasizes discovery first, but the purchase path stays one click away
+        through the catalog, detail pages, cart, and checkout.
       </p>
       @if (isAuthenticated$ | async) {
-        <a routerLink="/books" class="btn btn-cta">Start Shopping</a>
+        <a routerLink="/books" class="btn btn-cta">Continue Shopping</a>
       } @else {
-        <a routerLink="/register" class="btn btn-cta">Sign Up Now</a>
+        <a routerLink="/register" class="btn btn-cta">Create an Account</a>
       }
     </div>
   </section>
