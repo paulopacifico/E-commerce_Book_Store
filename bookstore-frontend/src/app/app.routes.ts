@@ -1,18 +1,23 @@
 import { Routes } from '@angular/router';
 
 import { AuthGuard } from './core/guards/auth.guard';
+import { HomeComponent } from './features/home/home.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { CartComponent } from './features/cart/cart.component';
+import { CheckoutComponent } from './features/checkout/checkout.component';
+import { CategoriesComponent } from './features/categories/categories.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
 
-export const routes: Routes = [
-  { path: '', redirectTo: 'books', pathMatch: 'full' },
+export const appRoutes: Routes = [
+  { path: '', component: HomeComponent },
   {
     path: 'login',
-    loadComponent: () =>
-      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+    component: LoginComponent,
   },
   {
     path: 'register',
-    loadComponent: () =>
-      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
+    component: RegisterComponent,
   },
   {
     path: 'books',
@@ -21,14 +26,12 @@ export const routes: Routes = [
   },
   {
     path: 'cart',
-    loadComponent: () =>
-      import('./features/cart/cart.component').then((m) => m.CartComponent),
+    component: CartComponent,
     canActivate: [AuthGuard],
   },
   {
     path: 'checkout',
-    loadComponent: () =>
-      import('./features/checkout/checkout.component').then((m) => m.CheckoutComponent),
+    component: CheckoutComponent,
     canActivate: [AuthGuard],
   },
   {
@@ -38,8 +41,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'categories',
+    component: CategoriesComponent,
+  },
+  {
     path: '**',
-    loadComponent: () =>
-      import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    component: NotFoundComponent,
   },
 ];
+
+export const routes = appRoutes;
