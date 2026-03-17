@@ -5,9 +5,12 @@
     <button
       type="button"
       class="hamburger"
+      id="mobile-menu-trigger"
+      data-mobile-menu-trigger
       [class.open]="mobileMenuOpen()"
-      [attr.aria-expanded]="mobileMenuOpen()"
-      aria-label="Toggle menu"
+      [attr.aria-expanded]="showNavLinks()"
+      aria-controls="site-navigation"
+      [attr.aria-label]="showNavLinks() ? 'Close navigation menu' : 'Open navigation menu'"
       (click)="toggleMobileMenu()"
     >
       <span></span>
@@ -15,7 +18,13 @@
       <span></span>
     </button>
 
-    <nav class="nav-section" [class.open]="showNavLinks()">
+    <nav
+      id="site-navigation"
+      class="nav-section"
+      [class.open]="showNavLinks()"
+      aria-label="Primary"
+      [attr.aria-hidden]="isMobile() ? !mobileMenuOpen() : null"
+    >
       <div class="nav-links">
         <a
           routerLink="/"
@@ -53,23 +62,51 @@
             <button
               type="button"
               class="menu-trigger"
-              aria-haspopup="true"
+              id="account-menu-trigger"
+              data-user-menu-trigger
+              aria-haspopup="menu"
+              aria-controls="account-menu"
               [attr.aria-expanded]="userMenuOpen()"
+              (keydown)="onUserMenuTriggerKeydown($event)"
               (click)="toggleUserMenu()"
             >
-              Account ▾
+              <span>Account</span>
+              <span class="menu-caret" aria-hidden="true">▾</span>
             </button>
-            <div class="dropdown" [class.show]="userMenuOpen()" role="menu">
-              <a routerLink="/orders" (click)="closeMobileMenu(); closeUserMenu()" role="menuitem"
+            <div
+              id="account-menu"
+              class="dropdown"
+              [class.show]="userMenuOpen()"
+              role="menu"
+              aria-labelledby="account-menu-trigger"
+              [attr.aria-hidden]="!userMenuOpen()"
+              (keydown)="onUserMenuListKeydown($event)"
+            >
+              <a
+                routerLink="/orders"
+                (click)="closeMobileMenu(); closeUserMenu()"
+                role="menuitem"
+                data-user-menu-item
+                [attr.tabindex]="userMenuOpen() ? 0 : -1"
                 >My Orders</a
               >
-              <button type="button" (click)="logout()" role="menuitem">Logout</button>
+              <button
+                type="button"
+                (click)="logout()"
+                role="menuitem"
+                data-user-menu-item
+                [attr.tabindex]="userMenuOpen() ? 0 : -1"
+              >
+                Logout
+              </button>
             </div>
           </div>
         } @else {
           <div class="auth-buttons">
             <a routerLink="/login" class="btn btn-outline" (click)="closeMobileMenu()">Login</a>
-            <a href="/register" class="btn btn-primary" (click)="goToRegister($event)">Register</a>
+            <a routerLink="/register" class="btn btn-primary" (click)="closeMobileMenu()"
+              >Register</a
+            >
           </div>
         }
       </div>
