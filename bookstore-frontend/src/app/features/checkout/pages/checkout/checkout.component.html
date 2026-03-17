@@ -9,53 +9,64 @@
     </div>
   } @else {
     <div class="checkout-layout">
-      <div class="checkout-forms">
+      <div class="checkout-forms form-layout">
         <!-- Shipping -->
         <section class="form-section" aria-labelledby="shipping-heading">
-          <h2 id="shipping-heading" class="section-title">Shipping Address</h2>
-          <form [formGroup]="shippingForm" class="checkout-form">
-            <div class="field">
-              <label for="fullName">Full name <span class="required">*</span></label>
+          <div class="form-section-header">
+            <h2 id="shipping-heading" class="form-section-title">Shipping Address</h2>
+            <span class="badge-subtle">Step 1</span>
+          </div>
+          <form [formGroup]="shippingForm" class="form-grid" novalidate>
+            <div class="form-field">
+              <label class="form-label" for="fullName"
+                >Full name <span class="required">*</span></label
+              >
               <input
                 id="fullName"
                 type="text"
                 formControlName="fullName"
                 autocomplete="name"
                 class="input"
+                [disabled]="loading()"
               />
+              <p class="form-help">Enter the name that should appear on the delivery label.</p>
               @if (fullName?.invalid && fullName?.touched) {
-                <div class="error" role="alert">
+                <p class="field-error" role="alert">
                   @if (fullName?.errors?.['required']) {
                     Full name is required.
                   }
                   @if (fullName?.errors?.['minlength']) {
                     At least 2 characters.
                   }
-                </div>
+                </p>
               }
             </div>
-            <div class="field">
-              <label for="addressLine1">Address line 1 <span class="required">*</span></label>
+            <div class="form-field">
+              <label class="form-label" for="addressLine1"
+                >Address line 1 <span class="required">*</span></label
+              >
               <input
                 id="addressLine1"
                 type="text"
                 formControlName="addressLine1"
                 autocomplete="address-line1"
                 class="input"
+                [disabled]="loading()"
               />
+              <p class="form-help">Street address, building number, or apartment entrance.</p>
               @if (addressLine1?.invalid && addressLine1?.touched) {
-                <div class="error" role="alert">
+                <p class="field-error" role="alert">
                   @if (addressLine1?.errors?.['required']) {
                     Address is required.
                   }
                   @if (addressLine1?.errors?.['minlength']) {
                     At least 3 characters.
                   }
-                </div>
+                </p>
               }
             </div>
-            <div class="field">
-              <label for="addressLine2"
+            <div class="form-field">
+              <label class="form-label" for="addressLine2"
                 >Address line 2 <span class="optional">(optional)</span></label
               >
               <input
@@ -64,52 +75,63 @@
                 formControlName="addressLine2"
                 autocomplete="address-line2"
                 class="input"
+                [disabled]="loading()"
               />
+              <p class="form-help">Apartment, suite, landmark, or delivery notes.</p>
             </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="city">City <span class="required">*</span></label>
+            <div class="form-grid form-grid-two">
+              <div class="form-field">
+                <label class="form-label" for="city">City <span class="required">*</span></label>
                 <input
                   id="city"
                   type="text"
                   formControlName="city"
                   autocomplete="address-level2"
                   class="input"
+                  [disabled]="loading()"
                 />
                 @if (city?.invalid && city?.touched) {
-                  <div class="error" role="alert">City is required.</div>
+                  <p class="field-error" role="alert">City is required.</p>
                 }
               </div>
-              <div class="field">
-                <label for="state">State / Province <span class="required">*</span></label>
+              <div class="form-field">
+                <label class="form-label" for="state"
+                  >State / Province <span class="required">*</span></label
+                >
                 <input
                   id="state"
                   type="text"
                   formControlName="state"
                   autocomplete="address-level1"
                   class="input"
+                  [disabled]="loading()"
                 />
                 @if (state?.invalid && state?.touched) {
-                  <div class="error" role="alert">State is required.</div>
+                  <p class="field-error" role="alert">State is required.</p>
                 }
               </div>
             </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="postalCode">Postal code <span class="required">*</span></label>
+            <div class="form-grid form-grid-two">
+              <div class="form-field">
+                <label class="form-label" for="postalCode"
+                  >Postal code <span class="required">*</span></label
+                >
                 <input
                   id="postalCode"
                   type="text"
                   formControlName="postalCode"
                   autocomplete="postal-code"
                   class="input"
+                  [disabled]="loading()"
                 />
                 @if (postalCode?.invalid && postalCode?.touched) {
-                  <div class="error" role="alert">Postal code is required.</div>
+                  <p class="field-error" role="alert">Postal code is required.</p>
                 }
               </div>
-              <div class="field">
-                <label for="phone">Phone number <span class="required">*</span></label>
+              <div class="form-field">
+                <label class="form-label" for="phone"
+                  >Phone number <span class="required">*</span></label
+                >
                 <input
                   id="phone"
                   type="tel"
@@ -117,16 +139,18 @@
                   autocomplete="tel"
                   class="input"
                   placeholder="e.g. +1 234 567 8900"
+                  [disabled]="loading()"
                 />
+                <p class="form-help">Used only if the carrier needs help completing delivery.</p>
                 @if (phone?.invalid && phone?.touched) {
-                  <div class="error" role="alert">
+                  <p class="field-error" role="alert">
                     @if (phone?.errors?.['required']) {
                       Phone is required.
                     }
                     @if (phone?.errors?.['pattern']) {
                       Enter a valid phone number (10–20 digits).
                     }
-                  </div>
+                  </p>
                 }
               </div>
             </div>
@@ -135,12 +159,18 @@
 
         <!-- Payment (simulated) -->
         <section class="form-section" aria-labelledby="payment-heading">
-          <h2 id="payment-heading" class="section-title">
-            Payment Information <span class="badge">Simulated</span>
-          </h2>
-          <form [formGroup]="paymentForm" class="checkout-form">
-            <div class="field">
-              <label for="cardNumber">Card number <span class="required">*</span></label>
+          <div class="form-section-header">
+            <h2 id="payment-heading" class="form-section-title">Payment Information</h2>
+            <span class="badge-subtle">Simulated</span>
+          </div>
+          <div class="form-banner form-banner-info" role="status">
+            This demo captures payment details only for portfolio UX. No real charge is processed.
+          </div>
+          <form [formGroup]="paymentForm" class="form-grid checkout-payment-grid" novalidate>
+            <div class="form-field">
+              <label class="form-label" for="cardNumber"
+                >Card number <span class="required">*</span></label
+              >
               <input
                 id="cardNumber"
                 type="text"
@@ -150,34 +180,42 @@
                 placeholder="16 digits"
                 class="input"
                 autocomplete="cc-number"
+                [disabled]="loading()"
               />
+              <p class="form-help">Use a 16-digit test number for this simulated checkout.</p>
               @if (cardNumber?.invalid && cardNumber?.touched) {
-                <div class="error" role="alert">
+                <p class="field-error" role="alert">
                   @if (cardNumber?.errors?.['required']) {
                     Card number is required.
                   }
                   @if (cardNumber?.errors?.['pattern']) {
                     Enter exactly 16 digits.
                   }
-                </div>
+                </p>
               }
             </div>
-            <div class="field">
-              <label for="cardholderName">Cardholder name <span class="required">*</span></label>
+            <div class="form-field">
+              <label class="form-label" for="cardholderName"
+                >Cardholder name <span class="required">*</span></label
+              >
               <input
                 id="cardholderName"
                 type="text"
                 formControlName="cardholderName"
                 autocomplete="cc-name"
                 class="input"
+                [disabled]="loading()"
               />
+              <p class="form-help">Enter the full name printed on the card.</p>
               @if (cardholderName?.invalid && cardholderName?.touched) {
-                <div class="error" role="alert">Cardholder name is required.</div>
+                <p class="field-error" role="alert">Cardholder name is required.</p>
               }
             </div>
-            <div class="field-row">
-              <div class="field">
-                <label for="expiry">Expiry (MM/YY) <span class="required">*</span></label>
+            <div class="form-grid form-grid-two">
+              <div class="form-field">
+                <label class="form-label" for="expiry"
+                  >Expiry (MM/YY) <span class="required">*</span></label
+                >
                 <input
                   id="expiry"
                   type="text"
@@ -186,13 +224,14 @@
                   maxlength="5"
                   class="input"
                   autocomplete="cc-exp"
+                  [disabled]="loading()"
                 />
                 @if (expiry?.invalid && expiry?.touched) {
-                  <div class="error" role="alert">Use MM/YY format.</div>
+                  <p class="field-error" role="alert">Use MM/YY format.</p>
                 }
               </div>
-              <div class="field">
-                <label for="cvv">CVV <span class="required">*</span></label>
+              <div class="form-field">
+                <label class="form-label" for="cvv">CVV <span class="required">*</span></label>
                 <input
                   id="cvv"
                   type="text"
@@ -202,9 +241,10 @@
                   placeholder="3 digits"
                   class="input"
                   autocomplete="cc-csc"
+                  [disabled]="loading()"
                 />
                 @if (cvv?.invalid && cvv?.touched) {
-                  <div class="error" role="alert">Enter 3 digits.</div>
+                  <p class="field-error" role="alert">Enter 3 digits.</p>
                 }
               </div>
             </div>
@@ -239,23 +279,25 @@
         </div>
 
         @if (errorMessage(); as msg) {
-          <div class="error-banner" role="alert">{{ msg }}</div>
+          <div class="form-banner form-banner-error" role="alert">{{ msg }}</div>
         }
 
-        <button
-          type="button"
-          class="btn btn-primary btn-submit"
-          [disabled]="!canSubmit"
-          (click)="onSubmit()"
-        >
-          @if (loading()) {
-            <span class="spinner" aria-hidden="true"></span>
-            Processing…
-          } @else {
-            Place Order
-          }
-        </button>
-        <a routerLink="/cart" class="link-back">Back to Cart</a>
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-primary form-submit"
+            [disabled]="!canSubmit"
+            (click)="onSubmit()"
+          >
+            @if (loading()) {
+              <span class="spinner" aria-hidden="true"></span>
+              Processing…
+            } @else {
+              Place Order
+            }
+          </button>
+          <a routerLink="/cart" class="form-link-row link-back">Back to Cart</a>
+        </div>
       </aside>
     </div>
   }

@@ -41,7 +41,9 @@ describe('LoginComponent', () => {
   });
 
   it('shows the registration success banner when redirected from signup', () => {
-    const banner = fixture.nativeElement.querySelector('.success-banner') as HTMLElement | null;
+    const banner = fixture.nativeElement.querySelector(
+      '.form-banner-success',
+    ) as HTMLElement | null;
 
     expect(banner?.textContent).toContain('Registration successful');
   });
@@ -83,7 +85,7 @@ describe('LoginComponent', () => {
 
     expect(component.loading()).toBe(false);
     expect(component.errorMessage()).toBe('Invalid email or password.');
-    expect(fixture.nativeElement.querySelector('.error-banner')?.textContent).toContain(
+    expect(fixture.nativeElement.querySelector('.form-banner-error')?.textContent).toContain(
       'Invalid email or password.',
     );
   });

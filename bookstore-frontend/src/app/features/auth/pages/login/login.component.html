@@ -1,70 +1,90 @@
-<div class="login-card">
-  <h1 class="login-title">Login</h1>
-
-  @if ((route.queryParams | async)?.['registered'] === 'true') {
-    <div class="success-banner" role="status">Registration successful. You can now log in.</div>
-  }
-
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form" novalidate>
-    <div class="field">
-      <label for="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        autocomplete="email"
-        placeholder="Enter email"
-        class="input"
-      />
-      @if (email?.invalid && email?.touched) {
-        <div class="error" role="alert">
-          @if (email?.errors?.['required']) {
-            Email is required.
-          }
-          @if (email?.errors?.['email']) {
-            Please enter a valid email address.
-          }
-        </div>
-      }
+<section class="auth-shell form-shell">
+  <div class="auth-card form-card form-card-compact">
+    <div class="form-header auth-header">
+      <p class="eyebrow">Book Store Account</p>
+      <h1 class="form-title">Welcome back</h1>
+      <p class="form-intro">
+        Sign in to continue shopping, manage your orders, and keep your reading list in sync.
+      </p>
     </div>
 
-    <div class="field">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        formControlName="password"
-        autocomplete="current-password"
-        placeholder="Enter password"
-        class="input"
-      />
-      @if (password?.invalid && password?.touched) {
-        <div class="error" role="alert">
-          @if (password?.errors?.['required']) {
-            Password is required.
-          }
-          @if (password?.errors?.['minlength']) {
-            Password must be at least 6 characters.
-          }
-        </div>
-      }
-    </div>
-
-    @if (errorMessage(); as msg) {
-      <div class="error-banner" role="alert">{{ msg }}</div>
+    @if ((route.queryParams | async)?.['registered'] === 'true') {
+      <div class="form-banner form-banner-success" role="status">
+        Registration successful. You can now log in.
+      </div>
     }
 
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid || loading()">
-      @if (loading()) {
-        <span class="spinner" aria-hidden="true"></span>
-        Logging in...
-      } @else {
-        Login
-      }
-    </button>
-  </form>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-layout" novalidate>
+      <div class="form-field">
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          class="input"
+          [disabled]="loading()"
+        />
+        <p class="form-help">Use the email address linked to your bookstore account.</p>
+        @if (email?.invalid && email?.touched) {
+          <p class="field-error" role="alert">
+            @if (email?.errors?.['required']) {
+              Email is required.
+            }
+            @if (email?.errors?.['email']) {
+              Please enter a valid email address.
+            }
+          </p>
+        }
+      </div>
 
-  <p class="register-link">
-    Don't have an account? <a href="/register" (click)="goToRegister($event)">Register</a>
-  </p>
-</div>
+      <div class="form-field">
+        <label class="form-label" for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          class="input"
+          [disabled]="loading()"
+        />
+        <p class="form-help">Passwords must contain at least 6 characters.</p>
+        @if (password?.invalid && password?.touched) {
+          <p class="field-error" role="alert">
+            @if (password?.errors?.['required']) {
+              Password is required.
+            }
+            @if (password?.errors?.['minlength']) {
+              Password must be at least 6 characters.
+            }
+          </p>
+        }
+      </div>
+
+      @if (errorMessage(); as msg) {
+        <div class="form-banner form-banner-error" role="alert">{{ msg }}</div>
+      }
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary form-submit"
+          [disabled]="form.invalid || loading()"
+        >
+          @if (loading()) {
+            <span class="spinner" aria-hidden="true"></span>
+            Logging in...
+          } @else {
+            Login
+          }
+        </button>
+      </div>
+    </form>
+
+    <p class="form-link-row">
+      Don't have an account? <a href="/register" (click)="goToRegister($event)">Register</a>
+    </p>
+  </div>
+</section>
