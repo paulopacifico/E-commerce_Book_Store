@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 /* ==========================================================================
    Global styles – editorial bookstore theme, typography, utilities
    ========================================================================== */
@@ -302,7 +304,7 @@ $spacing-scale: (
   color: #fff;
   border-color: var(--color-success);
   &:hover:not(:disabled):not(.disabled) {
-    background-color: darken(#2e7d32, 6%);
+    background-color: color.adjust(#2e7d32, $lightness: -6%);
   }
 }
 
@@ -311,7 +313,7 @@ $spacing-scale: (
   color: #fff;
   border-color: var(--color-error);
   &:hover:not(:disabled):not(.disabled) {
-    background-color: darken(#c62828, 6%);
+    background-color: color.adjust(#c62828, $lightness: -6%);
   }
 }
 

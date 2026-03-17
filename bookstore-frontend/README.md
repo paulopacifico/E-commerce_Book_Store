@@ -1,59 +1,89 @@
-# BookstoreFrontend
+# Bookstore Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.1.
+Angular 21 storefront application for the E-commerce Book Store project.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node.js 20+
+- npm 11+
 
-```bash
-ng serve
-```
+## Local development
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Install dependencies and start the development server:
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The app runs at `http://localhost:4200/`.
+
+## Available scripts
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
-
-To build the project run:
+Starts the Angular development server.
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Creates a production-ready build using non-interactive CI mode so local verification matches automated delivery checks.
 
 ```bash
-ng test
+npm run build:prod
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Explicit non-interactive production build command for local verification and CI.
 
 ```bash
-ng e2e
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Runs the unit test runner in watch mode for local development.
 
-## Additional Resources
+```bash
+npm run test:ci
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Runs the unit test suite once without watch mode. This is the command intended for CI and delivery validation.
+
+```bash
+npm run check
+```
+
+Runs the required delivery gate:
+
+1. Unit tests in CI mode
+2. Production build
+
+## Quality gate
+
+A change is not considered ready for delivery until `npm run check` passes locally.
+
+Recommended workflow before opening a PR or handing off work:
+
+```bash
+npm run check
+```
+
+## Project focus
+
+This frontend includes:
+
+- Angular routing with lazy-loaded feature areas
+- Typed HTTP services for backend integration
+- Responsive commerce screens such as catalog, cart, checkout, and orders
+- Shared UI components and reusable pipes
+
+## Backend configuration
+
+The application currently expects the backend API at:
+
+```text
+http://localhost:8080/api
+```
+
+Update the environment files if the backend runs on a different host or port.

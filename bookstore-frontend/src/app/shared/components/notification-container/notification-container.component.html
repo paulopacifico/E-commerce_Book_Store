@@ -9,7 +9,7 @@
       role="status"
       [attr.aria-label]="notification.type + ': ' + notification.message"
     >
-      <span class="toast-icon" aria-hidden="true">{{ iconMap[notification.type] ?? '•' }}</span>
+      <span class="toast-icon" aria-hidden="true">{{ iconMap[notification.type] }}</span>
       <p class="toast-message">{{ notification.message }}</p>
       <button
         type="button"
