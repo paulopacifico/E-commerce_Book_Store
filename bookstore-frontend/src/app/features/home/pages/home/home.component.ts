@@ -18,11 +18,20 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import type { Book } from '../../../books/models/book.interface';
 import type { Category } from '../../../categories/models/category.interface';
 import { BookCardComponent } from '../../../../shared/components/book-card/book-card.component';
+import { RevealOnScrollDirective } from '../../../../shared/directives/reveal-on-scroll.directive';
+import { TitleRevealDirective } from '../../../../shared/directives/title-reveal.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [BookCardComponent, RouterLink, AsyncPipe, CurrencyPipe],
+  imports: [
+    BookCardComponent,
+    RouterLink,
+    AsyncPipe,
+    CurrencyPipe,
+    RevealOnScrollDirective,
+    TitleRevealDirective,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

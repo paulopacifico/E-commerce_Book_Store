@@ -17,6 +17,13 @@
   box-sizing: border-box;
 }
 
+.route-shell {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
 .global-loading {
   position: fixed;
   top: 0;

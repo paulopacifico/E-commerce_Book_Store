@@ -14,6 +14,8 @@ import { OrderItemSubtotalPipe } from './pipes/order-item-subtotal.pipe';
 import { OrderSubtotalPipe } from './pipes/order-subtotal.pipe';
 import { ShippingDisplayPipe } from './pipes/shipping-display.pipe';
 import { StatusIndexPipe } from './pipes/status-index.pipe';
+import { RevealOnScrollDirective } from './directives/reveal-on-scroll.directive';
+import { TitleRevealDirective } from './directives/title-reveal.directive';
 
 @NgModule({
   imports: [
@@ -30,6 +32,8 @@ import { StatusIndexPipe } from './pipes/status-index.pipe';
     OrderSubtotalPipe,
     ShippingDisplayPipe,
     StatusIndexPipe,
+    RevealOnScrollDirective,
+    TitleRevealDirective,
   ],
   exports: [
     CommonModule,
@@ -45,6 +49,8 @@ import { StatusIndexPipe } from './pipes/status-index.pipe';
     OrderSubtotalPipe,
     ShippingDisplayPipe,
     StatusIndexPipe,
+    RevealOnScrollDirective,
+    TitleRevealDirective,
   ],
 })
 export class SharedModule {}

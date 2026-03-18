@@ -989,6 +989,66 @@ textarea.ng-invalid.ng-touched,
 }
 
 /* --------------------------------------------------------------------------
+   Reveal utilities (IntersectionObserver-driven)
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
+  will-change: transform, opacity;
+}
+
+.reveal.reveal-subtle {
+  transform: translate3d(0, 10px, 0);
+}
+
+.reveal.reveal-standard {
+  transform: translate3d(0, 14px, 0);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* --------------------------------------------------------------------------
+   Title reveal (word-stagger)
+   -------------------------------------------------------------------------- */
+.title-reveal {
+  display: inline;
+}
+
+.title-reveal .title-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  will-change: transform, opacity;
+}
+
+.title-reveal.is-revealed .title-word {
+  animation: titleWordIn var(--transition-normal) forwards;
+  animation-timing-function: var(--ease-standard);
+  animation-delay: calc(var(--word-index, 0) * 36ms);
+}
+
+.title-reveal.title-reveal-subtle.is-revealed .title-word {
+  animation-delay: calc(var(--word-index, 0) * 26ms);
+}
+
+@keyframes titleWordIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
    Motion accessibility + performance utilities
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
