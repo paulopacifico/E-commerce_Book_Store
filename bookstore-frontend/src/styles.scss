@@ -2495,6 +2495,27 @@ textarea.ng-invalid.ng-touched,
   gap: var(--space-5);
 }
 
+.book-list .book-virtual-viewport {
+  width: 100%;
+  height: min(72vh, 860px);
+  overflow: auto;
+  scroll-behavior: auto;
+}
+
+.book-list .book-virtual-row {
+  display: grid;
+  grid-template-columns: repeat(var(--book-cols, 1), minmax(0, 1fr));
+  gap: var(--space-5);
+  align-content: start;
+  align-items: stretch;
+}
+
+.book-list .book-card-placeholder {
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
+
 .book-list .catalog-empty {
   padding-block: var(--space-10);
 }
@@ -2602,6 +2623,10 @@ textarea.ng-invalid.ng-touched,
   .book-list .catalog-skeleton-grid,
   .book-list .book-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  .book-list .book-virtual-row {
     gap: var(--space-6);
   }
 }

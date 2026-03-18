@@ -17,7 +17,7 @@ import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { AnimationsService } from '../../../../shared/services/animations/animations.service';
+import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
 import type { Book } from '../../models/book.interface';
 
 @Component({
@@ -34,7 +34,7 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
   private readonly bookService = inject(BookService);
   private readonly cartStateService = inject(CartStateService);
   private readonly notificationService = inject(NotificationService);
-  private readonly animations = inject(AnimationsService);
+  private readonly smoothScroll = inject(SmoothScrollService);
 
   readonly loading = signal(true);
   readonly quantity = signal(1);
@@ -140,7 +140,6 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
   }
 
   scrollToTop(): void {
-    const behavior: ScrollBehavior = this.animations.prefersReducedMotion ? 'auto' : 'smooth';
-    window.scrollTo({ top: 0, behavior });
+    this.smoothScroll.scrollToTop(520);
   }
 }

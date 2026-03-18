@@ -19,6 +19,7 @@ import { AuthService } from '../../../auth/data-access/auth.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AnimationsService } from '../../../../shared/services/animations/animations.service';
+import { SmoothAnchorDirective } from '../../../../shared/directives/smooth-anchor.directive';
 import type { Book } from '../../../books/models/book.interface';
 import type { Category } from '../../../categories/models/category.interface';
 import { BookCardComponent } from '../../../../shared/components/book-card/book-card.component';
@@ -35,6 +36,7 @@ import { TitleRevealDirective } from '../../../../shared/directives/title-reveal
     CurrencyPipe,
     RevealOnScrollDirective,
     TitleRevealDirective,
+    SmoothAnchorDirective,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -185,11 +187,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         complete: () => this.categoriesLoading.set(false),
       });
-  }
-
-  scrollToCategories(): void {
-    const el = document.getElementById('home-categories');
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   handleAddToCart(book: Book): void {

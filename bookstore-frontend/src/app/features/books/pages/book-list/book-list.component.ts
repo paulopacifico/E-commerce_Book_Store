@@ -4,12 +4,17 @@ import {
   ChangeDetectionStrategy,
   signal,
   OnInit,
+  AfterViewChecked,
   DestroyRef,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
-import { combineLatest, of } from 'rxjs';
+import { combineLatest, fromEvent, of } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {
   switchMap,
   map,
@@ -24,6 +29,7 @@ import { BookService } from '../../data-access/book.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
 import type { Book } from '../../models/book.interface';
 import type { Category } from '../../../categories/models/category.interface';
 
@@ -38,13 +44,17 @@ type PaginationItem = number | 'ellipsis';
   styleUrl: './book-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BookListComponent implements OnInit {
+export class BookListComponent implements OnInit, AfterViewChecked {
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
   private readonly cartStateService = inject(CartStateService);
   private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly hostEl = inject(ElementRef<HTMLElement>);
+  private readonly smoothScroll = inject(SmoothScrollService);
+
+  @ViewChild(CdkVirtualScrollViewport) private viewport?: CdkVirtualScrollViewport;
 
   private readonly searchInput$ = new Subject<string>();
   readonly searchValue = signal('');
@@ -59,6 +69,14 @@ export class BookListComponent implements OnInit {
   readonly totalResults = signal(0);
   readonly categories = signal<Category[]>([]);
   private readonly reloadTick = signal(0);
+
+  // Virtual-scroll grid uses rows instead of individual cards so it can preserve columns.
+  readonly columns = signal(1);
+  rowHeightPx = 440;
+  private needsRowMeasure = false;
+  private lastChunkBooks: readonly Book[] | null = null;
+  private lastChunkCols = 1;
+  private lastChunkRows: Array<Array<Book | null>> = [];
 
   readonly booksResult$ = combineLatest([
     this.searchInput$.pipe(debounceTime(300), startWith('')),
@@ -122,6 +140,7 @@ export class BookListComponent implements OnInit {
       this.totalPages.set(r.totalPages);
       this.totalResults.set(r.totalResults);
       this.currentPage.set(r.page);
+      this.needsRowMeasure = r.books.length > 0;
     }),
     map((r) => r.books),
   );
@@ -142,6 +161,72 @@ export class BookListComponent implements OnInit {
         }
       }
     });
+
+    const width = typeof window !== 'undefined' ? window.innerWidth : 9999;
+    this.columns.set(this.columnsForWidth(width));
+
+    if (typeof window !== 'undefined') {
+      fromEvent(window, 'resize')
+        .pipe(
+          debounceTime(150),
+          map(() => this.columnsForWidth(window.innerWidth)),
+          distinctUntilChanged(),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe((cols) => {
+          this.columns.set(cols);
+          this.needsRowMeasure = true;
+          this.viewport?.checkViewportSize();
+        });
+    }
+  }
+
+  private columnsForWidth(width: number): number {
+    if (width < 640) return 1;
+    if (width < 1024) return 2;
+    if (width < 1280) return 3;
+    return 4;
+  }
+
+  chunkBooks(books: readonly Book[], columns: number): Array<Array<Book | null>> {
+    const safeCols = Math.max(1, Math.floor(columns));
+    if (this.lastChunkBooks === books && this.lastChunkCols === safeCols) return this.lastChunkRows;
+
+    this.lastChunkBooks = books;
+    this.lastChunkCols = safeCols;
+
+    const rows: Array<Array<Book | null>> = [];
+    const rowCount = Math.ceil(books.length / safeCols);
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+      const row: Array<Book | null> = [];
+      for (let colIndex = 0; colIndex < safeCols; colIndex++) {
+        const idx = rowIndex * safeCols + colIndex;
+        row.push(idx < books.length ? books[idx] : null);
+      }
+      rows.push(row);
+    }
+
+    this.lastChunkRows = rows;
+    return rows;
+  }
+
+  trackByRowIndex(index: number, _row: Array<Book | null>): number {
+    return index;
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.needsRowMeasure) return;
+
+    const row = this.hostEl.nativeElement.querySelector('.book-virtual-row') as HTMLElement | null;
+    if (!row) return;
+
+    const measured = Math.round(row.getBoundingClientRect().height);
+    if (measured > 0 && Math.abs(measured - this.rowHeightPx) >= 4) {
+      this.rowHeightPx = measured;
+      this.viewport?.checkViewportSize();
+    }
+
+    this.needsRowMeasure = false;
   }
 
   loadCategories(): void {
@@ -191,6 +276,7 @@ export class BookListComponent implements OnInit {
   }
 
   goToPage(page: number): void {
+    this.smoothScroll.scrollToTop(520);
     this.currentPage.set(page);
   }
 

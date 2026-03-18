@@ -134,11 +134,29 @@
         </p>
       </div>
 
-      <div class="book-grid" appReveal="stagger">
-        @for (book of bookList; track book.id) {
-          <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
-        }
-      </div>
+      @let rows = chunkBooks(bookList, columns());
+
+      <cdk-virtual-scroll-viewport
+        class="book-virtual-viewport"
+        [itemSize]="rowHeightPx"
+        [minBufferPx]="700"
+        [maxBufferPx]="1400"
+      >
+        <div
+          *cdkVirtualFor="let row of rows; let rowIndex = index; trackBy: trackByRowIndex"
+          class="book-virtual-row"
+          [style.height.px]="rowHeightPx"
+          [style.--book-cols]="columns()"
+        >
+          @for (cell of row; track $index) {
+            @if (cell) {
+              <app-book-card [book]="cell" (addToCart)="handleAddToCart($event)" />
+            } @else {
+              <div class="book-card-placeholder" aria-hidden="true"></div>
+            }
+          }
+        </div>
+      </cdk-virtual-scroll-viewport>
 
       @if (totalPages() > 1) {
         <nav class="pagination" aria-label="Books pagination">

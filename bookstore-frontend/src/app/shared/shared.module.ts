@@ -16,6 +16,7 @@ import { ShippingDisplayPipe } from './pipes/shipping-display.pipe';
 import { StatusIndexPipe } from './pipes/status-index.pipe';
 import { RevealOnScrollDirective } from './directives/reveal-on-scroll.directive';
 import { TitleRevealDirective } from './directives/title-reveal.directive';
+import { SmoothAnchorDirective } from './directives/smooth-anchor.directive';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { TitleRevealDirective } from './directives/title-reveal.directive';
     StatusIndexPipe,
     RevealOnScrollDirective,
     TitleRevealDirective,
+    SmoothAnchorDirective,
   ],
   exports: [
     CommonModule,
@@ -51,6 +53,7 @@ import { TitleRevealDirective } from './directives/title-reveal.directive';
     StatusIndexPipe,
     RevealOnScrollDirective,
     TitleRevealDirective,
+    SmoothAnchorDirective,
   ],
 })
 export class SharedModule {}
