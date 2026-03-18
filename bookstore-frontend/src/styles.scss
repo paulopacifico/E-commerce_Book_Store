@@ -1014,6 +1014,48 @@ textarea.ng-invalid.ng-touched,
 }
 
 /* --------------------------------------------------------------------------
+   Scroll reveal variants (Phase 4)
+   -------------------------------------------------------------------------- */
+.reveal.reveal-type-stagger,
+.reveal.reveal-type-slide-alternate {
+  /* Containers should not translate; only children animate. */
+  transform: translate3d(0, 0, 0);
+}
+
+.reveal.reveal-type-scale {
+  transform: translate3d(0, 10px, 0) scale(0.985);
+}
+
+.sr-stagger-item {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  will-change: transform, opacity;
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
+  transition-delay: var(--sr-stagger-delay-ms, 0ms);
+}
+
+.reveal.is-revealed .sr-stagger-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.sr-alternate-item {
+  opacity: 0;
+  transform: translate3d(var(--sr-alt-x, 0px), 14px, 0);
+  will-change: transform, opacity;
+  transition:
+    opacity var(--transition-normal),
+    transform var(--transition-normal);
+}
+
+.reveal.is-revealed .sr-alternate-item {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* --------------------------------------------------------------------------
    Title reveal (word-stagger)
    -------------------------------------------------------------------------- */
 .title-reveal {

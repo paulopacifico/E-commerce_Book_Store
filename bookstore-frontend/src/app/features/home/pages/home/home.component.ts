@@ -4,7 +4,10 @@ import {
   ChangeDetectionStrategy,
   signal,
   OnInit,
+  AfterViewInit,
   DestroyRef,
+  OnDestroy,
+  ElementRef,
   computed,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -15,6 +18,7 @@ import { CategoryService } from '../../../categories/data-access/category.servic
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { CartStateService } from '../../../cart/data-access/cart-state.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { AnimationsService } from '../../../../shared/services/animations/animations.service';
 import type { Book } from '../../../books/models/book.interface';
 import type { Category } from '../../../categories/models/category.interface';
 import { BookCardComponent } from '../../../../shared/components/book-card/book-card.component';
@@ -36,13 +40,15 @@ import { TitleRevealDirective } from '../../../../shared/directives/title-reveal
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
   private readonly authService = inject(AuthService);
   private readonly cartStateService = inject(CartStateService);
   private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly hostEl = inject(ElementRef<HTMLElement>);
+  private readonly animations = inject(AnimationsService);
 
   readonly featuredBooks = signal<Book[]>([]);
   readonly categories = signal<Category[]>([]);
@@ -100,6 +106,51 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.loadFeaturedBooks();
     this.loadCategories();
+  }
+
+  private scrollRafId: number | null = null;
+  private removeScrollListener: (() => void) | null = null;
+
+  ngAfterViewInit(): void {
+    const width = typeof window !== 'undefined' ? window.innerWidth : 9999;
+    if (this.animations.prefersReducedMotion || width < 640) return;
+
+    const heroSection = this.hostEl.nativeElement.querySelector(
+      'section.hero',
+    ) as HTMLElement | null;
+    const heroBg = this.hostEl.nativeElement.querySelector('.hero-bg') as HTMLElement | null;
+    if (!heroSection || !heroBg) return;
+
+    const heroTop = heroSection.getBoundingClientRect().top + window.scrollY;
+
+    const update = (): void => {
+      const y = Math.max(0, window.scrollY - heroTop);
+      // Subtle parallax: background moves at half scroll speed.
+      const offsetY = -y * 0.5;
+      heroBg.style.transform = `translate3d(0, ${offsetY.toFixed(1)}px, 0)`;
+    };
+
+    const onScroll = (): void => {
+      if (this.scrollRafId != null) return;
+      this.scrollRafId = requestAnimationFrame(() => {
+        this.scrollRafId = null;
+        update();
+      });
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    this.removeScrollListener = (): void => {
+      window.removeEventListener('scroll', onScroll);
+      if (this.scrollRafId != null) cancelAnimationFrame(this.scrollRafId);
+      this.scrollRafId = null;
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.removeScrollListener?.();
+    this.removeScrollListener = null;
   }
 
   loadFeaturedBooks(): void {

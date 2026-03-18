@@ -9,11 +9,13 @@
     </div>
     <div class="catalog-stats" aria-label="Catalog overview">
       <div class="catalog-stat">
-        <span class="catalog-stat-value">{{ totalResults() || '120+' }}</span>
+        <span class="catalog-stat-value" appReveal="counter">{{ totalResults() || '120+' }}</span>
         <span class="catalog-stat-label">Titles indexed</span>
       </div>
       <div class="catalog-stat">
-        <span class="catalog-stat-value">{{ categories().length || '12' }}</span>
+        <span class="catalog-stat-value" appReveal="counter">{{
+          categories().length || '12'
+        }}</span>
         <span class="catalog-stat-label">Categories</span>
       </div>
     </div>
@@ -132,7 +134,7 @@
         </p>
       </div>
 
-      <div class="book-grid">
+      <div class="book-grid" appReveal="stagger">
         @for (book of bookList; track book.id) {
           <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
         }

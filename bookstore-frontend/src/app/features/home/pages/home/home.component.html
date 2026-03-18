@@ -92,7 +92,7 @@
         </p>
       </div>
 
-      <div class="journey-grid">
+      <div class="journey-grid" appReveal="slide-alternate">
         @for (step of purchaseJourney; track step.step) {
           <article class="journey-card surface-panel">
             <span class="journey-step">{{ step.step }}</span>
@@ -166,7 +166,7 @@
               </div>
             }
 
-            <div class="featured-sidebar">
+            <div class="featured-sidebar" appReveal="scale">
               <p class="sidebar-kicker">Why it works</p>
               <ul class="curated-list" aria-label="Featured shelf notes">
                 <li class="curated-item">
@@ -182,7 +182,7 @@
             </div>
           </div>
 
-          <div class="featured-grid">
+          <div class="featured-grid" appReveal="stagger">
             @for (book of featuredBooks(); track trackByBookId($index, book)) {
               <app-book-card [book]="book" (addToCart)="handleAddToCart($event)" />
             }
@@ -231,7 +231,7 @@
         </div>
       } @else {
         @if (categoryHighlights().length > 0) {
-          <div class="categories-grid">
+          <div class="categories-grid" appReveal="slide-alternate">
             @for (
               cat of categoryHighlights();
               track trackByCategoryId($index, cat);
@@ -282,7 +282,7 @@
         </div>
       </div>
 
-      <div class="features-grid">
+      <div class="features-grid" appReveal="slide-alternate">
         @for (feature of serviceHighlights; track feature.title) {
           <article class="feature-card">
             <span class="feature-index" aria-hidden="true">{{ $index + 1 }}</span>

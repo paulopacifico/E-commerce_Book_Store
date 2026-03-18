@@ -1,4 +1,14 @@
-<div class="book-detail">
+<div #detailRoot class="book-detail">
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress-bar" [style.transform]="'scaleX(' + readingProgress() + ')'"></div>
+  </div>
+
+  @if (showScrollToTop()) {
+    <button type="button" class="scroll-to-top" (click)="scrollToTop()" aria-label="Scroll to top">
+      ↑ Top
+    </button>
+  }
+
   @if (loading()) {
     <div class="loading-wrap" aria-busy="true">
       <span class="spinner"></span>
@@ -13,7 +23,7 @@
       </div>
     } @else if (result && 'book' in result) {
       @let book = result.book;
-      <div class="detail-layout">
+      <div class="detail-layout" appReveal="slide-alternate">
         <div class="image-section">
           @if (book.imageUrl && !imageError()) {
             <img
@@ -27,7 +37,7 @@
           }
         </div>
         <div class="info-section">
-          <h1 class="title">{{ book.title }}</h1>
+          <h1 class="title" appTitleReveal>{{ book.title }}</h1>
           <p class="author">by {{ book.author }}</p>
           @if (book.isbn) {
             <p class="meta"><strong>ISBN:</strong> {{ book.isbn }}</p>
