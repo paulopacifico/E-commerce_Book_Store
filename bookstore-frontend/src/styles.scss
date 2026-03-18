@@ -951,6 +951,32 @@ textarea.ng-invalid.ng-touched,
   }
 }
 
+/* --------------------------------------------------------------------------
+   Motion accessibility + performance utilities
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-transform-opacity {
+  will-change: transform, opacity;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
