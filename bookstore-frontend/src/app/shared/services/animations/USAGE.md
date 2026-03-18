@@ -68,4 +68,3 @@ And bind:
 - **Avoid layout thrash**: no animated `height/width/top/left`.
 - **will-change**: opt-in via `.will-change-transform-opacity` only on frequently-animated elements.
 - **Reduced motion**: global `prefers-reduced-motion` override is in `src/styles.scss`, and `AnimationsService.motionParams()` collapses motion at runtime.
-

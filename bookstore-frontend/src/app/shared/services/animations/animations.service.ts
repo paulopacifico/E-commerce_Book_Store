@@ -124,7 +124,10 @@ export class AnimationsService {
       animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translate3d(0, 0, 0)' })),
     ]),
     transition(':leave', [
-      animate('{{exitMs}}ms ease', style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' })),
+      animate(
+        '{{exitMs}}ms ease',
+        style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' }),
+      ),
     ]),
   ]);
 
@@ -187,4 +190,3 @@ export class AnimationsService {
     transition(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))]),
   ]);
 }
-
