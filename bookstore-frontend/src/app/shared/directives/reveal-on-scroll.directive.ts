@@ -34,7 +34,9 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
    * - `<div appReveal="stagger">` -> staggered fade for direct children
    * - `<span appReveal="counter">10,000+</span>` -> animates numbers when visible
    */
-  @Input() appReveal: RevealAnimationType | boolean = 'subtle';
+  // Angular passes a bare attribute like `appReveal` as an empty string (`""`) in template typechecking.
+  // We accept `""` and normalize it to the default preset.
+  @Input() appReveal: RevealAnimationType | boolean | '' = 'subtle';
   @Input() revealOnce = true;
   @Input() revealRootMargin = '0px 0px -12% 0px';
   @Input() revealThreshold = 0.15;
@@ -49,6 +51,7 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     const node = this.el.nativeElement;
+
     const normalized = this.normalizeType(this.appReveal);
 
     if (!this.shouldAnimate()) {
@@ -79,9 +82,9 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
     );
   }
 
-  private normalizeType(input: RevealAnimationType | boolean): NormalizedRevealType {
-    if (input === true) return 'subtle';
-    if (input === false) return 'subtle';
+  private normalizeType(input: RevealAnimationType | boolean | ''): NormalizedRevealType {
+    if (input === '' || input === true || input === false) return 'subtle';
+
     switch (input) {
       case 'subtle':
       case 'standard':

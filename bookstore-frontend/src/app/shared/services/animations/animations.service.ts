@@ -23,6 +23,109 @@ type MotionConfig = Readonly<{
   scaleFrom: number;
 }>;
 
+/**
+ * Animation triggers (no DI required).
+ * These are exported so components can reference them in `@Component({ animations: [...] })`
+ * without calling `inject()` in decorator metadata (which Angular forbids).
+ */
+export const pageTransition: AnimationTriggerMetadata = trigger('pageTransition', [
+  transition('* <=> *', [
+    style({ position: 'relative' }),
+    query(':enter, :leave', [style({ position: 'absolute', inset: 0 })], { optional: true }),
+    query(':enter', [style({ opacity: 0, transform: 'translateY({{yPx}}px)' })], {
+      optional: true,
+    }),
+    group([
+      query(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))], { optional: true }),
+      query(
+        ':enter',
+        [animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))],
+        { optional: true },
+      ),
+    ]),
+    query(':enter', animateChild(), { optional: true }),
+  ]),
+]);
+
+/** Simple fade for :enter/:leave elements. */
+export const fadeInOut: AnimationTriggerMetadata = trigger('fadeInOut', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('{{enterMs}}ms ease-out', style({ opacity: 1 })),
+  ]),
+  transition(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))]),
+]);
+
+/** Slide + fade for panels/drawers. Direction is encoded via xPx/yPx params. */
+export const slideInOut: AnimationTriggerMetadata = trigger('slideInOut', [
+  transition(':enter', [
+    style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' }),
+    animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translate3d(0, 0, 0)' })),
+  ]),
+  transition(':leave', [
+    animate(
+      '{{exitMs}}ms ease',
+      style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' }),
+    ),
+  ]),
+]);
+
+/** Scale + fade for dialogs/popovers. */
+export const scaleInOut: AnimationTriggerMetadata = trigger('scaleInOut', [
+  transition(':enter', [
+    style({ opacity: 0, transform: 'scale({{scaleFrom}})' }),
+    animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'scale(1)' })),
+  ]),
+  transition(':leave', [
+    animate('{{exitMs}}ms ease', style({ opacity: 0, transform: 'scale({{scaleFrom}})' })),
+  ]),
+]);
+
+/**
+ * Staggered list reveal. Apply on the list container.
+ * Animates direct children (default selector ':enter') using opacity + translateY.
+ */
+export const listStagger: AnimationTriggerMetadata = trigger('listStagger', [
+  transition(':enter, * => *', [
+    query(
+      ':enter',
+      [
+        style({ opacity: 0, transform: 'translateY({{yPx}}px)' }),
+        stagger('{{staggerMs}}ms', [
+          animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        ]),
+      ],
+      { optional: true },
+    ),
+  ]),
+]);
+
+/**
+ * Modal/dialog container motion (content panel). Pair with `modalBackdrop`.
+ * Useful for custom modals or Material dialogs via panelClass wrapper.
+ */
+export const modalPanel: AnimationTriggerMetadata = trigger('modalPanel', [
+  transition(':enter', [
+    style({ opacity: 0, transform: 'translate3d(0, {{yPx}}px, 0) scale({{scaleFrom}})' }),
+    animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' })),
+  ]),
+  transition(':leave', [
+    animate(
+      '{{exitMs}}ms ease',
+      style({ opacity: 0, transform: 'translate3d(0, {{yPx}}px, 0) scale({{scaleFrom}})' }),
+    ),
+  ]),
+]);
+
+/** Modal/dialog backdrop fade. */
+export const modalBackdrop: AnimationTriggerMetadata = trigger('modalBackdrop', [
+  transition(':enter', [
+    style({ opacity: 0 }),
+    animate('{{enterMs}}ms ease-out', style({ opacity: 1 })),
+  ]),
+  transition(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))]),
+]);
+
 @Injectable({ providedIn: 'root' })
 export class AnimationsService {
   /**
@@ -84,109 +187,4 @@ export class AnimationsService {
     if (typeof window === 'undefined') return false;
     return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
   }
-
-  /**
-   * Page transitions for router outlet containers.
-   * Applies to :enter/:leave and runs child animations when present.
-   */
-  readonly pageTransition: AnimationTriggerMetadata = trigger('pageTransition', [
-    transition('* <=> *', [
-      style({ position: 'relative' }),
-      query(':enter, :leave', [style({ position: 'absolute', inset: 0 })], { optional: true }),
-      query(':enter', [style({ opacity: 0, transform: 'translateY({{yPx}}px)' })], {
-        optional: true,
-      }),
-      group([
-        query(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))], { optional: true }),
-        query(
-          ':enter',
-          [animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))],
-          { optional: true },
-        ),
-      ]),
-      query(':enter', animateChild(), { optional: true }),
-    ]),
-  ]);
-
-  /** Simple fade for :enter/:leave elements. */
-  readonly fadeInOut: AnimationTriggerMetadata = trigger('fadeInOut', [
-    transition(':enter', [
-      style({ opacity: 0 }),
-      animate('{{enterMs}}ms ease-out', style({ opacity: 1 })),
-    ]),
-    transition(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))]),
-  ]);
-
-  /** Slide + fade for panels/drawers. Direction is encoded via xPx/yPx params. */
-  readonly slideInOut: AnimationTriggerMetadata = trigger('slideInOut', [
-    transition(':enter', [
-      style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' }),
-      animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translate3d(0, 0, 0)' })),
-    ]),
-    transition(':leave', [
-      animate(
-        '{{exitMs}}ms ease',
-        style({ opacity: 0, transform: 'translate3d({{xPx}}px, {{yPx}}px, 0)' }),
-      ),
-    ]),
-  ]);
-
-  /** Scale + fade for dialogs/popovers. */
-  readonly scaleInOut: AnimationTriggerMetadata = trigger('scaleInOut', [
-    transition(':enter', [
-      style({ opacity: 0, transform: 'scale({{scaleFrom}})' }),
-      animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'scale(1)' })),
-    ]),
-    transition(':leave', [
-      animate('{{exitMs}}ms ease', style({ opacity: 0, transform: 'scale({{scaleFrom}})' })),
-    ]),
-  ]);
-
-  /**
-   * Staggered list reveal. Apply on the list container.
-   * Animates direct children (default selector ':enter') using opacity + translateY.
-   */
-  readonly listStagger: AnimationTriggerMetadata = trigger('listStagger', [
-    transition(':enter, * => *', [
-      query(
-        ':enter',
-        [
-          style({ opacity: 0, transform: 'translateY({{yPx}}px)' }),
-          stagger('{{staggerMs}}ms', [
-            animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-          ]),
-        ],
-        { optional: true },
-      ),
-    ]),
-  ]);
-
-  /**
-   * Modal/dialog container motion (content panel). Pair with `modalBackdrop`.
-   * Useful for custom modals or Material dialogs via panelClass wrapper.
-   */
-  readonly modalPanel: AnimationTriggerMetadata = trigger('modalPanel', [
-    transition(':enter', [
-      style({ opacity: 0, transform: 'translate3d(0, {{yPx}}px, 0) scale({{scaleFrom}})' }),
-      animate(
-        '{{enterMs}}ms ease-out',
-        style({ opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }),
-      ),
-    ]),
-    transition(':leave', [
-      animate(
-        '{{exitMs}}ms ease',
-        style({ opacity: 0, transform: 'translate3d(0, {{yPx}}px, 0) scale({{scaleFrom}})' }),
-      ),
-    ]),
-  ]);
-
-  /** Modal/dialog backdrop fade. */
-  readonly modalBackdrop: AnimationTriggerMetadata = trigger('modalBackdrop', [
-    transition(':enter', [
-      style({ opacity: 0 }),
-      animate('{{enterMs}}ms ease-out', style({ opacity: 1 })),
-    ]),
-    transition(':leave', [animate('{{exitMs}}ms ease', style({ opacity: 0 }))]),
-  ]);
 }

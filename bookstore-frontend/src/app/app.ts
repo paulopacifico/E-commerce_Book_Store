@@ -9,20 +9,24 @@ import {
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
-import { AnimationsService } from './shared/services/animations/animations.service';
+import {
+  AnimationsService,
+  pageTransition,
+} from './shared/services/animations/animations.service';
 
 @Component({
   selector: 'app-root',
   standalone: false,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  animations: [inject(AnimationsService).pageTransition],
+  animations: [pageTransition],
 })
 export class AppComponent implements OnInit, OnDestroy {
   isNavigating = false;
   private sub: Subscription | null = null;
 
-  constructor(private readonly router: Router) {}
+  constructor(private readonly router: Router) {
+  }
 
   private readonly animations = inject(AnimationsService);
   readonly motion = this.animations.motionParams('standard');
@@ -46,10 +50,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  prepareRoute(outlet: RouterOutlet): string {
+  prepareRoute(outlet: RouterOutlet | null | undefined): string {
+    if (!outlet?.isActivated) {
+      return 'App';
+    }
     return (
-      (outlet?.activatedRouteData?.['animation'] as string | undefined) ??
-      outlet?.activatedRoute?.routeConfig?.path ??
+      (outlet.activatedRouteData?.['animation'] as string | undefined) ??
+      outlet.activatedRoute.snapshot.routeConfig?.path ??
       'App'
     );
   }
