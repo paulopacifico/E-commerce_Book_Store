@@ -8,9 +8,9 @@
    CSS variables – theme (warm paper, ink, terracotta accent)
    -------------------------------------------------------------------------- */
 :root {
-  /* Typography */
-  --font-family-display: 'Cormorant Garamond', Georgia, serif;
-  --font-family-body: 'Source Sans 3', system-ui, sans-serif;
+  /* TweakCN Modern Minimal (shadcn) → legacy storefront tokens */
+  --font-family-display: var(--font-serif, 'Source Serif 4', Georgia, serif);
+  --font-family-body: var(--font-sans, 'Inter', system-ui, sans-serif);
   --font-family-ui: var(--font-family-body);
   --font-display: var(--font-family-display);
   --font-body: var(--font-family-body);
@@ -57,34 +57,34 @@
   --overlay-strong: rgba(26, 26, 26, 0.72);
   --overlay-soft: rgba(26, 26, 26, 0.12);
 
-  /* Semantic color tokens */
-  --color-primary: var(--brand-clay-500);
-  --color-primary-dark: var(--brand-clay-600);
-  --color-primary-light: var(--brand-clay-400);
-  --color-secondary: #2c2c2c;
-  --color-secondary-dark: var(--ink-950);
-  --color-secondary-light: #5c5c5c;
+  /* Semantic color tokens (aligned with TweakCN Modern Minimal / shadcn) */
+  --color-primary: var(--primary);
+  --color-primary-dark: color-mix(in oklch, var(--primary) 82%, black);
+  --color-primary-light: color-mix(in oklch, var(--primary) 90%, white);
+  --color-secondary: var(--secondary-foreground);
+  --color-secondary-dark: var(--foreground);
+  --color-secondary-light: var(--muted-foreground);
   --color-success: var(--success-500);
   --color-success-light: #4caf50;
-  --color-error: var(--error-500);
+  --color-error: var(--destructive);
   --color-error-light: #ef5350;
   --color-warning: var(--warning-500);
   --color-warning-light: #ff9800;
   --color-info: var(--info-500);
-  --color-background: var(--neutral-50);
-  --color-surface: #fefefe;
-  --color-surface-muted: var(--neutral-100);
-  --color-surface-raised: var(--neutral-0);
-  --color-paper: var(--neutral-100);
-  --color-text: var(--neutral-900);
-  --color-text-secondary: var(--neutral-700);
-  --color-text-muted: var(--neutral-500);
-  --color-text-inverse: rgba(255, 255, 255, 0.95);
-  --color-border: var(--neutral-200);
-  --color-border-strong: var(--neutral-300);
+  --color-background: var(--background);
+  --color-surface: var(--card);
+  --color-surface-muted: var(--muted);
+  --color-surface-raised: var(--card);
+  --color-paper: var(--muted);
+  --color-text: var(--foreground);
+  --color-text-secondary: var(--muted-foreground);
+  --color-text-muted: var(--muted-foreground);
+  --color-text-inverse: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border);
   --color-border-inverse: rgba(255, 255, 255, 0.24);
-  --color-border-focus: var(--color-primary);
-  --color-ink: var(--ink-950);
+  --color-border-focus: var(--ring);
+  --color-ink: var(--foreground);
 
   /* Spacing */
   --space-0: 0;
@@ -171,11 +171,9 @@ body {
   font-family: var(--font-body);
   font-size: var(--font-size-md);
   line-height: var(--line-height-body);
-  color: var(--color-text);
-  background-color: var(--color-background);
-  background-image:
-    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(196, 92, 38, 0.04), transparent),
-    linear-gradient(180deg, var(--color-background) 0%, var(--color-paper) 100%);
+  color: var(--foreground);
+  background-color: var(--background);
+  background-image: none;
   min-height: 100%;
 }
 
