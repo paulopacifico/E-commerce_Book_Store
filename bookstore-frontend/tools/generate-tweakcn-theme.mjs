@@ -51,6 +51,7 @@ const themeColors = [
 
 let css = `/* Auto-generated from tools/themes/modern-minimal.json — run: npm run theme:generate */
 @import "tailwindcss";
+@import "@spartan-ng/brain/hlm-tailwind-preset.css";
 
 /* Scan Angular templates + TS (host bindings) for utility classes */
 @source "./**/*.{html,ts}";
