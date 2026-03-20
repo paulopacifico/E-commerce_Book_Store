@@ -40,12 +40,13 @@
   --overlay-soft: rgb(26 26 26 / 12%);
 
   /* Semantic color tokens (aligned with TweakCN Modern Minimal / shadcn) */
-  --color-primary: var(--primary);
-  --color-primary-dark: color-mix(in oklch, var(--primary) 82%, black);
-  --color-primary-light: color-mix(in oklch, var(--primary) 90%, white);
-  --color-secondary: var(--secondary-foreground);
-  --color-secondary-dark: var(--foreground);
-  --color-secondary-light: var(--muted-foreground);
+  --color-primary: var(--brand-clay-500);
+  --color-primary-rgb: 196, 92, 38;
+  --color-primary-dark: var(--brand-clay-600);
+  --color-primary-light: color-mix(in oklch, var(--brand-clay-400) 78%, var(--white));
+  --color-secondary: var(--neutral-700);
+  --color-secondary-dark: var(--ink-950);
+  --color-secondary-light: var(--neutral-500);
   --color-success: var(--success-500);
   --color-success-light: #4caf50;
   --color-error: var(--destructive);
@@ -57,10 +58,12 @@
   --color-surface: var(--card);
   --color-surface-muted: var(--muted);
   --color-surface-raised: var(--card);
+  --color-surface-elevated: color-mix(in oklch, var(--card) 94%, var(--white));
   --color-paper: var(--muted);
   --color-text: var(--foreground);
   --color-text-secondary: var(--muted-foreground);
   --color-text-muted: var(--muted-foreground);
+  --color-text-tertiary: color-mix(in oklch, var(--muted-foreground) 84%, var(--background));
   --color-text-inverse: var(--primary-foreground);
   --color-border: var(--border);
   --color-border-strong: var(--border);
@@ -107,6 +110,10 @@
   --interactive-hover-surface: rgba(196, 92, 38, 0.08);
   --interactive-press-surface: rgba(196, 92, 38, 0.14);
   --interactive-selected-surface: rgba(196, 92, 38, 0.1);
+  --state-success-border: color-mix(in oklch, var(--success-500) 30%, var(--white));
+  --state-warning-border: color-mix(in oklch, var(--warning-500) 32%, var(--white));
+  --state-error-border: color-mix(in oklch, var(--error-500) 32%, var(--white));
+  --state-info-border: color-mix(in oklch, var(--info-500) 30%, var(--white));
 }
 
 /* --------------------------------------------------------------------------
@@ -166,7 +173,12 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary);
 }
 
 *:focus-visible {
@@ -210,7 +222,7 @@ p,
   font-size: var(--font-size-md);
   line-height: var(--line-height-body);
   margin: 0 0 var(--space-3);
-  color: var(--color-text);
+  color: var(--color-text-secondary);
 }
 
 :where(p, h1, h2, h3, h4, h5, h6):last-child {
@@ -289,7 +301,7 @@ p,
 .text-caption {
   font-size: var(--font-size-sm);
   line-height: 1.45;
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
 }
 
 .text-balance {
@@ -621,30 +633,32 @@ $spacing-scale: (
 }
 
 .btn-primary {
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-primary);
   color: var(--white);
-  border-color: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);
   &:hover:not(:disabled):not(.disabled) {
-    background-color: color-mix(in oklch, var(--color-primary-dark) 88%, var(--black));
-    border-color: color-mix(in oklch, var(--color-primary-dark) 88%, var(--black));
-    box-shadow: var(--shadow-md);
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);
   }
   &:active:not(:disabled):not(.disabled) {
-    background-color: color-mix(in oklch, var(--color-primary-dark) 80%, var(--black));
+    background-color: color-mix(in oklch, var(--color-primary-dark) 92%, var(--black));
   }
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  color: #fff;
-  border-color: var(--color-secondary);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text);
+  border-color: var(--color-border);
   &:hover:not(:disabled):not(.disabled) {
-    background-color: var(--color-secondary-dark);
-    border-color: var(--color-secondary-dark);
-    box-shadow: var(--shadow-md);
+    background-color: var(--color-surface-elevated);
+    border-color: var(--border-medium);
+    color: var(--color-text);
+    box-shadow: var(--shadow-sm);
   }
   &:active:not(:disabled):not(.disabled) {
-    background-color: var(--color-secondary-dark);
+    background-color: var(--color-surface-muted);
   }
 }
 
@@ -663,7 +677,7 @@ $spacing-scale: (
 
 .btn-success {
   background-color: var(--color-success);
-  color: #fff;
+  color: var(--white);
   border-color: var(--color-success);
   &:hover:not(:disabled):not(.disabled) {
     background-color: color.adjust(#2e7d32, $lightness: -6%);
@@ -672,7 +686,7 @@ $spacing-scale: (
 
 .btn-danger {
   background-color: var(--color-error);
-  color: #fff;
+  color: var(--white);
   border-color: var(--color-error);
   &:hover:not(:disabled):not(.disabled) {
     background-color: color.adjust(#c62828, $lightness: -6%);
@@ -880,9 +894,9 @@ textarea.ng-invalid.ng-touched,
 }
 
 .form-banner-success {
-  background: rgba(223, 242, 227, 0.75);
-  border-color: rgba(46, 125, 50, 0.22);
-  color: #245c27;
+  background: var(--state-success-bg);
+  border-color: var(--state-success-border);
+  color: var(--state-success-text);
 }
 
 .form-banner-success::before {
@@ -890,9 +904,9 @@ textarea.ng-invalid.ng-touched,
 }
 
 .form-banner-error {
-  background: rgba(248, 221, 221, 0.75);
-  border-color: rgba(183, 28, 28, 0.22);
-  color: #8d1818;
+  background: var(--state-error-bg);
+  border-color: var(--state-error-border);
+  color: var(--state-error-text);
 }
 
 .form-banner-error::before {
@@ -900,9 +914,9 @@ textarea.ng-invalid.ng-touched,
 }
 
 .form-banner-info {
-  background: rgba(219, 231, 248, 0.75);
-  border-color: rgba(13, 71, 161, 0.2);
-  color: #0b3a84;
+  background: var(--state-info-bg);
+  border-color: var(--state-info-border);
+  color: var(--state-info-text);
 }
 
 .form-banner-info::before {
@@ -1226,7 +1240,11 @@ textarea.ng-invalid.ng-touched,
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--color-ink);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--brand-clay-700) 34%, var(--ink-950)),
+    color-mix(in oklch, var(--brand-clay-700) 26%, var(--ink-950))
+  );
   color: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-md);
   transition: box-shadow var(--transition-normal);
@@ -1256,7 +1274,7 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .logo:hover {
-  color: #fff;
+  color: var(--white);
   opacity: 0.92;
 }
 
@@ -1287,7 +1305,7 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .hamburger:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in oklch, var(--white) 6%, transparent);
 }
 
 .header-toolbar .hamburger span {
@@ -1329,7 +1347,7 @@ textarea.ng-invalid.ng-touched,
 .header-toolbar .nav-links a {
   padding: 0.5rem 0.875rem;
   border-radius: var(--radius-sm);
-  color: inherit;
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.9375rem;
   font-weight: 500;
   text-decoration: none;
@@ -1355,8 +1373,8 @@ textarea.ng-invalid.ng-touched,
 
 .header-toolbar .nav-links a:hover,
 .header-toolbar .nav-links a.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
 }
 
 .header-toolbar .nav-links a:hover::after,
@@ -1366,7 +1384,8 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .nav-links a.active {
-  background: rgba(255, 255, 255, 0.14);
+  color: var(--warning-100);
+  background: color-mix(in oklch, var(--brand-clay-400) 22%, transparent);
 }
 
 .header-toolbar .search-wrap {
@@ -1381,8 +1400,8 @@ textarea.ng-invalid.ng-touched,
   flex: 1;
   min-width: 0;
   border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: color-mix(in oklch, var(--white) 8%, transparent);
+  color: var(--white);
 }
 
 .header-toolbar .search-input::placeholder {
@@ -1392,7 +1411,7 @@ textarea.ng-invalid.ng-touched,
 .header-toolbar .search-input:hover,
 .header-toolbar .search-input:focus {
   border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in oklch, var(--white) 12%, transparent);
   box-shadow: none;
 }
 
@@ -1403,10 +1422,10 @@ textarea.ng-invalid.ng-touched,
   justify-content: center;
   gap: var(--space-2);
   padding: 0.5rem 0.875rem;
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+  background: color-mix(in oklch, var(--white) 8%, transparent);
+  color: var(--white);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -1418,8 +1437,8 @@ textarea.ng-invalid.ng-touched,
 
 .header-toolbar .search-btn:hover,
 .header-toolbar .menu-trigger:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.36);
 }
 
 .header-toolbar .actions,
@@ -1439,8 +1458,8 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .auth-buttons .btn-outline {
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #fff;
+  border-color: rgba(255, 255, 255, 0.36);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .header-toolbar .auth-buttons .btn-outline:hover {
@@ -1448,14 +1467,14 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .auth-buttons .btn-primary {
-  background: #fff;
-  border-color: #fff;
-  color: var(--color-ink);
+  background: var(--warning-100);
+  border-color: color-mix(in oklch, var(--warning-100) 80%, var(--white));
+  color: var(--brand-clay-700);
 }
 
 .header-toolbar .auth-buttons .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(255, 255, 255, 0.95);
+  background: color-mix(in oklch, var(--warning-100) 88%, var(--white));
+  border-color: color-mix(in oklch, var(--warning-100) 88%, var(--white));
 }
 
 .header-toolbar .user-menu {
@@ -1565,14 +1584,14 @@ textarea.ng-invalid.ng-touched,
     position: static;
     margin-top: 0.25rem;
     border-color: rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
+    background: color-mix(in oklch, var(--white) 6%, transparent);
     box-shadow: none;
-    color: #fff;
+    color: var(--white);
   }
 
   .header-toolbar .user-menu .dropdown a:hover,
   .header-toolbar .user-menu .dropdown button:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: color-mix(in oklch, var(--white) 8%, transparent);
   }
 }
 
@@ -1619,7 +1638,7 @@ textarea.ng-invalid.ng-touched,
   display: inline-flex;
   align-items: center;
   margin: 0;
-  color: var(--color-primary-dark);
+  color: color-mix(in oklch, var(--color-primary-dark) 88%, var(--ink-950));
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
@@ -1637,15 +1656,17 @@ textarea.ng-invalid.ng-touched,
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.05;
   letter-spacing: -0.03em;
-  color: var(--color-ink);
+  color: color-mix(in oklch, var(--color-ink) 96%, var(--black));
+  text-wrap: balance;
 }
 
 .home-page .section-desc {
   max-width: 42rem;
   margin: 0;
-  color: var(--color-text-secondary);
+  color: color-mix(in oklch, var(--color-text-secondary) 92%, var(--neutral-700));
   font-size: var(--font-size-lg);
-  line-height: var(--line-height-loose);
+  line-height: 1.62;
+  text-wrap: pretty;
 }
 
 .home-page .hero {
@@ -1658,9 +1679,13 @@ textarea.ng-invalid.ng-touched,
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 15% 15%, rgba(240, 194, 124, 0.18), transparent 26%),
-    radial-gradient(circle at 85% 22%, rgba(255, 255, 255, 0.12), transparent 24%),
-    linear-gradient(135deg, #2e1b12 0%, #5b2817 38%, #9d4b28 100%);
+    radial-gradient(circle at 18% 18%, color-mix(in oklch, var(--warning-100) 16%, transparent), transparent 34%),
+    linear-gradient(
+      132deg,
+      color-mix(in oklch, var(--brand-clay-700) 54%, var(--black)) 0%,
+      color-mix(in oklch, var(--brand-clay-600) 72%, var(--black)) 52%,
+      color-mix(in oklch, var(--brand-clay-500) 80%, var(--black)) 100%
+    );
 }
 
 .home-page .hero-bg::after {
@@ -1668,9 +1693,9 @@ textarea.ng-invalid.ng-touched,
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(10, 10, 10, 0.08), rgba(10, 10, 10, 0.24)),
+    linear-gradient(180deg, color-mix(in oklch, var(--black) 10%, transparent), color-mix(in oklch, var(--black) 22%, transparent)),
     url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23fff7eb' stroke-opacity='0.06'%3E%3Cpath d='M20 40h180M20 110h180M20 180h180'/%3E%3Cpath d='M40 20v180M110 20v180M180 20v180'/%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.9;
+  opacity: 0.42;
 }
 
 .home-page .hero-shell {
@@ -1690,29 +1715,30 @@ textarea.ng-invalid.ng-touched,
   display: inline-flex;
   align-items: center;
   margin: 0;
-  color: rgba(255, 244, 227, 0.74);
+  color: color-mix(in oklch, var(--white) 62%, var(--warning-100));
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .home-page .hero-title {
   max-width: 12ch;
   margin: 0;
-  color: var(--hero-ink);
+  color: color-mix(in oklch, var(--white) 96%, var(--warning-100));
   font-family: var(--font-display);
   font-size: clamp(3rem, 7vw, 5.4rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
 }
 
 .home-page .hero-subtitle {
   max-width: 38rem;
   margin: 0;
-  color: rgba(255, 244, 238, 0.88);
+  color: color-mix(in oklch, var(--white) 76%, var(--brand-clay-100));
   font-size: var(--font-size-lg);
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 .home-page .btn-hero-primary,
@@ -1744,7 +1770,7 @@ textarea.ng-invalid.ng-touched,
 .home-page .btn-cta:focus-visible,
 .home-page .btn-outline:focus-visible,
 .home-page .category-card:focus-visible {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--white) 25%, transparent);
   outline-offset: 2px;
 }
 
@@ -1755,10 +1781,15 @@ textarea.ng-invalid.ng-touched,
 }
 
 .home-page .btn-hero-primary {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: var(--color-surface-raised);
-  color: var(--color-primary-dark);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid color-mix(in oklch, var(--warning-100) 84%, var(--white));
+  background: var(--warning-100);
+  color: var(--brand-clay-700);
+  box-shadow: 0 14px 26px -14px rgba(0, 0, 0, 0.48);
+}
+
+.home-page .btn-hero-primary:hover {
+  background: color-mix(in oklch, var(--warning-100) 92%, var(--white));
+  box-shadow: 0 18px 28px -14px rgba(0, 0, 0, 0.52);
 }
 
 .home-page .btn-hero-primary:hover,
@@ -1769,18 +1800,18 @@ textarea.ng-invalid.ng-touched,
 }
 
 .home-page .btn-hero-secondary {
-  border: 1px solid rgba(255, 244, 227, 0.34);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--hero-ink);
+  border: 1px solid color-mix(in oklch, var(--white) 34%, var(--warning-100));
+  background: color-mix(in oklch, var(--white) 4%, transparent);
+  color: color-mix(in oklch, var(--white) 90%, var(--warning-100));
 }
 
 .home-page .btn-hero-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in oklch, var(--white) 12%, transparent);
 }
 
 .home-page .btn-ghost-light {
-  border: 1px solid rgba(255, 244, 227, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid color-mix(in oklch, var(--white) 20%, var(--warning-100));
+  background: color-mix(in oklch, var(--white) 8%, transparent);
   color: var(--hero-ink);
 }
 
@@ -1796,19 +1827,19 @@ textarea.ng-invalid.ng-touched,
   padding: var(--space-4);
   border: 1px solid var(--hero-border);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklch, var(--white) 6%, transparent);
   backdrop-filter: blur(10px);
 }
 
 .home-page .signal-value {
-  color: var(--hero-ink);
+  color: color-mix(in oklch, var(--white) 90%, var(--warning-100));
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
 }
 
 .home-page .signal-label {
   margin: 0;
-  color: rgba(255, 244, 238, 0.78);
+  color: color-mix(in oklch, var(--white) 64%, var(--brand-clay-100));
   font-size: var(--font-size-sm);
   line-height: 1.55;
 }
@@ -1818,19 +1849,23 @@ textarea.ng-invalid.ng-touched,
   gap: var(--space-5);
   align-content: start;
   padding: var(--space-6);
-  border: 1px solid var(--hero-border);
+  border: 1px solid color-mix(in oklch, var(--white) 12%, transparent);
   background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 32%),
-    rgba(24, 12, 8, 0.42);
-  backdrop-filter: blur(14px);
+    linear-gradient(
+      160deg,
+      color-mix(in oklch, var(--black) 44%, var(--brand-clay-700)),
+      color-mix(in oklch, var(--black) 52%, var(--brand-clay-700))
+    );
+  backdrop-filter: blur(8px);
   color: var(--hero-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .home-page .spotlight-kicker,
 .home-page .lead-kicker,
 .home-page .sidebar-kicker {
   margin: 0;
-  color: rgba(255, 244, 227, 0.7);
+  color: color-mix(in oklch, var(--white) 62%, var(--warning-100));
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
@@ -1844,12 +1879,14 @@ textarea.ng-invalid.ng-touched,
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   line-height: 1.04;
   letter-spacing: -0.03em;
+  color: color-mix(in oklch, var(--white) 78%, var(--brand-clay-100));
+  text-wrap: balance;
 }
 
 .home-page .spotlight-author,
 .home-page .lead-author {
   margin: 0;
-  color: rgba(255, 244, 238, 0.78);
+  color: color-mix(in oklch, var(--white) 66%, var(--brand-clay-100));
   font-size: var(--font-size-sm);
   font-style: italic;
 }
@@ -1857,7 +1894,7 @@ textarea.ng-invalid.ng-touched,
 .home-page .spotlight-summary,
 .home-page .lead-copy {
   margin: 0;
-  color: rgba(255, 244, 238, 0.88);
+  color: color-mix(in oklch, var(--white) 74%, var(--brand-clay-100));
   line-height: 1.72;
 }
 
@@ -1873,13 +1910,13 @@ textarea.ng-invalid.ng-touched,
   display: grid;
   gap: var(--space-1);
   padding: var(--space-4);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid color-mix(in oklch, var(--white) 6%, transparent);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in oklch, var(--white) 3%, transparent);
 }
 
 .home-page .meta-label {
-  color: rgba(255, 244, 238, 0.68);
+  color: color-mix(in oklch, var(--white) 56%, var(--brand-clay-100));
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.14em;
@@ -1887,7 +1924,7 @@ textarea.ng-invalid.ng-touched,
 }
 
 .home-page .meta-value {
-  color: var(--hero-ink);
+  color: color-mix(in oklch, var(--white) 78%, var(--brand-clay-100));
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
 }
@@ -1901,7 +1938,7 @@ textarea.ng-invalid.ng-touched,
 
 .home-page .journey-section {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.9)),
+    linear-gradient(180deg, color-mix(in oklch, var(--white) 64%, transparent), color-mix(in oklch, var(--white) 90%, transparent)),
     var(--color-background);
 }
 
@@ -1924,7 +1961,7 @@ textarea.ng-invalid.ng-touched,
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 50%;
-  background: rgba(196, 92, 38, 0.1);
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
   color: var(--color-primary-dark);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
@@ -1933,21 +1970,21 @@ textarea.ng-invalid.ng-touched,
 .home-page .journey-title,
 .home-page .feature-title {
   margin: 0;
-  color: var(--color-ink);
+  color: color-mix(in oklch, var(--color-ink) 94%, var(--black));
   font-family: var(--font-display);
   font-size: 1.45rem;
-  line-height: 1.1;
+  line-height: 1.12;
 }
 
 .home-page .journey-detail,
 .home-page .feature-desc {
   margin: 0;
-  color: var(--color-text-secondary);
-  line-height: 1.7;
+  color: color-mix(in oklch, var(--color-text-secondary) 94%, var(--neutral-700));
+  line-height: 1.62;
 }
 
 .home-page .featured-section {
-  background: linear-gradient(180deg, rgba(248, 246, 243, 0.78), rgba(255, 255, 255, 0.96));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--neutral-50) 78%, transparent), color-mix(in oklch, var(--white) 96%, transparent));
 }
 
 .home-page .featured-skeletons,
@@ -1983,8 +2020,8 @@ textarea.ng-invalid.ng-touched,
 .home-page .curated-item {
   position: relative;
   padding-left: 1.1rem;
-  color: var(--color-text-secondary);
-  line-height: 1.65;
+  color: color-mix(in oklch, var(--color-text-secondary) 94%, var(--neutral-700));
+  line-height: 1.58;
 }
 
 .home-page .curated-item::before {
@@ -2002,7 +2039,7 @@ textarea.ng-invalid.ng-touched,
   padding: var(--space-4);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
-  background: rgba(255, 255, 255, 0.82);
+  background: color-mix(in oklch, var(--white) 82%, transparent);
   box-shadow: var(--shadow-sm);
 }
 
@@ -2011,9 +2048,9 @@ textarea.ng-invalid.ng-touched,
 .home-page .category-skeleton {
   background: linear-gradient(
     90deg,
-    rgba(229, 226, 220, 0.86) 25%,
-    rgba(248, 246, 243, 0.96) 50%,
-    rgba(229, 226, 220, 0.86) 75%
+    color-mix(in oklch, var(--neutral-200) 86%, transparent) 25%,
+    color-mix(in oklch, var(--neutral-50) 96%, transparent) 50%,
+    color-mix(in oklch, var(--neutral-200) 86%, transparent) 75%
   );
   background-size: 220% 100%;
   animation: skeleton-shine 1.2s ease-in-out infinite;
@@ -2042,8 +2079,8 @@ textarea.ng-invalid.ng-touched,
 
 .home-page .categories-section {
   background:
-    radial-gradient(circle at top left, rgba(196, 92, 38, 0.05), transparent 24%),
-    rgba(255, 255, 255, 0.92);
+    radial-gradient(circle at top left, color-mix(in oklch, var(--color-primary) 5%, transparent), transparent 24%),
+    color-mix(in oklch, var(--white) 92%, transparent);
 }
 
 .home-page .category-skeleton {
@@ -2057,11 +2094,11 @@ textarea.ng-invalid.ng-touched,
   align-content: start;
   min-height: 14rem;
   padding: var(--space-5);
-  border: 1px solid rgba(196, 92, 38, 0.12);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
   border-radius: var(--radius-xl);
   color: var(--color-ink);
   text-decoration: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 246, 243, 0.92));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--white) 98%, transparent), color-mix(in oklch, var(--neutral-50) 92%, transparent));
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--transition-fast),
@@ -2071,24 +2108,24 @@ textarea.ng-invalid.ng-touched,
 
 .home-page .category-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(196, 92, 38, 0.24);
+  border-color: color-mix(in oklch, var(--color-primary) 24%, transparent);
   box-shadow: var(--shadow-lg);
 }
 
 .home-page .category-card.tone-clay {
-  background: linear-gradient(180deg, rgba(255, 248, 244, 0.98), rgba(249, 238, 228, 0.94));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--brand-clay-100) 98%, var(--white)), color-mix(in oklch, var(--brand-clay-100) 80%, var(--neutral-100)));
 }
 
 .home-page .category-card.tone-sage {
-  background: linear-gradient(180deg, rgba(244, 250, 245, 0.98), rgba(231, 242, 233, 0.94));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--success-100) 98%, var(--white)), color-mix(in oklch, var(--success-100) 86%, var(--neutral-100)));
 }
 
 .home-page .category-card.tone-ink {
-  background: linear-gradient(180deg, rgba(243, 245, 248, 0.98), rgba(230, 234, 240, 0.94));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--info-100) 98%, var(--white)), color-mix(in oklch, var(--info-100) 82%, var(--neutral-100)));
 }
 
 .home-page .category-card.tone-gold {
-  background: linear-gradient(180deg, rgba(255, 250, 240, 0.98), rgba(250, 239, 214, 0.94));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--warning-100) 98%, var(--white)), color-mix(in oklch, var(--warning-100) 86%, var(--neutral-100)));
 }
 
 .home-page .category-icon {
@@ -2098,22 +2135,22 @@ textarea.ng-invalid.ng-touched,
   width: 2.9rem;
   height: 2.9rem;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in oklch, var(--white) 72%, transparent);
   color: var(--color-primary-dark);
   font-size: 1.15rem;
-  box-shadow: inset 0 0 0 1px rgba(196, 92, 38, 0.12);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .home-page .category-name {
-  color: var(--color-ink);
+  color: color-mix(in oklch, var(--color-ink) 94%, var(--black));
   font-family: var(--font-display);
   font-size: 1.5rem;
-  line-height: 1.1;
+  line-height: 1.12;
 }
 
 .home-page .category-copy {
-  color: var(--color-text-secondary);
-  line-height: 1.7;
+  color: color-mix(in oklch, var(--color-text-secondary) 94%, var(--neutral-700));
+  line-height: 1.6;
 }
 
 .home-page .category-footer {
@@ -2123,7 +2160,7 @@ textarea.ng-invalid.ng-touched,
   gap: var(--space-2);
   margin-top: auto;
   padding-top: var(--space-4);
-  border-top: 1px solid rgba(196, 92, 38, 0.12);
+  border-top: 1px solid color-mix(in oklch, var(--color-primary) 12%, transparent);
 }
 
 .home-page .category-count,
@@ -2134,7 +2171,7 @@ textarea.ng-invalid.ng-touched,
 }
 
 .home-page .features-section {
-  background: linear-gradient(180deg, rgba(248, 246, 243, 0.72), rgba(255, 255, 255, 0.98));
+  background: linear-gradient(180deg, color-mix(in oklch, var(--neutral-50) 72%, transparent), color-mix(in oklch, var(--white) 98%, transparent));
 }
 
 .home-page .features-grid {
@@ -2148,7 +2185,7 @@ textarea.ng-invalid.ng-touched,
   padding: var(--space-5);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  background: rgba(255, 255, 255, 0.9);
+  background: color-mix(in oklch, var(--white) 90%, transparent);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--transition-fast),
@@ -2171,40 +2208,46 @@ textarea.ng-invalid.ng-touched,
   padding: clamp(2rem, 5vw, 3.5rem);
   border-radius: calc(var(--radius-xl) + 6px);
   background:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 30%),
-    linear-gradient(135deg, #29150d 0%, #6e331d 48%, #bf5c2a 100%);
-  box-shadow: 0 24px 46px -26px rgba(26, 26, 26, 0.5);
+    linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--brand-clay-700) 58%, var(--black)) 0%,
+      color-mix(in oklch, var(--brand-clay-600) 76%, var(--black)) 56%,
+      var(--brand-clay-500) 100%
+    );
+  box-shadow: 0 24px 46px -26px color-mix(in oklch, var(--black) 50%, transparent);
   text-align: center;
 }
 
 .home-page .cta-title {
-  max-width: 14ch;
+  max-width: 18ch;
   margin: 0 auto var(--space-3);
-  color: #fff;
+  color: color-mix(in oklch, var(--white) 94%, var(--warning-100));
   font-family: var(--font-display);
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1;
   letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .home-page .cta-desc {
-  max-width: 42rem;
+  max-width: 50ch;
   margin: 0 auto var(--space-6);
-  color: rgba(255, 244, 238, 0.86);
+  color: color-mix(in oklch, var(--white) 74%, var(--brand-clay-100));
   font-size: var(--font-size-lg);
-  line-height: 1.72;
+  line-height: 1.64;
+  text-wrap: pretty;
 }
 
 .home-page .btn-cta {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #fff;
-  color: var(--color-primary-dark);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid color-mix(in oklch, var(--warning-100) 84%, var(--white));
+  background: var(--warning-100);
+  color: var(--brand-clay-700);
+  box-shadow: 0 14px 26px -14px rgba(0, 0, 0, 0.48);
 }
 
 .home-page .btn-outline {
-  border: 1px solid rgba(196, 92, 38, 0.26);
-  background: rgba(196, 92, 38, 0.04);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 26%, transparent);
+  background: color-mix(in oklch, var(--color-primary) 4%, transparent);
   color: var(--color-primary-dark);
 }
 
@@ -2612,7 +2655,7 @@ textarea.ng-invalid.ng-touched,
 .book-list .page-number.active {
   border-color: var(--color-primary);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--white);
   box-shadow: var(--shadow-sm);
 }
 
@@ -2799,7 +2842,7 @@ textarea.ng-invalid.ng-touched,
   max-width: 11rem;
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in oklch, var(--white) 12%, transparent);
   color: rgba(255, 255, 255, 0.88);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
@@ -2837,7 +2880,7 @@ textarea.ng-invalid.ng-touched,
   min-height: 2rem;
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-pill);
-  color: #fff;
+  color: var(--white);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
@@ -2962,9 +3005,9 @@ textarea.ng-invalid.ng-touched,
   justify-content: center;
   min-height: 2.875rem;
   padding: 0 var(--space-4);
-  border: 1px solid rgba(196, 92, 38, 0.22);
+  border: 1px solid color-mix(in oklch, var(--color-primary) 26%, var(--white));
   border-radius: var(--radius-pill);
-  background: rgba(196, 92, 38, 0.06);
+  background: color-mix(in oklch, var(--color-primary) 5%, transparent);
   color: var(--color-primary-dark);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
@@ -2977,8 +3020,8 @@ textarea.ng-invalid.ng-touched,
 
 .book-card .btn-detail:hover {
   transform: translateY(-1px);
-  border-color: rgba(196, 92, 38, 0.34);
-  background: rgba(196, 92, 38, 0.12);
+  border-color: color-mix(in oklch, var(--color-primary) 42%, var(--white));
+  background: color-mix(in oklch, var(--color-primary) 10%, transparent);
 }
 
 .book-card .btn-add {
@@ -2987,7 +3030,7 @@ textarea.ng-invalid.ng-touched,
   border: none;
   border-radius: var(--radius-pill);
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-  color: #fff;
+  color: var(--white);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.01em;
@@ -2996,8 +3039,8 @@ textarea.ng-invalid.ng-touched,
     background var(--transition-fast),
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
-  opacity: 0;
-  transform: translate3d(0, 10px, 0);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .book-card:hover .btn-add,

@@ -6,11 +6,11 @@
       <div class="hero-copy">
         <p class="hero-eyebrow">Curated Bookstore</p>
         <h1 id="hero-heading" class="hero-title" appTitleReveal>
-          A calmer way to discover, compare, and buy books online.
+          Discover, compare, and buy ebooks in one seamless flow.
         </h1>
         <p class="hero-subtitle">
-          Built as a polished Angular storefront with responsive catalog browsing, connected cart
-          and auth flows, and a checkout journey that feels editorial instead of transactional.
+          Explore curated categories, check pricing and availability instantly, and complete checkout
+          with confidence on any device.
         </p>
 
         <div class="hero-actions">
@@ -36,8 +36,8 @@
           <h2 class="spotlight-title">{{ spotlight.title }}</h2>
           <p class="spotlight-author">by {{ spotlight.author }}</p>
           <p class="spotlight-summary">
-            One-click access to detail, inventory, and checkout context keeps the path from
-            curiosity to purchase short and clear.
+            Preview key details, compare pricing, and add to cart in one place to keep buying
+            decisions fast and simple.
           </p>
 
           <div class="spotlight-meta">
@@ -61,8 +61,8 @@
           <p class="spotlight-kicker">Storefront Preview</p>
           <h2 class="spotlight-title">Catalog, cart, and checkout stay connected.</h2>
           <p class="spotlight-summary">
-            The homepage leads into a responsive shelf experience designed to feel like a real
-            product, not a placeholder demo.
+            Start with discovery, move through product details, and finish checkout without losing
+            context at any point.
           </p>
           <div class="spotlight-fallback-grid">
             <div class="spotlight-fallback-card">
@@ -84,11 +84,11 @@
       <div class="section-heading">
         <p class="section-kicker">Reading Journey</p>
         <h2 id="journey-heading" class="section-title" appTitleReveal>
-          The homepage now explains how the storefront works.
+          A simple journey from discovery to checkout.
         </h2>
         <p class="section-desc">
-          It frames the catalog as a guided product journey, so the project feels intentional in a
-          portfolio review and intuitive for a shopper at the same time.
+          Every section guides readers toward a clear next step: browse, evaluate, add to cart, and
+          complete purchase.
         </p>
       </div>
 
@@ -110,11 +110,11 @@
         <div>
           <p class="section-kicker">Fresh Picks</p>
           <h2 id="featured-heading" class="section-title" appTitleReveal>
-            Featured books feel like a curated shelf, not a raw grid.
+            Featured ebooks help readers decide faster.
           </h2>
           <p class="section-desc">
-            The layout combines a lead recommendation with a full browsing rail so the storefront
-            has both merchandising and utility.
+            Highlighted titles surface high-intent choices first, while the full grid keeps browsing
+            flexible.
           </p>
         </div>
         <a routerLink="/books" class="btn btn-outline">Browse Full Catalog</a>
@@ -148,8 +148,8 @@
                 <h3 class="lead-title">{{ spotlight.title }}</h3>
                 <p class="lead-author">by {{ spotlight.author }}</p>
                 <p class="lead-copy">
-                  Use this section to spotlight recent arrivals and demonstrate a clearer hierarchy
-                  between hero merchandising and catalog browsing.
+                  Promote high-interest titles with quick access to details and cart actions that
+                  shorten the path to conversion.
                 </p>
                 <div class="lead-actions">
                   <a [routerLink]="['/books', spotlight.id]" class="btn btn-primary"
@@ -170,13 +170,13 @@
               <p class="sidebar-kicker">Why it works</p>
               <ul class="curated-list" aria-label="Featured shelf notes">
                 <li class="curated-item">
-                  Cards expose availability and price before opening the detail page.
+                  Readers see price and stock before opening each product page.
                 </li>
                 <li class="curated-item">
-                  Secondary preview actions make navigation explicit and low-friction.
+                  Detail and cart actions stay visible, reducing extra clicks.
                 </li>
                 <li class="curated-item">
-                  Responsive spacing keeps the shelf legible across breakpoints.
+                  Responsive spacing keeps ebook cards easy to scan on any screen.
                 </li>
               </ul>
             </div>
@@ -207,11 +207,11 @@
       <div class="section-heading">
         <p class="section-kicker">Category Discovery</p>
         <h2 id="categories-heading" class="section-title" appTitleReveal>
-          Categories now feel like entry points into the catalog.
+          Browse by category and jump into the right shelf.
         </h2>
         <p class="section-desc">
-          Each category card is framed as a shelf to explore, which makes the homepage read like a
-          real bookstore navigation experience instead of a neutral filter list.
+          Category shortcuts make discovery faster and help readers reach relevant ebooks in fewer
+          steps.
         </p>
       </div>
 
@@ -277,7 +277,7 @@
         <div>
           <p class="section-kicker">Store Confidence</p>
           <h2 id="features-heading" class="section-title" appTitleReveal>
-            The interface now sells reliability as much as aesthetics.
+            Built for conversion, clarity, and trust.
           </h2>
         </div>
       </div>
@@ -298,11 +298,11 @@
     <div class="cta-banner">
       <p class="section-kicker section-kicker-light">Next Action</p>
       <h2 id="cta-heading" class="cta-title" appTitleReveal>
-        From homepage to conversion, every step now feels deliberate.
+        Ready to build your ebook library?
       </h2>
       <p class="cta-desc">
-        The storefront emphasizes discovery first, but the purchase path stays one click away
-        through the catalog, detail pages, cart, and checkout.
+        Start browsing now and complete your next purchase in a fast, secure, and reader-friendly
+        checkout flow.
       </p>
       @if (isAuthenticated$ | async) {
         <a routerLink="/books" class="btn btn-cta">Continue Shopping</a>

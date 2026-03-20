@@ -57,11 +57,13 @@ $black: #000;
 
   --text-primary: var(--foreground);
   --text-secondary: var(--muted-foreground);
+  --text-tertiary: color-mix(in oklch, var(--muted-foreground) 84%, var(--background));
   --text-disabled: color-mix(in oklch, var(--muted-foreground) 68%, transparent);
   --text-inverse: var(--primary-foreground);
 
   --bg-primary: var(--background);
   --bg-secondary: var(--muted);
+  --bg-surface: var(--card);
   --bg-elevated: var(--card);
   --bg-overlay: rgb(0 0 0 / 40%);
 

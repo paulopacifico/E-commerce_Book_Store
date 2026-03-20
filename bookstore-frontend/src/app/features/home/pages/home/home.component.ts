@@ -63,45 +63,45 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly curatedBooks = computed(() => this.featuredBooks().slice(1, 5));
   readonly categoryHighlights = computed(() => this.categories().slice(0, 6));
   readonly catalogSignals = [
-    { value: 'Responsive', label: 'Editorial storefront across mobile and desktop' },
-    { value: 'REST-ready', label: 'Integrated catalog, cart, auth, and checkout flows' },
-    { value: 'Fast scan', label: 'Clear states for browse, compare, and buy decisions' },
+    { value: 'Instant access', label: 'Buy once and read your ebooks right away' },
+    { value: 'Smart catalog', label: 'Filter by category, price, and availability in seconds' },
+    { value: 'Secure checkout', label: 'Clear cart, account, and payment steps from start to finish' },
   ] as const;
   readonly purchaseJourney = [
     {
       step: '01',
-      title: 'Discover titles fast',
+      title: 'Find your next ebook quickly',
       detail:
-        'Category-led navigation and polished catalog cards reduce friction from the first click.',
+        'Use categories, search, and curated shelves to move from interest to shortlist without friction.',
     },
     {
       step: '02',
-      title: 'Compare with confidence',
+      title: 'Compare before you commit',
       detail:
-        'Availability, pricing, and detail previews stay visible while the layout remains easy to scan.',
+        'Product cards keep price, stock, and preview actions visible so decisions stay easy and informed.',
     },
     {
       step: '03',
-      title: 'Move cleanly to checkout',
+      title: 'Checkout in a clear flow',
       detail:
-        'Cart, auth, and checkout are connected to backend flows without breaking the reading experience.',
+        'From cart to account and order confirmation, each step stays consistent and easy to complete.',
     },
   ] as const;
   readonly serviceHighlights = [
     {
       title: 'Curated arrivals',
       detail:
-        'Fresh releases, thoughtful category groupings, and storefront-ready product hierarchy.',
+        'New releases and top picks are organized to help readers discover relevant ebooks faster.',
     },
     {
       title: 'Reliable checkout flow',
       detail:
-        'Cart and account states stay coherent while purchase actions remain visible on every screen.',
+        'The purchase path is stable across devices, with clear actions and no hidden steps.',
     },
     {
       title: 'Responsive by default',
       detail:
-        'Layouts adapt from compact shelves to full desktop merchandising without losing clarity.',
+        'Browsing, cart updates, and checkout remain readable and usable from mobile to desktop.',
     },
   ] as const;
 

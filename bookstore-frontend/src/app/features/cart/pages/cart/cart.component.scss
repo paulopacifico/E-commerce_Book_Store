@@ -276,12 +276,15 @@
 }
 
 .btn-secondary {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-secondary);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
 }
 
 // Responsive: table hidden on small, cards visible
