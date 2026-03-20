@@ -1,7 +1,7 @@
 import { Component, signal, inject, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { AuthService } from '../../data-access/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -23,6 +23,7 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly notificationService = inject(NotificationService);
 
@@ -55,6 +56,11 @@ export class RegisterComponent {
     return this.form.get('confirmPassword');
   }
 
+  get secondaryAuthQueryParams(): { returnUrl: string } | null {
+    const returnUrl = this.getSafeReturnUrl();
+    return returnUrl ? { returnUrl } : null;
+  }
+
   onSubmit(): void {
     if (this.loading()) return;
     this.errorMessage.set(null);
@@ -78,12 +84,11 @@ export class RegisterComponent {
       )
       .subscribe({
         next: () => {
-          this.notificationService.success('Your account is ready. Sign in to start shopping.', {
+          const targetUrl = this.getSafeReturnUrl() ?? '/books';
+          this.notificationService.success('Your account is ready. Redirecting you now.', {
             title: 'Account Created',
           });
-          this.router.navigate(['/login'], {
-            queryParams: { registered: 'true' },
-          });
+          void this.router.navigateByUrl(targetUrl);
         },
         error: (err) => {
           const msg =
@@ -91,5 +96,13 @@ export class RegisterComponent {
           this.errorMessage.set(msg);
         },
       });
+  }
+
+  private getSafeReturnUrl(): string | null {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (!returnUrl?.startsWith('/')) {
+      return null;
+    }
+    return returnUrl;
   }
 }

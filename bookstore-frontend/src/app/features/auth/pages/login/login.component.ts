@@ -37,6 +37,11 @@ export class LoginComponent {
     return this.form.get('password');
   }
 
+  get secondaryAuthQueryParams(): { returnUrl: string } | null {
+    const returnUrl = this.getSafeReturnUrl();
+    return returnUrl ? { returnUrl } : null;
+  }
+
   onSubmit(): void {
     this.errorMessage.set(null);
     if (this.form.invalid) return;
@@ -61,10 +66,11 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => {
-          this.notificationService.success('Welcome back. Redirecting you to the catalog.', {
+          const targetUrl = this.getSafeReturnUrl() ?? '/books';
+          this.notificationService.success('Welcome back. Redirecting you now.', {
             title: 'Signed In',
           });
-          this.router.navigate(['/books']);
+          void this.router.navigateByUrl(targetUrl);
         },
         error: (err) => {
           const body = err?.error;
@@ -77,5 +83,13 @@ export class LoginComponent {
           this.errorMessage.set(msg);
         },
       });
+  }
+
+  private getSafeReturnUrl(): string | null {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (!returnUrl?.startsWith('/')) {
+      return null;
+    }
+    return returnUrl;
   }
 }

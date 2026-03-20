@@ -48,18 +48,22 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
 
   readonly bookResult$: Observable<{ book: Book } | { error: unknown } | null> =
     this.route.paramMap.pipe(
-      tap(() => this.loading.set(true)),
+      tap(() => {
+        this.loading.set(true);
+        this.quantity.set(1);
+      }),
       switchMap((params) => {
         const id = Number(params.get('id'));
         if (!id || Number.isNaN(id)) {
+          this.loading.set(false);
           return of(null);
         }
         return this.bookService.getBookById(id).pipe(
           map((book) => ({ book })),
           catchError((err) => of({ error: err })),
+          finalize(() => this.loading.set(false)),
         );
       }),
-      finalize(() => this.loading.set(false)),
     );
 
   private readonly bookResult = toSignal(this.bookResult$, {

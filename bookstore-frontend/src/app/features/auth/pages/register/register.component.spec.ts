@@ -3,35 +3,38 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { throwError, of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import type { AuthResponse } from '../../models/auth.interface';
 import { AuthService } from '../../data-access/auth.service';
-import { LoginComponent } from './login.component';
+import { RegisterComponent } from './register.component';
 
-describe('LoginComponent', () => {
-  let fixture: ComponentFixture<LoginComponent>;
-  let component: LoginComponent;
-  let loginMock: ReturnType<typeof vi.fn>;
+describe('RegisterComponent', () => {
+  let fixture: ComponentFixture<RegisterComponent>;
+  let component: RegisterComponent;
+  let registerMock: ReturnType<typeof vi.fn>;
   let navigateByUrlMock: ReturnType<typeof vi.fn>;
   let progressMock: ReturnType<typeof vi.fn>;
   let dismissMock: ReturnType<typeof vi.fn>;
   let successMock: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
-    loginMock = vi.fn();
+    registerMock = vi.fn();
     navigateByUrlMock = vi.fn();
-    progressMock = vi.fn().mockReturnValue(99);
+    progressMock = vi.fn().mockReturnValue(77);
     dismissMock = vi.fn();
     successMock = vi.fn();
 
     await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
+      declarations: [RegisterComponent],
       imports: [CommonModule, ReactiveFormsModule],
       providers: [
-        { provide: AuthService, useValue: { login: loginMock } as Pick<AuthService, 'login'> },
+        {
+          provide: AuthService,
+          useValue: { register: registerMock } as Pick<AuthService, 'register'>,
+        },
         {
           provide: Router,
           useValue: { navigateByUrl: navigateByUrlMock } as Pick<Router, 'navigateByUrl'>,
@@ -47,82 +50,72 @@ describe('LoginComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            queryParams: of({ returnUrl: '/checkout' }),
             snapshot: {
-              queryParamMap: convertToParamMap({ returnUrl: '/orders/42' }),
+              queryParamMap: convertToParamMap({ returnUrl: '/checkout' }),
             },
-            queryParams: of({ registered: 'true' }),
-            queryParamMap: of(convertToParamMap({})),
           },
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('shows the registration success banner when redirected from signup', () => {
-    const banner = fixture.nativeElement.querySelector(
-      '.form-banner-success',
-    ) as HTMLElement | null;
-
-    expect(banner?.textContent).toContain('Registration successful');
-  });
-
-  it('does not submit while the form is invalid', () => {
-    component.onSubmit();
-
-    expect(loginMock).not.toHaveBeenCalled();
-  });
-
-  it('submits valid credentials and navigates to the return url', () => {
-    loginMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
+  it('submits valid registration data and redirects to the return url', () => {
+    registerMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
     component.form.setValue({
+      username: 'reader',
       email: 'reader@example.com',
       password: 'secret123',
+      confirmPassword: 'secret123',
     });
 
     component.onSubmit();
 
-    expect(loginMock).toHaveBeenCalledWith('reader@example.com', 'secret123');
-    expect(navigateByUrlMock).toHaveBeenCalledWith('/orders/42');
-    expect(progressMock).toHaveBeenCalledWith('Signing you in to your bookstore account.', {
-      title: 'Signing In',
+    expect(registerMock).toHaveBeenCalledWith('reader', 'reader@example.com', 'secret123');
+    expect(progressMock).toHaveBeenCalledWith(
+      'Creating your account and preparing your library access.',
+      { title: 'Creating Account' },
+    );
+    expect(successMock).toHaveBeenCalledWith('Your account is ready. Redirecting you now.', {
+      title: 'Account Created',
     });
-    expect(successMock).toHaveBeenCalledWith('Welcome back. Redirecting you now.', {
-      title: 'Signed In',
-    });
-    expect(dismissMock).toHaveBeenCalledWith(99);
+    expect(navigateByUrlMock).toHaveBeenCalledWith('/checkout');
+    expect(dismissMock).toHaveBeenCalledWith(77);
     expect(component.loading()).toBe(false);
     expect(component.errorMessage()).toBeNull();
   });
 
-  it('renders the API error message when login fails', () => {
-    loginMock.mockReturnValue(
+  it('renders the API error message when registration fails', () => {
+    registerMock.mockReturnValue(
       throwError(() => ({
-        error: { message: 'Invalid email or password.' },
+        error: { message: 'Email already registered.' },
       })),
     );
     component.form.setValue({
+      username: 'reader',
       email: 'reader@example.com',
       password: 'secret123',
+      confirmPassword: 'secret123',
     });
 
     component.onSubmit();
     fixture.detectChanges();
 
     expect(progressMock).toHaveBeenCalled();
-    expect(dismissMock).toHaveBeenCalledWith(99);
+    expect(dismissMock).toHaveBeenCalledWith(77);
     expect(component.loading()).toBe(false);
-    expect(component.errorMessage()).toBe('Invalid email or password.');
+    expect(component.errorMessage()).toBe('Email already registered.');
     expect(fixture.nativeElement.querySelector('.form-banner-error')?.textContent).toContain(
-      'Invalid email or password.',
+      'Email already registered.',
     );
   });
 
-  it('preserves the return url when linking to registration', () => {
-    expect(component.secondaryAuthQueryParams).toEqual({ returnUrl: '/orders/42' });
+  it('preserves the return url when linking back to login', () => {
+    expect(component.secondaryAuthQueryParams).toEqual({ returnUrl: '/checkout' });
   });
 });

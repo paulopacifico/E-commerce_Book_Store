@@ -125,6 +125,9 @@
       </div>
     </form>
 
-    <p class="form-link-row">Already have an account? <a routerLink="/login">Login</a></p>
+    <p class="form-link-row">
+      Already have an account?
+      <a routerLink="/login" [queryParams]="secondaryAuthQueryParams">Login</a>
+    </p>
   </div>
 </section>

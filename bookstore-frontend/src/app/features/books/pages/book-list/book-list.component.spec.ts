@@ -101,8 +101,9 @@ describe('BookListComponent', () => {
     expect(getCategoriesMock).toHaveBeenCalled();
     expect(getBooksMock).toHaveBeenCalledWith(0, 12);
     expect(component.categories()).toEqual(categories);
+    expect(component.totalResults()).toBe(1);
+    expect(component.visiblePages).toEqual([1]);
     expect(fixture.nativeElement.textContent).toContain('1 titles available in the catalog.');
-    expect(fixture.nativeElement.querySelectorAll('app-book-card').length).toBe(1);
   });
 
   it('shows a recoverable error state when catalog loading fails', () => {
@@ -127,7 +128,8 @@ describe('BookListComponent', () => {
 
     expect(getBooksMock).toHaveBeenCalledTimes(2);
     expect(component.booksErrorMessage()).toBeNull();
-    expect(fixture.nativeElement.querySelectorAll('app-book-card').length).toBe(1);
+    expect(component.totalResults()).toBe(1);
+    expect(component.visiblePages).toEqual([1]);
   });
 
   it('surfaces category fetch failures without breaking the catalog', () => {

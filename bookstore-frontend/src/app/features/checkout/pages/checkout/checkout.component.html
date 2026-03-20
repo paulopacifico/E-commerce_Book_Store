@@ -16,6 +16,10 @@
             <h2 id="shipping-heading" class="form-section-title">Shipping Address</h2>
             <span class="badge-subtle">Step 1</span>
           </div>
+          <div class="form-banner form-banner-info" role="status">
+            This checkout confirms your shipping details only. Payment is handled after the order
+            request is created.
+          </div>
           <form [formGroup]="shippingForm" class="form-grid" novalidate>
             <div class="form-field">
               <label class="form-label" for="fullName"
@@ -151,100 +155,6 @@
                       Enter a valid phone number (10–20 digits).
                     }
                   </p>
-                }
-              </div>
-            </div>
-          </form>
-        </section>
-
-        <!-- Payment (simulated) -->
-        <section class="form-section" aria-labelledby="payment-heading">
-          <div class="form-section-header">
-            <h2 id="payment-heading" class="form-section-title">Payment Information</h2>
-            <span class="badge-subtle">Simulated</span>
-          </div>
-          <div class="form-banner form-banner-info" role="status">
-            This demo captures payment details only for portfolio UX. No real charge is processed.
-          </div>
-          <form [formGroup]="paymentForm" class="form-grid checkout-payment-grid" novalidate>
-            <div class="form-field">
-              <label class="form-label" for="cardNumber"
-                >Card number <span class="required">*</span></label
-              >
-              <input
-                id="cardNumber"
-                type="text"
-                formControlName="cardNumber"
-                inputmode="numeric"
-                maxlength="16"
-                placeholder="16 digits"
-                class="input"
-                autocomplete="cc-number"
-                [disabled]="loading()"
-              />
-              <p class="form-help">Use a 16-digit test number for this simulated checkout.</p>
-              @if (cardNumber?.invalid && cardNumber?.touched) {
-                <p class="field-error" role="alert">
-                  @if (cardNumber?.errors?.['required']) {
-                    Card number is required.
-                  }
-                  @if (cardNumber?.errors?.['pattern']) {
-                    Enter exactly 16 digits.
-                  }
-                </p>
-              }
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="cardholderName"
-                >Cardholder name <span class="required">*</span></label
-              >
-              <input
-                id="cardholderName"
-                type="text"
-                formControlName="cardholderName"
-                autocomplete="cc-name"
-                class="input"
-                [disabled]="loading()"
-              />
-              <p class="form-help">Enter the full name printed on the card.</p>
-              @if (cardholderName?.invalid && cardholderName?.touched) {
-                <p class="field-error" role="alert">Cardholder name is required.</p>
-              }
-            </div>
-            <div class="form-grid form-grid-two">
-              <div class="form-field">
-                <label class="form-label" for="expiry"
-                  >Expiry (MM/YY) <span class="required">*</span></label
-                >
-                <input
-                  id="expiry"
-                  type="text"
-                  formControlName="expiry"
-                  placeholder="MM/YY"
-                  maxlength="5"
-                  class="input"
-                  autocomplete="cc-exp"
-                  [disabled]="loading()"
-                />
-                @if (expiry?.invalid && expiry?.touched) {
-                  <p class="field-error" role="alert">Use MM/YY format.</p>
-                }
-              </div>
-              <div class="form-field">
-                <label class="form-label" for="cvv">CVV <span class="required">*</span></label>
-                <input
-                  id="cvv"
-                  type="text"
-                  formControlName="cvv"
-                  inputmode="numeric"
-                  maxlength="3"
-                  placeholder="3 digits"
-                  class="input"
-                  autocomplete="cc-csc"
-                  [disabled]="loading()"
-                />
-                @if (cvv?.invalid && cvv?.touched) {
-                  <p class="field-error" role="alert">Enter 3 digits.</p>
                 }
               </div>
             </div>

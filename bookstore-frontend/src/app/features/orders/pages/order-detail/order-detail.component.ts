@@ -41,6 +41,4 @@ export class OrderDetailComponent {
   );
 
   readonly statusSteps = STATUS_STEPS;
-  /** Pure property for template; no method calls during change detection. */
-  readonly paymentLastFour = '1234';
 }

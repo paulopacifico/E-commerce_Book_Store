@@ -5,12 +5,14 @@ import { Router } from '@angular/router';
 import { vi } from 'vitest';
 
 import { environment } from '../../../../environments/environment';
+import { CartStateService } from '../../cart/data-access/cart-state.service';
 import type { AuthResponse } from '../models/auth.interface';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   const loginUrl = `${environment.apiUrl}/auth/login`;
   let navigateMock: ReturnType<typeof vi.fn>;
+  let clearCartMock: ReturnType<typeof vi.fn>;
   let httpController: HttpTestingController;
 
   const setup = (): AuthService => {
@@ -20,6 +22,10 @@ describe('AuthService', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: Router, useValue: { navigate: navigateMock } as Pick<Router, 'navigate'> },
+        {
+          provide: CartStateService,
+          useValue: { clearCart: clearCartMock } as Pick<CartStateService, 'clearCart'>,
+        },
       ],
     });
 
@@ -30,6 +36,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     localStorage.clear();
     navigateMock = vi.fn();
+    clearCartMock = vi.fn();
   });
 
   afterEach(() => {
@@ -81,6 +88,7 @@ describe('AuthService', () => {
     expect(service.getToken()).toBeNull();
     expect(service.isAuthenticated()).toBe(false);
     expect(localStorage.getItem('authToken')).toBeNull();
+    expect(clearCartMock).toHaveBeenCalledTimes(1);
     expect(navigateMock).toHaveBeenCalledWith(['/login']);
   });
 });

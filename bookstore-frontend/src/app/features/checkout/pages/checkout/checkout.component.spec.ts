@@ -43,12 +43,6 @@ describe('CheckoutComponent', () => {
       postalCode: 'M5V 2T6',
       phone: '+1 416 555 1212',
     });
-    target.paymentForm.setValue({
-      cardNumber: '4242424242424242',
-      cardholderName: 'Ada Lovelace',
-      expiry: '12/30',
-      cvv: '123',
-    });
   };
 
   beforeEach(async () => {

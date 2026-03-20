@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, distinctUntilChanged, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../../environments/environment';
+import { CartStateService } from '../../cart/data-access/cart-state.service';
 import type { AuthResponse } from '../models/auth.interface';
 
 const TOKEN_KEY = 'authToken';
@@ -24,6 +25,7 @@ export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
+    private readonly cartStateService: CartStateService,
   ) {}
 
   login(username: string, password: string): Observable<AuthResponse> {
@@ -68,6 +70,7 @@ export class AuthService {
   }
 
   private clearSession(): void {
+    this.cartStateService.clearCart();
     this.tokenSubject.next(null);
     localStorage.removeItem(TOKEN_KEY);
   }

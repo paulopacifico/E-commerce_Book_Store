@@ -18,9 +18,6 @@ import { NotificationService } from '../../../../core/services/notification.serv
 const SHIPPING_COST = 4.99;
 
 const PHONE_PATTERN = /^[\d\s\-+()]{10,20}$/;
-const CARD_NUMBER_PATTERN = /^\d{16}$/;
-const EXPIRY_PATTERN = /^(0[1-9]|1[0-2])\/\d{2}$/;
-const CVV_PATTERN = /^\d{3}$/;
 
 @Component({
   selector: 'app-checkout',
@@ -60,19 +57,10 @@ export class CheckoutComponent {
     phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
   });
 
-  readonly paymentForm = this.fb.nonNullable.group({
-    cardNumber: ['', [Validators.required, Validators.pattern(CARD_NUMBER_PATTERN)]],
-    cardholderName: ['', [Validators.required, Validators.minLength(2)]],
-    expiry: ['', [Validators.required, Validators.pattern(EXPIRY_PATTERN)]],
-    cvv: ['', [Validators.required, Validators.pattern(CVV_PATTERN)]],
-  });
-
   readonly shippingCost = SHIPPING_COST;
 
   get canSubmit(): boolean {
-    return (
-      !this.loading() && this.shippingForm.valid && this.paymentForm.valid && !this.isCartEmpty()
-    );
+    return !this.loading() && this.shippingForm.valid && !this.isCartEmpty();
   }
 
   get fullName() {
@@ -92,18 +80,6 @@ export class CheckoutComponent {
   }
   get phone() {
     return this.shippingForm.get('phone');
-  }
-  get cardNumber() {
-    return this.paymentForm.get('cardNumber');
-  }
-  get cardholderName() {
-    return this.paymentForm.get('cardholderName');
-  }
-  get expiry() {
-    return this.paymentForm.get('expiry');
-  }
-  get cvv() {
-    return this.paymentForm.get('cvv');
   }
 
   /** Build single shipping address string for API (backend expects one field). */
