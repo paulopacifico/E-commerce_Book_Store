@@ -1,4 +1,5 @@
 @use 'sass:color';
+@use './styles/colors' as dsColors;
 
 /* ==========================================================================
    Global styles – editorial bookstore theme, typography, utilities
@@ -8,6 +9,7 @@
    CSS variables – theme (warm paper, ink, terracotta accent)
    -------------------------------------------------------------------------- */
 :root {
+  @include dsColors.color-system-vars;
   /* TweakCN Modern Minimal (shadcn) → legacy storefront tokens */
   --font-family-display: var(--font-serif, 'Source Serif 4', Georgia, serif);
   --font-family-body: var(--font-sans, 'Inter', system-ui, sans-serif);
@@ -22,6 +24,9 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 1.875rem;
   --font-size-4xl: 2.25rem;
+  --font-size-display: clamp(2rem, 1.45rem + 2vw, 3rem);
+  --font-size-title: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --font-size-subtitle: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
   --line-height-tight: 1.2;
   --line-height-heading: 1.3;
   --line-height-body: 1.55;
@@ -31,31 +36,8 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Color foundation */
-  --brand-clay-700: #8f3a17;
-  --brand-clay-600: #a84a1e;
-  --brand-clay-500: #c45c26;
-  --brand-clay-400: #e07a45;
-  --brand-clay-100: #f6dfd2;
-  --neutral-0: #fffdf9;
-  --neutral-50: #f8f6f3;
-  --neutral-100: #f2efe9;
-  --neutral-200: #e5e2dc;
-  --neutral-300: #d2ccc3;
-  --neutral-500: #8b8478;
-  --neutral-700: #5a5a5a;
-  --neutral-900: #1f1f1f;
-  --ink-950: #1a1a1a;
-  --success-500: #2e7d32;
-  --success-100: #dff2e3;
-  --error-500: #b71c1c;
-  --error-100: #f8dddd;
-  --warning-500: #e65100;
-  --warning-100: #ffe8d7;
-  --info-500: #0d47a1;
-  --info-100: #dbe7f8;
-  --overlay-strong: rgba(26, 26, 26, 0.72);
-  --overlay-soft: rgba(26, 26, 26, 0.12);
+  --overlay-strong: rgb(26 26 26 / 72%);
+  --overlay-soft: rgb(26 26 26 / 12%);
 
   /* Semantic color tokens (aligned with TweakCN Modern Minimal / shadcn) */
   --color-primary: var(--primary);
@@ -167,6 +149,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  font-size: 16px;
+}
+
 body {
   font-family: var(--font-body);
   font-size: var(--font-size-md);
@@ -175,6 +161,8 @@ body {
   background-color: var(--background);
   background-image: none;
   min-height: 100%;
+  text-align: start;
+  letter-spacing: var(--tracking-normal, 0);
 }
 
 a {
@@ -188,35 +176,29 @@ a {
 h1,
 .h1 {
   font-family: var(--font-display);
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-display);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-tight);
   margin: 0 0 var(--space-2);
   color: var(--color-ink);
   letter-spacing: -0.02em;
-  @include md {
-    font-size: var(--font-size-4xl);
-  }
 }
 
 h2,
 .h2 {
   font-family: var(--font-display);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-title);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-heading);
   margin: 0 0 var(--space-2);
   color: var(--color-ink);
   letter-spacing: -0.01em;
-  @include md {
-    font-size: 1.625rem;
-  }
 }
 
 h3,
 .h3 {
   font-family: var(--font-display);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-subtitle);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-heading);
   margin: 0 0 var(--space-2);
@@ -229,6 +211,10 @@ p,
   line-height: var(--line-height-body);
   margin: 0 0 var(--space-3);
   color: var(--color-text);
+}
+
+:where(p, h1, h2, h3, h4, h5, h6):last-child {
+  margin-bottom: 0;
 }
 
 .page-title {
@@ -250,6 +236,64 @@ p,
 }
 .text-muted {
   color: var(--color-text-muted);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-disabled {
+  color: var(--text-disabled);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+  color: var(--text-inverse);
+}
+
+.bg-surface {
+  background-color: var(--bg-elevated);
+}
+
+.border-subtle {
+  border-color: var(--border-subtle);
+}
+
+.border-strong {
+  border-color: var(--border-strong);
+}
+
+.text-display {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.text-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-title);
+  line-height: var(--line-height-heading);
+  letter-spacing: -0.01em;
+}
+
+.text-body {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+.text-caption {
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.text-balance {
+  text-wrap: balance;
 }
 
 .eyebrow {
@@ -434,13 +478,13 @@ $spacing-scale: (
 }
 
 .text-left {
-  text-align: left;
+  text-align: start;
 }
 .text-center {
   text-align: center;
 }
 .text-right {
-  text-align: right;
+  text-align: end;
 }
 
 .w-100 {
@@ -577,16 +621,16 @@ $spacing-scale: (
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
+  color: var(--white);
+  border-color: var(--color-primary-dark);
   &:hover:not(:disabled):not(.disabled) {
-    background-color: var(--color-primary-dark);
-    border-color: var(--color-primary-dark);
+    background-color: color-mix(in oklch, var(--color-primary-dark) 88%, var(--black));
+    border-color: color-mix(in oklch, var(--color-primary-dark) 88%, var(--black));
     box-shadow: var(--shadow-md);
   }
   &:active:not(:disabled):not(.disabled) {
-    background-color: var(--color-primary-dark);
+    background-color: color-mix(in oklch, var(--color-primary-dark) 80%, var(--black));
   }
 }
 

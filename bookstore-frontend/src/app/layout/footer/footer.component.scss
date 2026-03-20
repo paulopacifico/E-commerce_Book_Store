@@ -1,8 +1,8 @@
 .footer {
   margin-top: auto;
-  background: var(--color-ink, #1a1a1a);
-  color: rgba(255, 255, 255, 0.9);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-ink);
+  color: color-mix(in oklch, var(--white) 90%, transparent);
+  border-top: 1px solid color-mix(in oklch, var(--white) 6%, transparent);
 }
 
 .footer-inner {
@@ -26,14 +26,14 @@
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
   letter-spacing: -0.02em;
 }
 
 .copyright {
   margin: 0;
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: color-mix(in oklch, var(--white) 65%, transparent);
 }
 
 .footer-links {
@@ -45,12 +45,12 @@
 
 .footer-link {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: color-mix(in oklch, var(--white) 80%, transparent);
   text-decoration: none;
   transition: color var(--transition-fast);
 
   &:hover {
-    color: #fff;
+    color: var(--white);
     text-decoration: underline;
   }
 }
@@ -68,17 +68,17 @@
   width: 36px;
   height: 36px;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in oklch, var(--white) 85%, transparent);
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in oklch, var(--white) 8%, transparent);
   border-radius: 50%;
   transition:
     background var(--transition-fast),
     color var(--transition-fast);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
+    background: color-mix(in oklch, var(--white) 14%, transparent);
+    color: var(--white);
   }
 }
 

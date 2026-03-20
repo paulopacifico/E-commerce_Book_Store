@@ -68,13 +68,6 @@ ${emitVars(dark)}
   * {
     border-color: var(--border);
   }
-
-  body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-sans);
-    letter-spacing: var(--tracking-normal);
-  }
 }
 
 @theme inline {

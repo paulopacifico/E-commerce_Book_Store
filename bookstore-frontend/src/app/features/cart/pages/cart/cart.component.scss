@@ -12,14 +12,14 @@
 .cart-empty {
   text-align: center;
   padding: 3rem 1rem;
-  background: var(--cart-empty-bg, #f5f5f5);
+  background: var(--bg-secondary);
   border-radius: 8px;
 }
 
 .cart-empty-message {
   margin: 0 0 1rem;
   font-size: 1.125rem;
-  color: var(--cart-empty-text, #555);
+  color: var(--text-secondary);
 }
 
 // Table: show on desktop, hide on mobile
@@ -38,12 +38,12 @@
 .cart-table td {
   padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid var(--cart-border, #e0e0e0);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .cart-table th {
   font-weight: 600;
-  color: var(--cart-heading, #333);
+  color: var(--text-primary);
 }
 
 .cell-product {
@@ -63,7 +63,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--cart-image-bg, #eee);
+  background: var(--bg-secondary);
   border-radius: 4px;
   font-size: 1.25rem;
 }
@@ -77,7 +77,7 @@
 .product-author {
   display: block;
   font-size: 0.875rem;
-  color: var(--cart-muted, #666);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -90,9 +90,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  border: 1px solid var(--cart-border, #e0e0e0);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  background: #fff;
+  background: var(--bg-elevated);
 }
 
 .btn-qty {
@@ -106,16 +106,16 @@
   cursor: pointer;
   font-size: 1.125rem;
   line-height: 1;
-  color: var(--cart-btn-text, #333);
+  color: var(--text-primary);
   border-radius: 4px;
 }
 
 .btn-qty:hover {
-  background: var(--cart-btn-hover, #f0f0f0);
+  background: var(--bg-secondary);
 }
 
 .btn-qty:focus-visible {
-  outline: 2px solid var(--cart-focus, #0d6efd);
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 
@@ -130,14 +130,14 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  color: var(--cart-remove, #c00);
+  color: var(--state-error-text);
   font-size: 1rem;
   line-height: 1;
   border-radius: 4px;
 }
 
 .btn-remove:hover {
-  background: rgba(204, 0, 0, 0.08);
+  background: color-mix(in oklch, var(--error-500) 8%, transparent);
 }
 
 .visually-hidden {
@@ -160,10 +160,10 @@
 
 .cart-card {
   padding: 1rem;
-  border: 1px solid var(--cart-border, #e0e0e0);
+  border: 1px solid var(--border-subtle);
   border-radius: 8px;
   margin-bottom: 1rem;
-  background: #fff;
+  background: var(--bg-elevated);
 }
 
 .cart-card .card-product {
@@ -192,7 +192,7 @@
 .cart-card .product-author,
 .cart-card .product-price {
   font-size: 0.875rem;
-  color: var(--cart-muted, #666);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -203,7 +203,7 @@
 }
 
 .cart-card .label {
-  color: var(--cart-muted, #666);
+  color: var(--text-secondary);
   margin-right: 0.5rem;
 }
 
@@ -216,7 +216,7 @@
 .cart-footer {
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--cart-border, #e0e0e0);
+  border-top: 1px solid var(--border-subtle);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -257,17 +257,17 @@
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--cart-focus, #0d6efd);
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background: var(--cart-primary, #0d6efd);
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--white);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--cart-primary-hover, #0b5ed7);
+  background: var(--color-primary-dark);
 }
 
 .btn-primary:disabled {
@@ -276,12 +276,12 @@
 }
 
 .btn-secondary {
-  background: var(--cart-secondary-bg, #e9ecef);
-  color: var(--cart-secondary-text, #212529);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-  background: var(--cart-secondary-hover, #dee2e6);
+  background: var(--bg-secondary);
 }
 
 // Responsive: table hidden on small, cards visible

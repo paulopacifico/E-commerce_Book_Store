@@ -10,7 +10,7 @@
   transition: background var(--transition-fast);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: color-mix(in oklch, var(--white) 10%, transparent);
   }
 }
 
@@ -54,8 +54,8 @@
   font-weight: 600;
   line-height: 1.25rem;
   text-align: center;
-  color: #fff;
+  color: var(--white);
   background: var(--color-primary);
   border-radius: 10px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px color-mix(in oklch, var(--black) 20%, transparent);
 }
