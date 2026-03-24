@@ -115,6 +115,10 @@
   --state-warning-border: color-mix(in oklch, var(--warning-500) 32%, var(--white));
   --state-error-border: color-mix(in oklch, var(--error-500) 32%, var(--white));
   --state-info-border: color-mix(in oklch, var(--info-500) 30%, var(--white));
+
+  /* Navigation active state — separate from semantic warning */
+  --color-nav-active-text: var(--brand-clay-100);
+  --color-nav-active-bg: color-mix(in oklch, var(--brand-clay-400) 22%, transparent);
 }
 
 /* --------------------------------------------------------------------------
@@ -1436,8 +1440,8 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .nav-links a.active {
-  color: var(--warning-100);
-  background: color-mix(in oklch, var(--brand-clay-400) 22%, transparent);
+  color: var(--color-nav-active-text);
+  background: var(--color-nav-active-bg);
 }
 
 .header-toolbar .search-wrap {
