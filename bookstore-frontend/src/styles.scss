@@ -185,7 +185,22 @@ a:hover {
 }
 
 *:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+/* Elements using box-shadow for focus — suppress outline to avoid double indicator */
+.btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: none;
+}
+
+/* Inverse context (dark header) */
+.header-toolbar *:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.9);
 }
 
 h1,
