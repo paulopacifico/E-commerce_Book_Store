@@ -1,11 +1,9 @@
 <section class="auth-shell form-shell">
   <div class="auth-card form-card form-card-compact">
     <div class="form-header auth-header">
-      <p class="eyebrow">Create Your Account</p>
-      <h1 class="form-title">Start your reading profile</h1>
-      <p class="form-intro">
-        Create an account to track orders, save favorites, and move through checkout faster.
-      </p>
+      <p class="eyebrow">New Account</p>
+      <h1 class="form-title">Create your account</h1>
+      <p class="form-intro">Track orders and check out faster. Free to join.</p>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-layout" novalidate>
@@ -119,7 +117,7 @@
             <span class="spinner" aria-hidden="true"></span>
             Creating account...
           } @else {
-            Register
+            Sign up
           }
         </button>
       </div>
@@ -127,7 +125,7 @@
 
     <p class="form-link-row">
       Already have an account?
-      <a routerLink="/login" [queryParams]="secondaryAuthQueryParams">Login</a>
+      <a routerLink="/login" [queryParams]="secondaryAuthQueryParams">Sign in</a>
     </p>
   </div>
 </section>

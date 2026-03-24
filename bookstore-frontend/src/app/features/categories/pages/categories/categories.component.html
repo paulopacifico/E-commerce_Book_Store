@@ -1,33 +1,178 @@
-<div class="categories-page">
-  <h1 class="page-title">Categories</h1>
-  <p class="intro">Browse books by category.</p>
+<div class="browse-layout">
 
-  @if (loading()) {
-    <div class="loading-wrap" aria-busy="true">
-      <span class="spinner"></span>
-      <span>Loading categories...</span>
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="browse-sidebar" aria-label="Browse categories">
+
+    <div class="sidebar-header">
+      <svg class="sidebar-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+        <path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7A1 1 0 0 0 3 11h1v6a1 1 0 0 0 1 1h4v-4h2v4h4a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 .707-1.707l-7-7z"/>
+      </svg>
+      <span>Browse Collections</span>
     </div>
-  } @else if (errorMessage(); as errorMessage) {
-    <div class="state-card state-card-error" role="alert">
-      <p class="state-title">We couldn’t load categories.</p>
-      <p class="state-message">{{ errorMessage }}</p>
-      <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
+
+    <div class="sidebar-search">
+      <input
+        type="search"
+        class="sidebar-search-input"
+        placeholder="Search collections"
+        [value]="searchQuery()"
+      (input)="onSearch($event)"
+        aria-label="Search collections"
+      />
+      <svg class="sidebar-search-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9z" clip-rule="evenodd"/>
+      </svg>
     </div>
-  } @else if (categories().length > 0) {
-    <div class="category-grid">
-      @for (cat of categories(); track cat.id) {
-        <a [routerLink]="['/books']" [queryParams]="{ category: cat.id }" class="category-card">
-          <span class="category-name">{{ cat.name }}</span>
-          @if (cat.description) {
-            <span class="category-desc">{{ cat.description }}</span>
-          }
-        </a>
+
+    @if (!loading() && !errorMessage()) {
+      <nav class="sidebar-nav">
+        <p class="sidebar-section-label">All Categories</p>
+        @for (cat of filteredCategories(); track cat.id) {
+          <a
+            class="sidebar-link"
+            [routerLink]="['/books']"
+            [queryParams]="{ category: cat.id }"
+            [title]="cat.name"
+          >{{ cat.name }}</a>
+        }
+        @empty {
+          <p class="sidebar-empty">No categories match your search.</p>
+        }
+      </nav>
+    }
+
+  </aside>
+
+  <!-- ── Main content ───────────────────────────────────────────── -->
+  <main class="browse-main" id="main-content">
+
+    <div class="browse-hero">
+      <h1 class="browse-title">Browse Collections</h1>
+      <p class="browse-subtitle">
+        Browse and shop books ranging from vintage paperbacks and signed first editions
+        to rare and collectible titles from independent sellers.
+      </p>
+    </div>
+
+    @if (loading()) {
+      <!-- Skeleton sections -->
+      @for (s of [1,2]; track s) {
+        <section class="collection-section" aria-busy="true">
+          <div class="section-header">
+            <div class="skeleton skeleton-title"></div>
+          </div>
+          <div class="collection-grid">
+            @for (i of [1,2,3,4,5,6]; track i) {
+              <div class="collection-card skeleton-card">
+                <div class="skeleton skeleton-collage"></div>
+                <div class="card-info">
+                  <div class="skeleton skeleton-line skeleton-line--wide"></div>
+                  <div class="skeleton skeleton-line skeleton-line--narrow"></div>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
       }
-    </div>
-  } @else {
-    <div class="state-card" role="status">
-      <p class="state-title">No categories available.</p>
-      <p class="state-message">Please check back later to explore the catalog by category.</p>
-    </div>
-  }
+
+    } @else if (errorMessage(); as msg) {
+      <div class="state-card state-card-error" role="alert">
+        <p class="state-title">We couldn't load categories.</p>
+        <p class="state-message">{{ msg }}</p>
+        <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
+      </div>
+
+    } @else if (categories().length === 0) {
+      <div class="state-card" role="status">
+        <p class="state-title">No categories available.</p>
+        <p class="state-message">Please check back later to explore the catalog.</p>
+      </div>
+
+    } @else {
+
+      <!-- Featured section -->
+      <section class="collection-section" aria-labelledby="featured-heading">
+        <div class="section-header">
+          <div class="section-heading-group">
+            <h2 class="section-title" id="featured-heading">Featured Categories</h2>
+            <span class="section-count">{{ featuredCategories().length }} Collections</span>
+          </div>
+          <a [routerLink]="['/books']" class="btn-view-all">View all</a>
+        </div>
+        <p class="section-desc">Hand-picked categories to help you discover your next great read.</p>
+
+        <div class="collection-grid">
+          @for (cat of featuredCategories(); track cat.id) {
+            <a
+              class="collection-card"
+              [routerLink]="['/books']"
+              [queryParams]="{ category: cat.id }"
+              [attr.aria-label]="cat.name + (cat.bookCount ? ', ' + cat.bookCount + ' books' : '')"
+            >
+              <div class="card-collage" [attr.data-seed]="cat.id">
+                <span class="collage-cell collage-cell--1"></span>
+                <span class="collage-cell collage-cell--2"></span>
+                <span class="collage-cell collage-cell--3"></span>
+                <span class="collage-cell collage-cell--4"></span>
+                <span class="collage-initial" aria-hidden="true">{{ cat.name.charAt(0) }}</span>
+              </div>
+              <div class="card-info">
+                <span class="card-title">{{ cat.name }}</span>
+                @if (cat.description) {
+                  <span class="card-seller">{{ cat.description }}</span>
+                }
+                @if (cat.bookCount) {
+                  <span class="card-count">{{ cat.bookCount }} items</span>
+                }
+              </div>
+            </a>
+          }
+        </div>
+      </section>
+
+      <!-- All categories section -->
+      @if (remainingCategories().length > 0) {
+        <section class="collection-section" aria-labelledby="all-heading">
+          <div class="section-header">
+            <div class="section-heading-group">
+              <h2 class="section-title" id="all-heading">All Categories</h2>
+              <span class="section-count">{{ remainingCategories().length }} Collections</span>
+            </div>
+          </div>
+          <p class="section-desc">Explore the full range of our catalog by genre and topic.</p>
+
+          <div class="collection-grid">
+            @for (cat of remainingCategories(); track cat.id) {
+              <a
+                class="collection-card"
+                [routerLink]="['/books']"
+                [queryParams]="{ category: cat.id }"
+                [attr.aria-label]="cat.name + (cat.bookCount ? ', ' + cat.bookCount + ' books' : '')"
+              >
+                <div class="card-collage card-collage--alt" [attr.data-seed]="cat.id">
+                  <span class="collage-cell collage-cell--1"></span>
+                  <span class="collage-cell collage-cell--2"></span>
+                  <span class="collage-cell collage-cell--3"></span>
+                  <span class="collage-cell collage-cell--4"></span>
+                  <span class="collage-initial" aria-hidden="true">{{ cat.name.charAt(0) }}</span>
+                </div>
+                <div class="card-info">
+                  <span class="card-title">{{ cat.name }}</span>
+                  @if (cat.description) {
+                    <span class="card-seller">{{ cat.description }}</span>
+                  }
+                  @if (cat.bookCount) {
+                    <span class="card-count">{{ cat.bookCount }} items</span>
+                  }
+                </div>
+              </a>
+            }
+          </div>
+        </section>
+      }
+
+    }
+  </main>
 </div>

@@ -4,6 +4,19 @@ $primary-500: #c45c26;
 $primary-600: #a84a1e;
 $primary-700: #8f3a17;
 
+// Blue hierarchy palette
+$blue-50:  #EFF6FF;
+$blue-100: #DBEAFE;
+$blue-200: #BFDBFE;
+$blue-400: #60A5FA;
+$blue-500: #3B82F6;
+$blue-600: #2563EB;
+$blue-700: #1D4ED8;
+$blue-800: #1E40AF;
+$blue-900: #1E3A8A;
+$slate-500: #64748B;
+$slate-900: #0F172A;
+
 $neutral-0: #fffdf9;
 $neutral-50: #f8f6f3;
 $neutral-100: #f2efe9;
@@ -27,6 +40,19 @@ $white: #fff;
 $black: #000;
 
 @mixin color-system-vars {
+  // Blue hierarchy custom properties
+  --blue-50:  #{$blue-50};
+  --blue-100: #{$blue-100};
+  --blue-200: #{$blue-200};
+  --blue-400: #{$blue-400};
+  --blue-500: #{$blue-500};
+  --blue-600: #{$blue-600};
+  --blue-700: #{$blue-700};
+  --blue-800: #{$blue-800};
+  --blue-900: #{$blue-900};
+  --slate-500: #{$slate-500};
+  --slate-900: #{$slate-900};
+
   --brand-clay-700: #{$primary-700};
   --brand-clay-600: #{$primary-600};
   --brand-clay-500: #{$primary-500};
