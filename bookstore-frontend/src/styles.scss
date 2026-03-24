@@ -1317,6 +1317,9 @@ textarea.ng-invalid.ng-touched,
 }
 
 .header-toolbar .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: 600;
@@ -1327,6 +1330,12 @@ textarea.ng-invalid.ng-touched,
   transition:
     opacity var(--transition-fast),
     color var(--transition-fast);
+}
+
+.header-toolbar .logo-icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .header-toolbar .logo:hover {
