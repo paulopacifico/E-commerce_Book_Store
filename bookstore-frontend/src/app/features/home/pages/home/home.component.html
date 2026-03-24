@@ -110,11 +110,11 @@
         <div>
           <p class="section-kicker">Fresh Picks</p>
           <h2 id="featured-heading" class="section-title" appTitleReveal>
-            Featured ebooks help readers decide faster.
+            Hand-picked titles, ready to read.
           </h2>
           <p class="section-desc">
-            Highlighted titles surface high-intent choices first, while the full grid keeps browsing
-            flexible.
+            Our editors surface the best new arrivals so you spend less time searching and more time
+            reading.
           </p>
         </div>
         <a routerLink="/books" class="btn btn-outline">Browse Full Catalog</a>
@@ -144,12 +144,12 @@
           <div class="featured-editorial surface-panel">
             @if (spotlightBook(); as spotlight) {
               <div class="featured-lead">
-                <p class="lead-kicker">Lead Recommendation</p>
+                <p class="lead-kicker">Top Pick</p>
                 <h3 class="lead-title">{{ spotlight.title }}</h3>
                 <p class="lead-author">by {{ spotlight.author }}</p>
                 <p class="lead-copy">
-                  Promote high-interest titles with quick access to details and cart actions that
-                  shorten the path to conversion.
+                  A standout title from our catalog. Check the details, read the preview, and add
+                  it to your cart in one step.
                 </p>
                 <div class="lead-actions">
                   <a [routerLink]="['/books', spotlight.id]" class="btn btn-primary"
@@ -167,16 +167,16 @@
             }
 
             <div class="featured-sidebar" appReveal="scale">
-              <p class="sidebar-kicker">Why it works</p>
+              <p class="sidebar-kicker">Why readers love it</p>
               <ul class="curated-list" aria-label="Featured shelf notes">
                 <li class="curated-item">
-                  Readers see price and stock before opening each product page.
+                  See price and availability before clicking through.
                 </li>
                 <li class="curated-item">
-                  Detail and cart actions stay visible, reducing extra clicks.
+                  Add to cart directly from the catalog — no detours.
                 </li>
                 <li class="curated-item">
-                  Responsive spacing keeps ebook cards easy to scan on any screen.
+                  Works seamlessly on mobile, tablet, and desktop.
                 </li>
               </ul>
             </div>
@@ -296,13 +296,12 @@
 
   <section class="section cta-section" aria-labelledby="cta-heading" appReveal>
     <div class="cta-banner">
-      <p class="section-kicker section-kicker-light">Next Action</p>
+      <p class="section-kicker section-kicker-light">Get Started</p>
       <h2 id="cta-heading" class="cta-title" appTitleReveal>
-        Ready to build your ebook library?
+        Find your next great read.
       </h2>
       <p class="cta-desc">
-        Start browsing now and complete your next purchase in a fast, secure, and reader-friendly
-        checkout flow.
+        Thousands of ebooks across every genre. Browse, choose, and checkout in minutes.
       </p>
       @if (isAuthenticated$ | async) {
         <a routerLink="/books" class="btn btn-cta">Continue Shopping</a>

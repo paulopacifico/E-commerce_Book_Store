@@ -1,11 +1,9 @@
 <section class="auth-shell form-shell">
   <div class="auth-card form-card form-card-compact">
     <div class="form-header auth-header">
-      <p class="eyebrow">Book Store Account</p>
+      <p class="eyebrow">Your Account</p>
       <h1 class="form-title">Welcome back</h1>
-      <p class="form-intro">
-        Sign in to continue shopping, manage your orders, and keep your reading list in sync.
-      </p>
+      <p class="form-intro">Sign in to continue shopping and manage your orders.</p>
     </div>
 
     @if ((route.queryParams | async)?.['registered'] === 'true') {
@@ -75,9 +73,9 @@
         >
           @if (loading()) {
             <span class="spinner" aria-hidden="true"></span>
-            Logging in...
+            Signing in...
           } @else {
-            Login
+            Sign in
           }
         </button>
       </div>
@@ -85,7 +83,7 @@
 
     <p class="form-link-row">
       Don't have an account?
-      <a routerLink="/register" [queryParams]="secondaryAuthQueryParams">Register</a>
+      <a routerLink="/register" [queryParams]="secondaryAuthQueryParams">Sign up</a>
     </p>
   </div>
 </section>

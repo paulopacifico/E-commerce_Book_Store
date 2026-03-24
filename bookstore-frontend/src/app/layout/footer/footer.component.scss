@@ -2,11 +2,11 @@
   margin-top: auto;
   background: linear-gradient(
     180deg,
-    color-mix(in oklch, var(--brand-clay-700) 34%, var(--ink-950)),
-    color-mix(in oklch, var(--brand-clay-700) 26%, var(--ink-950))
+    color-mix(in oklch, var(--blue-800) 90%, var(--blue-900)),
+    var(--blue-900)
   );
   color: color-mix(in oklch, var(--white) 88%, transparent);
-  border-top: 1px solid color-mix(in oklch, var(--warning-100) 14%, transparent);
+  border-top: 1px solid color-mix(in oklch, var(--blue-600) 30%, transparent);
 }
 
 .footer-inner {
@@ -30,7 +30,7 @@
   font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
-  color: color-mix(in oklch, var(--white) 92%, var(--warning-100));
+  color: color-mix(in oklch, var(--white) 92%, var(--blue-100));
   letter-spacing: -0.02em;
 }
 
@@ -54,7 +54,7 @@
   transition: color var(--transition-fast);
 
   &:hover {
-    color: color-mix(in oklch, var(--warning-100) 88%, var(--white));
+    color: var(--blue-200);
   }
 }
 
@@ -82,9 +82,9 @@
     border-color var(--transition-fast);
 
   &:hover {
-    background: color-mix(in oklch, var(--warning-100) 12%, transparent);
-    border-color: color-mix(in oklch, var(--warning-100) 28%, transparent);
-    color: color-mix(in oklch, var(--warning-100) 92%, var(--white));
+    background: color-mix(in oklch, var(--blue-400) 16%, transparent);
+    border-color: color-mix(in oklch, var(--blue-400) 36%, transparent);
+    color: var(--blue-200);
   }
 }
 
