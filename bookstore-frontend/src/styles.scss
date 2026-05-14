@@ -1,8 +1,7 @@
 @use 'sass:color';
 @use './styles/colors' as dsColors;
 
-/* Google Fonts – Rubik (headings) + Nunito Sans (body) */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&family=Rubik:wght@300;400;500;600;700&display=swap');
+/* Typography falls back to local/system fonts so production builds stay offline-safe. */
 
 /* ==========================================================================
    Global styles – editorial bookstore theme, typography, utilities
