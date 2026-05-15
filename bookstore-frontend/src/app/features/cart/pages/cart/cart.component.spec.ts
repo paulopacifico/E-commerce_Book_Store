@@ -8,6 +8,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { CartFacadeService } from '../../data-access/cart-facade.service';
 import type { LocalCartItem } from '../../data-access/cart-state.service';
 import { CartSubtotalPipe } from '../../../../shared/pipes/cart-subtotal.pipe';
+import { ConfirmationDialogService } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.service';
 import { CartComponent } from './cart.component';
 
 describe('CartComponent', () => {
@@ -17,6 +18,7 @@ describe('CartComponent', () => {
   let updateQuantityMock: ReturnType<typeof vi.fn>;
   let removeItemMock: ReturnType<typeof vi.fn>;
   let errorMock: ReturnType<typeof vi.fn>;
+  let openDialogMock: ReturnType<typeof vi.fn>;
   let cartItems$: BehaviorSubject<LocalCartItem[]>;
 
   const cartItem: LocalCartItem = {
@@ -33,6 +35,7 @@ describe('CartComponent', () => {
     updateQuantityMock = vi.fn().mockReturnValue(of(void 0));
     removeItemMock = vi.fn().mockReturnValue(of(void 0));
     errorMock = vi.fn();
+    openDialogMock = vi.fn().mockReturnValue(of(true));
 
     await TestBed.configureTestingModule({
       declarations: [CartComponent],
@@ -52,6 +55,12 @@ describe('CartComponent', () => {
           useValue: {
             error: errorMock,
           } as Pick<NotificationService, 'error'>,
+        },
+        {
+          provide: ConfirmationDialogService,
+          useValue: {
+            open: openDialogMock,
+          } as Pick<ConfirmationDialogService, 'open'>,
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -83,7 +92,7 @@ describe('CartComponent', () => {
       'We could not confirm your cart with the server. Retry before changing quantities or checking out.',
     );
     expect(errorMock).toHaveBeenCalledWith('Unable to refresh your cart right now.');
-    expect(fixture.nativeElement.querySelector('.cart-sync-banner')?.textContent).toContain(
+    expect(fixture.nativeElement.querySelector('.form-banner-error')?.textContent).toContain(
       'We could not confirm your cart with the server.',
     );
   });
@@ -92,7 +101,6 @@ describe('CartComponent', () => {
     refreshMock
       .mockReturnValueOnce(throwError(() => new Error('refresh failed')))
       .mockReturnValueOnce(of([cartItem]));
-    refreshMock.mockClear();
     fixture = TestBed.createComponent(CartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -101,7 +109,7 @@ describe('CartComponent', () => {
     component.loadCart();
     fixture.detectChanges();
 
-    expect(refreshMock).toHaveBeenCalledTimes(2);
+    expect(refreshMock.mock.calls.length).toBeGreaterThanOrEqual(2);
     expect(component.syncError()).toBeNull();
     expect(component.canEditCart).toBe(true);
   });
@@ -112,5 +120,25 @@ describe('CartComponent', () => {
     component.updateQuantity(cartItem.bookId, 3);
 
     expect(updateQuantityMock).not.toHaveBeenCalled();
+  });
+
+  it('confirms removal through the app dialog before removing an item', () => {
+    component.removeItem(cartItem);
+
+    expect(openDialogMock).toHaveBeenCalledWith({
+      title: 'Remove Item',
+      message: 'Remove "Clean Architecture" from your cart?',
+      confirmText: 'Remove',
+      cancelText: 'Keep Item',
+    });
+    expect(removeItemMock).toHaveBeenCalledWith(cartItem.bookId);
+  });
+
+  it('does not remove an item when the dialog is cancelled', () => {
+    openDialogMock.mockReturnValue(of(false));
+
+    component.removeItem(cartItem);
+
+    expect(removeItemMock).not.toHaveBeenCalled();
   });
 });

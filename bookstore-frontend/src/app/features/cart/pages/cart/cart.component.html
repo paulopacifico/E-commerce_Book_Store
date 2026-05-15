@@ -1,5 +1,37 @@
 <div class="cart-page">
-  <h1 class="page-title">Shopping Cart</h1>
+  <header class="cart-hero">
+    <div class="cart-hero-copy">
+      <span class="cart-eyebrow">Curated checkout</span>
+      <h1 class="page-title">Shopping Cart</h1>
+      <p class="cart-intro">
+        Review every title before checkout. Quantities stay locked to the last cart state we
+        confirmed with the server.
+      </p>
+    </div>
+
+    <div class="cart-hero-meta" aria-label="Cart summary">
+      <div class="meta-block">
+        <span class="meta-label">Titles</span>
+        <strong class="meta-value">{{ totalUnits() }}</strong>
+      </div>
+      <div class="meta-block">
+        <span class="meta-label">Subtotal</span>
+        <strong class="meta-value">{{ cartTotal() | currency: 'EUR' }}</strong>
+      </div>
+      <div class="meta-block">
+        <span class="meta-label">Status</span>
+        <strong class="meta-value">
+          @if (loading()) {
+            Syncing
+          } @else if (syncError()) {
+            Needs review
+          } @else {
+            Ready
+          }
+        </strong>
+      </div>
+    </div>
+  </header>
 
   @if (loading()) {
     <div class="state-card" role="status" aria-live="polite">
@@ -8,7 +40,7 @@
     </div>
   } @else if (cart$ | async; as items) {
     @if (syncError(); as syncErrorMessage) {
-      <div class="form-banner form-banner-error" role="alert">
+      <div class="form-banner form-banner-error cart-sync-banner" role="alert">
         <p>{{ syncErrorMessage }}</p>
         <button type="button" class="btn btn-secondary" (click)="loadCart()">Retry Sync</button>
       </div>
@@ -16,146 +48,211 @@
 
     @if (items.length === 0) {
       <div class="cart-empty">
-        <p class="cart-empty-message">Your cart is empty.</p>
+        <span class="cart-empty-kicker">Your shelf is clear</span>
+        <p class="cart-empty-message">Your cart is empty. Start a new stack from the catalog.</p>
         <a routerLink="/books" class="btn btn-primary">Continue Shopping</a>
       </div>
     } @else {
-      <!-- Desktop: table -->
-      <div class="cart-table-wrap">
-        <table class="cart-table" aria-label="Cart items">
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Subtotal</th>
-              <th scope="col"><span class="visually-hidden">Remove</span></th>
-            </tr>
-          </thead>
-          <tbody>
+      <div class="cart-layout">
+        <section class="cart-items-panel" aria-labelledby="cart-items-heading">
+          <div class="section-header">
+            <div>
+              <span class="cart-eyebrow">Confirmed selection</span>
+              <h2 id="cart-items-heading" class="section-title">Books in your bag</h2>
+            </div>
+            <span class="section-badge">{{ totalUnits() }} item(s)</span>
+          </div>
+
+          <div class="cart-table-wrap">
+            <table class="cart-table" aria-label="Cart items">
+              <thead>
+                <tr>
+                  <th scope="col">Product</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Subtotal</th>
+                  <th scope="col"><span class="visually-hidden">Remove</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of items; track item.bookId) {
+                  <tr class="cart-row">
+                    <td class="cell-product">
+                      <div class="product-info">
+                        <div class="product-image" aria-hidden="true">📖</div>
+                        <div class="product-copy">
+                          <span class="product-title">{{ item.bookTitle }}</span>
+                          <span class="product-author">{{ item.bookAuthor }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="cell-price">{{ item.bookPrice | currency: 'EUR' }}</td>
+                    <td class="cell-quantity">
+                      <div class="quantity-controls">
+                        <button
+                          type="button"
+                          class="btn-qty"
+                          aria-label="Decrease quantity"
+                          [disabled]="!canEditCart || isPending(item.bookId)"
+                          (click)="decrement(item)"
+                        >
+                          −
+                        </button>
+                        <span class="quantity-value" aria-live="polite">
+                          @if (isPending(item.bookId) && pendingAction() === 'update') {
+                            …
+                          } @else {
+                            {{ item.quantity }}
+                          }
+                        </span>
+                        <button
+                          type="button"
+                          class="btn-qty"
+                          aria-label="Increase quantity"
+                          [disabled]="!canEditCart || isPending(item.bookId)"
+                          (click)="increment(item)"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                    <td class="cell-subtotal">{{ item | cartSubtotal | currency: 'EUR' }}</td>
+                    <td class="cell-remove">
+                      <button
+                        type="button"
+                        class="btn-remove"
+                        aria-label="Remove from cart"
+                        [disabled]="!canEditCart || isPending(item.bookId)"
+                        (click)="removeItem(item)"
+                      >
+                        @if (isPending(item.bookId) && pendingAction() === 'remove') {
+                          …
+                        } @else {
+                          Remove
+                        }
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="cart-cards">
             @for (item of items; track item.bookId) {
-              <tr class="cart-row">
-                <td class="cell-product">
-                  <div class="product-info">
-                    <div class="product-image" aria-hidden="true">📖</div>
-                    <div>
-                      <span class="product-title">{{ item.bookTitle }}</span>
-                      <span class="product-author">{{ item.bookAuthor }}</span>
-                    </div>
+              <article class="cart-card">
+                <div class="card-product">
+                  <div class="product-image" aria-hidden="true">📖</div>
+                  <div class="card-details">
+                    <h2 class="product-title">{{ item.bookTitle }}</h2>
+                    <p class="product-author">{{ item.bookAuthor }}</p>
+                    <p class="product-price">{{ item.bookPrice | currency: 'EUR' }} each</p>
                   </div>
-                </td>
-                <td class="cell-price">{{ item.bookPrice | currency: 'EUR' }}</td>
-                <td class="cell-quantity">
+                </div>
+                <div class="card-meta">
+                  <div class="card-chip">
+                    <span class="label">Subtotal</span>
+                    <span class="value">{{ item | cartSubtotal | currency: 'EUR' }}</span>
+                  </div>
+                  <div class="card-chip">
+                    <span class="label">Status</span>
+                    <span class="value">
+                      @if (isPending(item.bookId)) {
+                        Updating
+                      } @else {
+                        Confirmed
+                      }
+                    </span>
+                  </div>
+                </div>
+                <div class="card-actions-row">
                   <div class="quantity-controls">
                     <button
                       type="button"
                       class="btn-qty"
                       aria-label="Decrease quantity"
-                      [disabled]="!canEditCart"
+                      [disabled]="!canEditCart || isPending(item.bookId)"
                       (click)="decrement(item)"
                     >
                       −
                     </button>
-                    <span class="quantity-value" aria-live="polite">{{ item.quantity }}</span>
+                    <span class="quantity-value" aria-live="polite">
+                      @if (isPending(item.bookId) && pendingAction() === 'update') {
+                        …
+                      } @else {
+                        {{ item.quantity }}
+                      }
+                    </span>
                     <button
                       type="button"
                       class="btn-qty"
                       aria-label="Increase quantity"
-                      [disabled]="!canEditCart"
+                      [disabled]="!canEditCart || isPending(item.bookId)"
                       (click)="increment(item)"
                     >
                       +
                     </button>
                   </div>
-                </td>
-                <td class="cell-subtotal">{{ item | cartSubtotal | currency: 'EUR' }}</td>
-                <td class="cell-remove">
                   <button
                     type="button"
                     class="btn-remove"
                     aria-label="Remove from cart"
-                    [disabled]="!canEditCart"
+                    [disabled]="!canEditCart || isPending(item.bookId)"
                     (click)="removeItem(item)"
                   >
-                    ✕
+                    @if (isPending(item.bookId) && pendingAction() === 'remove') {
+                      Removing…
+                    } @else {
+                      Remove
+                    }
                   </button>
-                </td>
-              </tr>
+                </div>
+              </article>
             }
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </section>
 
-      <!-- Mobile: cards -->
-      <div class="cart-cards">
-        @for (item of items; track item.bookId) {
-          <article class="cart-card">
-            <div class="card-product">
-              <div class="product-image" aria-hidden="true">📖</div>
-              <div class="card-details">
-                <h2 class="product-title">{{ item.bookTitle }}</h2>
-                <p class="product-author">{{ item.bookAuthor }}</p>
-                <p class="product-price">{{ item.bookPrice | currency: 'EUR' }} each</p>
-              </div>
+        <aside class="cart-summary-panel" aria-labelledby="cart-summary-heading">
+          <div class="summary-head">
+            <span class="cart-eyebrow">Order checkpoint</span>
+            <h2 id="cart-summary-heading" class="section-title">Before you checkout</h2>
+          </div>
+
+          <div class="summary-list" aria-label="Order summary">
+            <div class="summary-row">
+              <span>Items selected</span>
+              <strong>{{ totalUnits() }}</strong>
             </div>
-            <div class="card-quantity">
-              <span class="label">Quantity</span>
-              <div class="quantity-controls">
-                <button
-                  type="button"
-                  class="btn-qty"
-                  aria-label="Decrease quantity"
-                  [disabled]="!canEditCart"
-                  (click)="decrement(item)"
-                >
-                  −
-                </button>
-                <span class="quantity-value" aria-live="polite">{{ item.quantity }}</span>
-                <button
-                  type="button"
-                  class="btn-qty"
-                  aria-label="Increase quantity"
-                  [disabled]="!canEditCart"
-                  (click)="increment(item)"
-                >
-                  +
-                </button>
-              </div>
+            <div class="summary-row">
+              <span>Unique titles</span>
+              <strong>{{ items.length }}</strong>
             </div>
-            <div class="card-subtotal">
-              <span class="label">Subtotal</span>
-              <span class="value">{{ item | cartSubtotal | currency: 'EUR' }}</span>
+            <div class="summary-row">
+              <span>Catalog subtotal</span>
+              <strong>{{ cartTotal() | currency: 'EUR' }}</strong>
             </div>
-            <button
-              type="button"
-              class="btn-remove"
-              aria-label="Remove from cart"
-              [disabled]="!canEditCart"
-              (click)="removeItem(item)"
+          </div>
+
+          <div class="summary-callout">
+            <p class="summary-callout-title">Server-checked before payment</p>
+            <p class="summary-callout-copy">
+              We revalidate your cart before checkout so the order matches the backend state.
+            </p>
+          </div>
+
+          <div class="cart-actions">
+            <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>
+            <a
+              routerLink="/checkout"
+              class="btn btn-primary"
+              [attr.aria-disabled]="!canEditCart"
+              [style.pointer-events]="canEditCart ? 'auto' : 'none'"
+              [style.opacity]="canEditCart ? '1' : '0.6'"
+              (click)="!canEditCart && $event.preventDefault()"
+              >Proceed to Checkout</a
             >
-              Remove
-            </button>
-          </article>
-        }
-      </div>
-
-      <div class="cart-footer">
-        <div class="cart-total">
-          <span class="total-label">Total</span>
-          <span class="total-value">{{ cartTotal() | currency: 'EUR' }}</span>
-        </div>
-        <div class="cart-actions">
-          <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>
-          <a
-            routerLink="/checkout"
-            class="btn btn-primary"
-            [attr.aria-disabled]="!canEditCart"
-            [style.pointer-events]="canEditCart ? 'auto' : 'none'"
-            [style.opacity]="canEditCart ? '1' : '0.6'"
-            (click)="!canEditCart && $event.preventDefault()"
-            >Proceed to Checkout</a
-          >
-        </div>
+          </div>
+        </aside>
       </div>
     }
   }

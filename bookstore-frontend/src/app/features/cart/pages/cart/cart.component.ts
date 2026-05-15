@@ -8,9 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs/operators';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CartFacadeService } from '../../data-access/cart-facade.service';
 import type { LocalCartItem } from '../../data-access/cart-state.service';
+import { ConfirmationDialogService } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-cart',
@@ -22,6 +24,7 @@ import type { LocalCartItem } from '../../data-access/cart-state.service';
 export class CartComponent implements OnInit {
   protected readonly cartFacade = inject(CartFacadeService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmationDialog = inject(ConfirmationDialogService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly cart$ = this.cartFacade.cart$;
@@ -30,7 +33,12 @@ export class CartComponent implements OnInit {
   });
   readonly loading = signal(true);
   readonly syncError = signal<string | null>(null);
+  readonly pendingBookId = signal<number | null>(null);
+  readonly pendingAction = signal<'update' | 'remove' | null>(null);
   readonly hasItems = computed(() => this.cartItems().length > 0);
+  readonly totalUnits = computed(() =>
+    this.cartItems().reduce((sum, item) => sum + item.quantity, 0),
+  );
   readonly cartTotal = computed(() =>
     this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0),
   );
@@ -63,11 +71,24 @@ export class CartComponent implements OnInit {
     return !this.loading() && !this.syncError();
   }
 
+  isPending(bookId: number): boolean {
+    return this.pendingBookId() === bookId;
+  }
+
   updateQuantity(bookId: number, quantity: number): void {
     if (!this.canEditCart) return;
+    if (this.isPending(bookId)) return;
+    this.pendingBookId.set(bookId);
+    this.pendingAction.set('update');
     this.cartFacade
       .updateQuantity(bookId, quantity)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.pendingBookId.set(null);
+          this.pendingAction.set(null);
+        }),
+      )
       .subscribe({
         error: () => this.notificationService.error('Unable to update your cart right now.'),
       });
@@ -84,12 +105,35 @@ export class CartComponent implements OnInit {
 
   removeItem(item: LocalCartItem): void {
     if (!this.canEditCart) return;
-    if (!confirm(`Remove "${item.bookTitle}" from your cart?`)) return;
-    this.cartFacade
-      .removeItem(item.bookId)
+    if (this.isPending(item.bookId)) return;
+    this.confirmationDialog
+      .open({
+        title: 'Remove Item',
+        message: `Remove "${item.bookTitle}" from your cart?`,
+        confirmText: 'Remove',
+        cancelText: 'Keep Item',
+      })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        error: () => this.notificationService.error('Unable to remove this item right now.'),
+        next: (confirmed) => {
+          if (!confirmed) return;
+          this.pendingBookId.set(item.bookId);
+          this.pendingAction.set('remove');
+          this.cartFacade
+            .removeItem(item.bookId)
+            .pipe(
+              takeUntilDestroyed(this.destroyRef),
+              finalize(() => {
+                this.pendingBookId.set(null);
+                this.pendingAction.set(null);
+              }),
+            )
+            .subscribe({
+              error: () => {
+                this.notificationService.error('Unable to remove this item right now.');
+              },
+            });
+        },
       });
   }
 }
