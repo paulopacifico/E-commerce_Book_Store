@@ -102,6 +102,39 @@ describe('CartStateService', () => {
     expect(JSON.parse(localStorage.getItem(guestStorageKey) ?? '[]')).toHaveLength(1);
   });
 
+  it('can remove a persisted scope without touching other scopes', () => {
+    localStorage.setItem(
+      guestStorageKey,
+      JSON.stringify([
+        {
+          bookId: 7,
+          bookTitle: 'Domain-Driven Design',
+          bookAuthor: 'Eric Evans',
+          bookPrice: 54.9,
+          quantity: 1,
+        },
+      ]),
+    );
+    localStorage.setItem(
+      userStorageKey,
+      JSON.stringify([
+        {
+          bookId: 12,
+          bookTitle: 'Refactoring',
+          bookAuthor: 'Martin Fowler',
+          bookPrice: 60,
+          quantity: 1,
+        },
+      ]),
+    );
+    const service = setup();
+
+    service.clearPersistedScope('guest');
+
+    expect(localStorage.getItem(guestStorageKey)).toBeNull();
+    expect(localStorage.getItem(userStorageKey)).not.toBeNull();
+  });
+
   it('removes an item when its quantity is updated to zero', () => {
     const service = setup();
 

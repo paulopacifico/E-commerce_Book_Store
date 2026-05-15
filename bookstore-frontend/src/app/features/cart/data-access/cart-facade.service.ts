@@ -155,6 +155,7 @@ export class CartFacadeService {
         }
         return this.refresh();
       }),
+      tap(() => this.cartState.clearPersistedScope('guest')),
       map((cart) => ({
         mergedGuestItems: pendingGuestItems.length,
         cart,

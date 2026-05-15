@@ -1,7 +1,12 @@
 <div class="checkout-page">
   <h1 class="page-title">Checkout</h1>
 
-  @if (isCartEmpty()) {
+  @if (cartSyncLoading()) {
+    <div class="state-card" role="status" aria-live="polite">
+      <p class="state-title">Syncing your checkout…</p>
+      <p class="state-message">We are confirming your latest cart before you place the order.</p>
+    </div>
+  } @else if (isCartEmpty()) {
     <div class="cart-empty" role="status">
       <p class="cart-empty-message">Your cart is empty. Add items before checkout.</p>
       <a routerLink="/books" class="btn btn-primary">Browse Books</a>
@@ -187,6 +192,15 @@
             <span>{{ finalTotal() | currency: 'EUR' }}</span>
           </div>
         </div>
+
+        @if (cartSyncError(); as cartSyncErrorMessage) {
+          <div class="form-banner form-banner-error" role="alert">
+            <p>{{ cartSyncErrorMessage }}</p>
+            <button type="button" class="btn btn-secondary" (click)="loadCheckoutCart()">
+              Retry Cart Sync
+            </button>
+          </div>
+        }
 
         @if (errorMessage(); as msg) {
           <div class="form-banner form-banner-error" role="alert">{{ msg }}</div>

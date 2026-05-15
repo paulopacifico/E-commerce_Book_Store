@@ -109,6 +109,51 @@ describe('CheckoutComponent', () => {
     );
   });
 
+  it('shows a sync state while the checkout cart is being confirmed', () => {
+    refreshMock.mockReturnValueOnce(of([cartItem]));
+    fixture = TestBed.createComponent(CheckoutComponent);
+    component = fixture.componentInstance;
+
+    expect(component.cartSyncLoading()).toBe(true);
+  });
+
+  it('blocks submit and shows retry guidance when the initial cart sync fails', async () => {
+    refreshMock.mockReturnValueOnce(throwError(() => new Error('refresh failed')));
+    fixture = TestBed.createComponent(CheckoutComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    fillValidForms(component);
+
+    expect(component.cartSyncLoading()).toBe(false);
+    expect(component.cartSyncError()).toBe(
+      'We could not confirm your cart with the server. Retry before placing the order.',
+    );
+    expect(component.canSubmit).toBe(false);
+    expect(fixture.nativeElement.querySelector('.form-banner-error')?.textContent).toContain(
+      'Retry before placing the order',
+    );
+  });
+
+  it('retries the checkout cart sync and re-enables submit on success', () => {
+    refreshMock
+      .mockReturnValueOnce(throwError(() => new Error('refresh failed')))
+      .mockReturnValueOnce(of([cartItem]));
+    refreshMock.mockClear();
+    fixture = TestBed.createComponent(CheckoutComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    fillValidForms(component);
+
+    component.loadCheckoutCart();
+
+    expect(refreshMock).toHaveBeenCalledTimes(2);
+    expect(component.cartSyncError()).toBeNull();
+    expect(component.cartSyncLoading()).toBe(false);
+    expect(component.canSubmit).toBe(true);
+  });
+
   it('submits a valid checkout payload and clears the cart on success', () => {
     const order: Order = {
       id: 42,

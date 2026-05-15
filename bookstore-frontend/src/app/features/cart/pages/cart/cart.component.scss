@@ -114,6 +114,12 @@
   background: var(--bg-secondary);
 }
 
+.btn-qty:disabled,
+.btn-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .btn-qty:focus-visible {
   outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;

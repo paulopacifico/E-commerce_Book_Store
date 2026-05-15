@@ -43,6 +43,20 @@ export class CartStateService {
     this.cartSubject.next(this.loadFromStorage());
   }
 
+  clearPersistedScope(scope: string): void {
+    const normalizedScope = scope.trim() || GUEST_SCOPE;
+
+    try {
+      localStorage.removeItem(this.getStorageKeyForScope(normalizedScope));
+    } catch {
+      // ignore storage errors
+    }
+
+    if (normalizedScope === this.storageScope) {
+      this.cartSubject.next([]);
+    }
+  }
+
   /** Replace the whole cart state when hydrating from an external source. */
   replaceCart(items: LocalCartItem[]): void {
     this.setState(items);
@@ -132,6 +146,10 @@ export class CartStateService {
   }
 
   private getStorageKey(): string {
-    return `${STORAGE_PREFIX}:${this.storageScope}`;
+    return this.getStorageKeyForScope(this.storageScope);
+  }
+
+  private getStorageKeyForScope(scope: string): string {
+    return `${STORAGE_PREFIX}:${scope}`;
   }
 }

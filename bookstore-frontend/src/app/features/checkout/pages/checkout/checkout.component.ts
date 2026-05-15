@@ -38,6 +38,8 @@ export class CheckoutComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
 
   readonly loading = signal(false);
+  readonly cartSyncLoading = signal(true);
+  readonly cartSyncError = signal<string | null>(null);
   readonly errorMessage = signal<string | null>(null);
 
   readonly cart$ = this.cartFacade.cart$;
@@ -63,18 +65,37 @@ export class CheckoutComponent implements OnInit {
   readonly shippingCost = SHIPPING_COST;
 
   ngOnInit(): void {
+    this.loadCheckoutCart();
+  }
+
+  loadCheckoutCart(): void {
+    this.cartSyncLoading.set(true);
+    this.cartSyncError.set(null);
     this.cartFacade
       .refresh()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        next: () => {
+          this.cartSyncLoading.set(false);
+        },
         error: () => {
+          this.cartSyncLoading.set(false);
+          this.cartSyncError.set(
+            'We could not confirm your cart with the server. Retry before placing the order.',
+          );
           this.errorMessage.set('Unable to refresh your cart right now. Please try again.');
         },
       });
   }
 
   get canSubmit(): boolean {
-    return !this.loading() && this.shippingForm.valid && !this.isCartEmpty();
+    return (
+      !this.loading() &&
+      !this.cartSyncLoading() &&
+      !this.cartSyncError() &&
+      this.shippingForm.valid &&
+      !this.isCartEmpty()
+    );
   }
 
   get fullName() {

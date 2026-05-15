@@ -10,6 +10,7 @@ import { CartFacadeService } from './cart-facade.service';
 import { CartStateService } from './cart-state.service';
 
 describe('CartFacadeService', () => {
+  const guestStorageKey = 'bookstore_cart:guest';
   let token$: BehaviorSubject<string | null>;
   let sessionEvents$: Subject<{ type: 'authenticated'; replacedSession: boolean } | { type: 'cleared' }>;
   let isAuthenticatedMock: ReturnType<typeof vi.fn>;
@@ -162,6 +163,7 @@ describe('CartFacadeService', () => {
     expect(getCartMock).toHaveBeenCalledTimes(1);
     expect(mergedGuestItems).toBe(1);
     expect(state.getStorageScope()).toBe('user:reader%40example.com');
+    expect(localStorage.getItem(guestStorageKey)).toBeNull();
     expect(state.getItemsSnapshot()[0]).toMatchObject({
       serverCartItemId: 33,
       bookId: 7,
