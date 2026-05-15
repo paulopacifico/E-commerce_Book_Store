@@ -282,6 +282,10 @@
 /* ── Card collage ─────────────────────────────────────────────────────────── */
 
 .card-collage {
+  --collage-tone-1: color-mix(in oklch, var(--blue-500) 28%, var(--white));
+  --collage-tone-2: color-mix(in oklch, var(--blue-100) 85%, var(--white));
+  --collage-tone-3: color-mix(in oklch, var(--blue-600) 18%, var(--white));
+  --collage-tone-4: color-mix(in oklch, var(--blue-400) 22%, var(--white));
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -296,19 +300,18 @@
     min-height: 40px;
   }
 
-  /* Collage tint scheme A — blue tones */
-  .collage-cell--1 { background: color-mix(in oklch, var(--blue-500) 28%, var(--white)); }
-  .collage-cell--2 { background: color-mix(in oklch, var(--blue-100) 85%, var(--white)); }
-  .collage-cell--3 { background: color-mix(in oklch, var(--blue-600) 18%, var(--white)); }
-  .collage-cell--4 { background: color-mix(in oklch, var(--blue-400) 22%, var(--white)); }
+  .collage-cell--1 { background: var(--collage-tone-1); }
+  .collage-cell--2 { background: var(--collage-tone-2); }
+  .collage-cell--3 { background: var(--collage-tone-3); }
+  .collage-cell--4 { background: var(--collage-tone-4); }
 }
 
 /* Alternate tint scheme — cooler neutrals */
 .card-collage--alt {
-  .collage-cell--1 { background: color-mix(in oklch, var(--neutral-300) 70%, var(--white)); }
-  .collage-cell--2 { background: color-mix(in oklch, var(--neutral-200) 90%, var(--white)); }
-  .collage-cell--3 { background: color-mix(in oklch, var(--neutral-300) 50%, var(--white)); }
-  .collage-cell--4 { background: color-mix(in oklch, var(--neutral-100) 95%, var(--white)); }
+  --collage-tone-1: color-mix(in oklch, var(--neutral-300) 70%, var(--white));
+  --collage-tone-2: color-mix(in oklch, var(--neutral-200) 90%, var(--white));
+  --collage-tone-3: color-mix(in oklch, var(--neutral-300) 50%, var(--white));
+  --collage-tone-4: color-mix(in oklch, var(--neutral-100) 95%, var(--white));
 }
 
 .collage-initial {
@@ -460,10 +463,6 @@
 
   .browse-main {
     padding: var(--space-6) var(--space-6);
-  }
-
-  .collection-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
 }
 
