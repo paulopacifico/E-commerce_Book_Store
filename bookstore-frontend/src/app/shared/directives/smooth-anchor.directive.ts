@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostListener, Input, inject } from '@angular/cor
 import { SmoothScrollService } from '../services/smooth-scroll/smooth-scroll.service';
 
 @Directive({
-  selector: 'a[href^="#"][appSmoothAnchor]',
+  selector: 'a[appSmoothAnchor]',
   standalone: true,
 })
 export class SmoothAnchorDirective {

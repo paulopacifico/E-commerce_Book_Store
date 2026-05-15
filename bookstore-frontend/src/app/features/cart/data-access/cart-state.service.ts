@@ -5,6 +5,7 @@ import type { Book } from '../../books/models/book.interface';
 
 /** UI cart source of truth, persisted locally for the storefront experience. */
 export interface LocalCartItem {
+  serverCartItemId?: number;
   bookId: number;
   bookTitle: string;
   bookAuthor: string;
@@ -12,10 +13,12 @@ export interface LocalCartItem {
   quantity: number;
 }
 
-const STORAGE_KEY = 'bookstore_cart';
+const STORAGE_PREFIX = 'bookstore_cart';
+const GUEST_SCOPE = 'guest';
 
 @Injectable({ providedIn: 'root' })
 export class CartStateService {
+  private storageScope = GUEST_SCOPE;
   private readonly cartSubject = new BehaviorSubject<LocalCartItem[]>(this.loadFromStorage());
 
   /** Public observable of current cart items. */
@@ -25,6 +28,20 @@ export class CartStateService {
   readonly cartCount$: Observable<number> = this.cart$.pipe(
     map((items) => items.reduce((sum, item) => sum + item.quantity, 0)),
   );
+
+  getStorageScope(): string {
+    return this.storageScope;
+  }
+
+  setStorageScope(scope: string): void {
+    const normalizedScope = scope.trim() || GUEST_SCOPE;
+    if (normalizedScope === this.storageScope) {
+      return;
+    }
+
+    this.storageScope = normalizedScope;
+    this.cartSubject.next(this.loadFromStorage());
+  }
 
   /** Replace the whole cart state when hydrating from an external source. */
   replaceCart(items: LocalCartItem[]): void {
@@ -76,6 +93,10 @@ export class CartStateService {
     return this.cartSubject.value.reduce((sum, item) => sum + item.quantity, 0);
   }
 
+  getItemsSnapshot(): LocalCartItem[] {
+    return this.cartSubject.value;
+  }
+
   private setState(items: LocalCartItem[]): void {
     this.cartSubject.next(items);
     this.persist(items);
@@ -83,7 +104,7 @@ export class CartStateService {
 
   private persist(items: LocalCartItem[]): void {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      localStorage.setItem(this.getStorageKey(), JSON.stringify(items));
     } catch {
       // ignore storage errors
     }
@@ -91,13 +112,14 @@ export class CartStateService {
 
   private loadFromStorage(): LocalCartItem[] {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(this.getStorageKey());
       if (!raw) return [];
       const parsed = JSON.parse(raw) as unknown;
       if (!Array.isArray(parsed)) return [];
       return parsed.filter(
         (item): item is LocalCartItem =>
           item != null &&
+          (typeof item.serverCartItemId === 'undefined' || typeof item.serverCartItemId === 'number') &&
           typeof item.bookId === 'number' &&
           typeof item.quantity === 'number' &&
           typeof item.bookPrice === 'number' &&
@@ -107,5 +129,9 @@ export class CartStateService {
     } catch {
       return [];
     }
+  }
+
+  private getStorageKey(): string {
+    return `${STORAGE_PREFIX}:${this.storageScope}`;
   }
 }

@@ -1,8 +1,8 @@
 <div class="order-detail-page">
-  @if (order$ | async; as order) {
-    @if (order) {
+  @if (orderState$ | async; as state) {
+    @if (state.status === 'loaded') {
       <div class="detail-header">
-        <h1 class="page-title">Order #{{ order.id }}</h1>
+        <h1 class="page-title">Order #{{ state.order.id }}</h1>
         <a routerLink="/orders" class="btn btn-secondary">Back to Orders</a>
       </div>
 
@@ -14,12 +14,12 @@
               <div
                 class="timeline-step"
                 role="listitem"
-                [class.completed]="(order.status | statusIndex) > i"
-                [class.current]="(order.status | statusIndex) === i"
-                [class.cancelled]="order.status === 'CANCELLED'"
+                [class.completed]="(state.order.status | statusIndex) > i"
+                [class.current]="(state.order.status | statusIndex) === i"
+                [class.cancelled]="state.order.status === 'CANCELLED'"
               >
                 <div class="step-marker">
-                  @if ((order.status | statusIndex) > i) {
+                  @if ((state.order.status | statusIndex) > i) {
                     <span class="step-icon" aria-hidden="true">✓</span>
                   } @else {
                     <span class="step-dot"></span>
@@ -32,10 +32,10 @@
               </div>
             }
           </div>
-          @if (order.status === 'CANCELLED') {
+          @if (state.order.status === 'CANCELLED') {
             <p class="status-badge status-cancelled">Cancelled</p>
           } @else {
-            <p class="status-badge">Current: {{ order.status }}</p>
+            <p class="status-badge">Current: {{ state.order.status }}</p>
           }
         </section>
 
@@ -43,74 +43,83 @@
           <h2 id="info-heading" class="card-title">Order information</h2>
           <dl class="info-list">
             <dt>Order number</dt>
-            <dd>{{ order.id }}</dd>
+            <dd>{{ state.order.id }}</dd>
             <dt>Date</dt>
-            <dd>{{ order.createdAt | date: 'medium' }}</dd>
+            <dd>{{ state.order.createdAt | date: 'medium' }}</dd>
             <dt>Shipping address</dt>
-            <dd class="address">{{ order.shippingAddress }}</dd>
+            <dd class="address">{{ state.order.shippingAddress }}</dd>
           </dl>
         </section>
       </div>
 
       <section class="detail-card items-section" aria-labelledby="items-heading">
         <h2 id="items-heading" class="card-title">Ordered items</h2>
-        <div class="table-wrap">
-          <table class="items-table" aria-label="Order line items">
-            <thead>
-              <tr>
-                <th scope="col">Book</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">Price</th>
-                <th scope="col">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (item of order.items; track item.id) {
+        @if (hasItems(state.order)) {
+          <div class="table-wrap">
+            <table class="items-table" aria-label="Order line items">
+              <thead>
                 <tr>
-                  <td class="cell-book">
-                    <span class="book-title">{{ item.bookTitle }}</span>
-                    <span class="book-author">{{ item.bookAuthor }}</span>
-                  </td>
-                  <td class="cell-qty">{{ item.quantity }}</td>
-                  <td class="cell-price">{{ item.priceAtPurchase | currency: 'EUR' }}</td>
-                  <td class="cell-subtotal">{{ item | orderItemSubtotal | currency: 'EUR' }}</td>
+                  <th scope="col">Book</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Subtotal</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        <div class="totals">
-          <div class="total-row">
-            <span>Subtotal</span>
-            <span>{{ order | orderSubtotal | currency: 'EUR' }}</span>
+              </thead>
+              <tbody>
+                @for (item of state.order.items; track item.id) {
+                  <tr>
+                    <td class="cell-book">
+                      <span class="book-title">{{ item.bookTitle }}</span>
+                      <span class="book-author">{{ item.bookAuthor }}</span>
+                    </td>
+                    <td class="cell-qty">{{ item.quantity }}</td>
+                    <td class="cell-price">{{ item.priceAtPurchase | currency: 'EUR' }}</td>
+                    <td class="cell-subtotal">{{ item | orderItemSubtotal | currency: 'EUR' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
-          <div class="total-row">
-            <span>Shipping</span>
-            <span>
-              @if ((order | shippingDisplay) === 'included') {
-                Included
-              } @else {
-                {{ order | shippingDisplay | currency: 'EUR' }}
-              }
-            </span>
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span>{{ state.order | orderSubtotal | currency: 'EUR' }}</span>
+            </div>
+            <div class="total-row">
+              <span>Shipping</span>
+              <span>
+                @if ((state.order | shippingDisplay) === 'included') {
+                  Included
+                } @else {
+                  {{ state.order | shippingDisplay | currency: 'EUR' }}
+                }
+              </span>
+            </div>
+            <div class="total-row total-final">
+              <span>Total</span>
+              <span>{{ state.order.totalAmount | currency: 'EUR' }}</span>
+            </div>
           </div>
-          <div class="total-row total-final">
-            <span>Total</span>
-            <span>{{ order.totalAmount | currency: 'EUR' }}</span>
+        } @else {
+          <div class="empty-items-state" role="status">
+            <p class="empty-items-title">No line items were returned for this order.</p>
+            <p class="empty-items-message">
+              The purchase was created, but the backend did not return any item details for display.
+            </p>
           </div>
-        </div>
+        }
       </section>
-    } @else {
+    } @else if (state.status === 'not-found') {
       <div class="error-state">
         <h1 class="page-title">Order not found</h1>
         <p class="error-message">This order does not exist or you do not have access to it.</p>
         <a routerLink="/books" class="btn btn-primary">Back to Books</a>
       </div>
+    } @else {
+      <div class="loading-state" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loading-text">Loading order…</p>
+      </div>
     }
-  } @else {
-    <div class="loading-state" aria-live="polite">
-      <div class="spinner" aria-hidden="true"></div>
-      <p class="loading-text">Loading order…</p>
-    </div>
   }
 </div>

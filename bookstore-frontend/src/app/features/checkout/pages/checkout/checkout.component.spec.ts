@@ -3,11 +3,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
-import { CartStateService, type LocalCartItem } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
+import type { LocalCartItem } from '../../../cart/data-access/cart-state.service';
 import { OrderService } from '../../../orders/data-access/order.service';
 import type { Order } from '../../../orders/models/order.interface';
 import { CartSubtotalPipe } from '../../../../shared/pipes/cart-subtotal.pipe';
@@ -19,10 +20,16 @@ describe('CheckoutComponent', () => {
   let createOrderMock: ReturnType<typeof vi.fn>;
   let navigateMock: ReturnType<typeof vi.fn>;
   let clearCartMock: ReturnType<typeof vi.fn>;
+  let refreshMock: ReturnType<typeof vi.fn>;
   let progressMock: ReturnType<typeof vi.fn>;
   let dismissMock: ReturnType<typeof vi.fn>;
   let successMock: ReturnType<typeof vi.fn>;
-  let cartStateService: { cart$: BehaviorSubject<LocalCartItem[]>; clearCart: () => void };
+  let warningMock: ReturnType<typeof vi.fn>;
+  let cartFacade: {
+    cart$: BehaviorSubject<LocalCartItem[]>;
+    clearCart: () => ReturnType<typeof of>;
+    refresh: () => ReturnType<typeof of>;
+  };
   let cartItems$: BehaviorSubject<LocalCartItem[]>;
 
   const cartItem: LocalCartItem = {
@@ -49,13 +56,16 @@ describe('CheckoutComponent', () => {
     cartItems$ = new BehaviorSubject<LocalCartItem[]>([cartItem]);
     createOrderMock = vi.fn();
     navigateMock = vi.fn();
-    clearCartMock = vi.fn();
+    clearCartMock = vi.fn().mockReturnValue(of(void 0));
+    refreshMock = vi.fn().mockReturnValue(of([cartItem]));
     progressMock = vi.fn().mockReturnValue(501);
     dismissMock = vi.fn();
     successMock = vi.fn();
-    cartStateService = {
+    warningMock = vi.fn();
+    cartFacade = {
       cart$: cartItems$,
-      clearCart: clearCartMock as unknown as () => void,
+      clearCart: clearCartMock as unknown as () => ReturnType<typeof of>,
+      refresh: refreshMock as unknown as () => ReturnType<typeof of>,
     };
 
     await TestBed.configureTestingModule({
@@ -63,8 +73,8 @@ describe('CheckoutComponent', () => {
       imports: [CommonModule, ReactiveFormsModule, CartSubtotalPipe],
       providers: [
         {
-          provide: CartStateService,
-          useValue: cartStateService as Pick<CartStateService, 'cart$' | 'clearCart'>,
+          provide: CartFacadeService,
+          useValue: cartFacade as Pick<CartFacadeService, 'cart$' | 'clearCart' | 'refresh'>,
         },
         {
           provide: OrderService,
@@ -77,7 +87,8 @@ describe('CheckoutComponent', () => {
             progress: progressMock,
             dismiss: dismissMock,
             success: successMock,
-          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success'>,
+            warning: warningMock,
+          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success' | 'warning'>,
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -119,6 +130,7 @@ describe('CheckoutComponent', () => {
       'Reviewing your cart and placing the order securely.',
       { title: 'Placing Order' },
     );
+    expect(refreshMock).toHaveBeenCalledTimes(2);
     expect(successMock).toHaveBeenCalledWith(
       'Order placed successfully. Redirecting to the order detail.',
       { title: 'Order Confirmed' },
@@ -128,6 +140,67 @@ describe('CheckoutComponent', () => {
     expect(navigateMock).toHaveBeenCalledWith(['/orders', 42]);
     expect(component.errorMessage()).toBeNull();
     expect(component.loading()).toBe(false);
+  });
+
+  it('keeps the successful checkout flow even when cart clearing fails afterwards', () => {
+    const order: Order = {
+      id: 77,
+      items: [],
+      totalAmount: 94.99,
+      status: 'PLACED',
+      shippingAddress: 'Ada Lovelace | 123 Main St | Toronto, ON, M5V 2T6 | +1 416 555 1212',
+      createdAt: '2026-03-17T12:00:00Z',
+    };
+    createOrderMock.mockReturnValue(of(order));
+    clearCartMock.mockReturnValue(throwError(() => new Error('clear failed')));
+    fillValidForms(component);
+
+    component.onSubmit();
+
+    expect(createOrderMock).toHaveBeenCalledTimes(1);
+    expect(clearCartMock).toHaveBeenCalledTimes(1);
+    expect(warningMock).toHaveBeenCalledWith(
+      'Your order was placed, but we could not confirm that the cart was cleared. Refresh the cart if items still appear.',
+      { title: 'Cart Sync Warning' },
+    );
+    expect(successMock).toHaveBeenCalledTimes(1);
+    expect(navigateMock).toHaveBeenCalledWith(['/orders', 77]);
+    expect(component.errorMessage()).toBeNull();
+  });
+
+  it('does not place the order when the synchronized backend cart is empty', () => {
+    refreshMock.mockReturnValue(of([] satisfies LocalCartItem[]));
+    fillValidForms(component);
+
+    component.onSubmit();
+
+    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(clearCartMock).not.toHaveBeenCalled();
+    expect(component.errorMessage()).toBe('Your cart is empty on the server. Review the cart and try again.');
+    expect(component.loading()).toBe(false);
+    expect(dismissMock).toHaveBeenCalledWith(501);
+  });
+
+  it('does not place the order when sync changes the cart contents', () => {
+    refreshMock.mockReturnValue(
+      of([
+        {
+          ...cartItem,
+          quantity: 1,
+        },
+      ]),
+    );
+    fillValidForms(component);
+
+    component.onSubmit();
+
+    expect(createOrderMock).not.toHaveBeenCalled();
+    expect(clearCartMock).not.toHaveBeenCalled();
+    expect(component.errorMessage()).toBe(
+      'Your cart was updated while syncing with the server. Review the latest cart and submit again.',
+    );
+    expect(component.loading()).toBe(false);
+    expect(dismissMock).toHaveBeenCalledWith(501);
   });
 
   it('does not submit when the forms are incomplete', () => {

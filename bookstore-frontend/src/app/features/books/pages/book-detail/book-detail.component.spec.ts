@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { BookService } from '../../data-access/book.service';
 import type { Book } from '../../models/book.interface';
 import { BookDetailComponent } from './book-detail.component';
@@ -45,8 +45,8 @@ describe('BookDetailComponent', () => {
           } as Pick<BookService, 'getBookById'>,
         },
         {
-          provide: CartStateService,
-          useValue: { addItem: vi.fn() } as Pick<CartStateService, 'addItem'>,
+          provide: CartFacadeService,
+          useValue: { addItem: vi.fn().mockReturnValue(of(void 0)) } as Pick<CartFacadeService, 'addItem'>,
         },
         {
           provide: NotificationService,

@@ -7,7 +7,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { BookService } from '../../../books/data-access/book.service';
 import type { Book, PageResponse } from '../../../books/models/book.interface';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
 import type { Category } from '../../../categories/models/category.interface';
 import { HomeComponent } from './home.component';
@@ -81,10 +81,10 @@ describe('HomeComponent', () => {
           } as Pick<AuthService, 'isAuthenticated$'>,
         },
         {
-          provide: CartStateService,
+          provide: CartFacadeService,
           useValue: {
-            addItem: addItemMock,
-          } as Pick<CartStateService, 'addItem'>,
+            addItem: addItemMock.mockReturnValue(of(void 0)),
+          } as unknown as Pick<CartFacadeService, 'addItem'>,
         },
         {
           provide: NotificationService,

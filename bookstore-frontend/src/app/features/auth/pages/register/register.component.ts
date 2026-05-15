@@ -2,9 +2,11 @@ import { Component, signal, inject, ChangeDetectionStrategy, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 import { AuthService } from '../../data-access/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 
 function passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -22,6 +24,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -76,6 +79,20 @@ export class RegisterComponent {
     this.authService
       .register(username, email, password)
       .pipe(
+        switchMap(() =>
+          this.cartFacade.syncAfterAuthentication().pipe(
+            map((result) => ({
+              mergedGuestItems: result.mergedGuestItems,
+              cartSyncFailed: false,
+            })),
+            catchError(() =>
+              of({
+                mergedGuestItems: 0,
+                cartSyncFailed: true,
+              }),
+            ),
+          ),
+        ),
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.loading.set(false);
@@ -83,11 +100,23 @@ export class RegisterComponent {
         }),
       )
       .subscribe({
-        next: () => {
+        next: ({ mergedGuestItems, cartSyncFailed }) => {
           const targetUrl = this.getSafeReturnUrl() ?? '/books';
-          this.notificationService.success('Your account is ready. Redirecting you now.', {
-            title: 'Account Created',
-          });
+          if (cartSyncFailed) {
+            this.notificationService.warning(
+              'Your account is ready, but we could not confirm your cart sync before redirecting.',
+              { title: 'Cart Sync Warning' },
+            );
+          } else if (mergedGuestItems > 0) {
+            this.notificationService.success(
+              'Your account is ready and your guest cart was synced before redirecting.',
+              { title: 'Account Created' },
+            );
+          } else {
+            this.notificationService.success('Your account is ready. Redirecting you now.', {
+              title: 'Account Created',
+            });
+          }
           void this.router.navigateByUrl(targetUrl);
         },
         error: (err) => {

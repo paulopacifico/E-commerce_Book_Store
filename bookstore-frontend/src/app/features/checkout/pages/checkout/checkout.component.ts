@@ -5,13 +5,16 @@ import {
   DestroyRef,
   computed,
   signal,
+  OnInit,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 
-import { CartStateService, type LocalCartItem } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
+import type { LocalCartItem } from '../../../cart/data-access/cart-state.service';
 import { OrderService } from '../../../orders/data-access/order.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 
@@ -26,9 +29,9 @@ const PHONE_PATTERN = /^[\d\s\-+()]{10,20}$/;
   styleUrl: './checkout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly cartState = inject(CartStateService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly orderService = inject(OrderService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -37,8 +40,8 @@ export class CheckoutComponent {
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
 
-  readonly cart$ = this.cartState.cart$;
-  protected readonly cartItems = toSignal(this.cartState.cart$, {
+  readonly cart$ = this.cartFacade.cart$;
+  protected readonly cartItems = toSignal(this.cartFacade.cart$, {
     initialValue: [] as LocalCartItem[],
   });
   readonly cartTotal = computed(() =>
@@ -58,6 +61,17 @@ export class CheckoutComponent {
   });
 
   readonly shippingCost = SHIPPING_COST;
+
+  ngOnInit(): void {
+    this.cartFacade
+      .refresh()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: () => {
+          this.errorMessage.set('Unable to refresh your cart right now. Please try again.');
+        },
+      });
+  }
 
   get canSubmit(): boolean {
     return !this.loading() && this.shippingForm.valid && !this.isCartEmpty();
@@ -95,6 +109,20 @@ export class CheckoutComponent {
     return parts.join(' | ');
   }
 
+  private hasSameCart(expected: LocalCartItem[], actual: LocalCartItem[]): boolean {
+    if (expected.length !== actual.length) {
+      return false;
+    }
+
+    const toSignature = (items: LocalCartItem[]) =>
+      items
+        .map((item) => `${item.bookId}:${item.quantity}:${item.bookPrice}`)
+        .sort()
+        .join('|');
+
+    return toSignature(expected) === toSignature(actual);
+  }
+
   onSubmit(): void {
     this.errorMessage.set(null);
     if (!this.canSubmit) return;
@@ -102,15 +130,45 @@ export class CheckoutComponent {
 
     this.loading.set(true);
     const shippingAddress = this.buildShippingAddress();
+    const cartBeforeSync = this.cartItems();
     const progressId = this.notificationService.progress(
       'Reviewing your cart and placing the order securely.',
       { title: 'Placing Order' },
     );
 
-    this.orderService
-      .createOrder({ shippingAddress })
+    this.cartFacade
+      .refresh()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        switchMap((syncedCart) => {
+          if (syncedCart.length === 0) {
+            this.errorMessage.set(
+              'Your cart is empty on the server. Review the cart and try again.',
+            );
+            return EMPTY;
+          }
+
+          if (!this.hasSameCart(cartBeforeSync, syncedCart)) {
+            this.errorMessage.set(
+              'Your cart was updated while syncing with the server. Review the latest cart and submit again.',
+            );
+            return EMPTY;
+          }
+
+          return this.orderService.createOrder({ shippingAddress });
+        }),
+        switchMap((order) =>
+          this.cartFacade.clearCart().pipe(
+            map(() => order),
+            catchError(() => {
+              this.notificationService.warning(
+                'Your order was placed, but we could not confirm that the cart was cleared. Refresh the cart if items still appear.',
+                { title: 'Cart Sync Warning' },
+              );
+              return of(order);
+            }),
+          ),
+        ),
         finalize(() => {
           this.loading.set(false);
           this.notificationService.dismiss(progressId);
@@ -124,7 +182,6 @@ export class CheckoutComponent {
               title: 'Order Confirmed',
             },
           );
-          this.cartState.clearCart();
           this.router.navigate(['/orders', order.id]);
         },
         error: (err) => {

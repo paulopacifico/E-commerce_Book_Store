@@ -27,7 +27,7 @@ import {
 } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
 import type { Book } from '../../models/book.interface';
@@ -48,7 +48,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
-  private readonly cartStateService = inject(CartStateService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly hostEl = inject(ElementRef<HTMLElement>);
@@ -285,8 +285,13 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   }
 
   handleAddToCart(book: Book, quantity: number = 1): void {
-    this.cartStateService.addItem(book, quantity);
-    this.notificationService.success('Book added to cart');
+    this.cartFacade
+      .addItem(book, quantity)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.notificationService.success('Book added to cart'),
+        error: () => this.notificationService.error('Unable to update your cart right now.'),
+      });
   }
 
   get selectedCategoryLabel(): string | null {

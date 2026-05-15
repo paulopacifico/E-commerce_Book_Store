@@ -16,7 +16,7 @@ import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { BookService } from '../../../books/data-access/book.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
 import { AuthService } from '../../../auth/data-access/auth.service';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { AnimationsService } from '../../../../shared/services/animations/animations.service';
 import { SmoothAnchorDirective } from '../../../../shared/directives/smooth-anchor.directive';
@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly bookService = inject(BookService);
   private readonly categoryService = inject(CategoryService);
   private readonly authService = inject(AuthService);
-  private readonly cartStateService = inject(CartStateService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly hostEl = inject(ElementRef<HTMLElement>);
@@ -190,8 +190,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleAddToCart(book: Book): void {
-    this.cartStateService.addItem(book, 1);
-    this.notificationService.success('Book added to cart');
+    this.cartFacade
+      .addItem(book, 1)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.notificationService.success('Book added to cart'),
+        error: () => this.notificationService.error('Unable to update your cart right now.'),
+      });
   }
 
   trackByBookId(_index: number, book: Book): number {

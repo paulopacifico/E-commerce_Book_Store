@@ -9,13 +9,14 @@ import {
   OnDestroy,
   signal,
   ViewChild,
+  DestroyRef,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
 import type { Book } from '../../models/book.interface';
@@ -32,9 +33,10 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
 
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
-  private readonly cartStateService = inject(CartStateService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly notificationService = inject(NotificationService);
   private readonly smoothScroll = inject(SmoothScrollService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly quantity = signal(1);
@@ -138,9 +140,17 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
   }
 
   handleAddToCart(book: Book, quantity: number = 1): void {
-    this.cartStateService.addItem(book, quantity);
-    this.notificationService.success('Book added to cart');
-    this.addingToCart.set(false);
+    this.addingToCart.set(true);
+    this.cartFacade
+      .addItem(book, quantity)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.addingToCart.set(false)),
+      )
+      .subscribe({
+        next: () => this.notificationService.success('Book added to cart'),
+        error: () => this.notificationService.error('Unable to update your cart right now.'),
+      });
   }
 
   scrollToTop(): void {

@@ -10,7 +10,7 @@ import {
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../../features/auth/data-access/auth.service';
-import { CartStateService } from '../../features/cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../features/cart/data-access/cart-facade.service';
 
 @Component({
   selector: 'app-header',
@@ -22,11 +22,11 @@ export class HeaderComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly breakpointObserver = inject(BreakpointObserver);
-  private readonly cartStateService = inject(CartStateService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly hostElement = inject(ElementRef<HTMLElement>);
 
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
-  readonly cartCount$ = this.cartStateService.cartCount$;
+  readonly cartCount$ = this.cartFacade.cartCount$;
   readonly mobileMenuOpen = signal(false);
   readonly userMenuOpen = signal(false);
   readonly isMobile = signal(false);

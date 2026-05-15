@@ -7,6 +7,7 @@ import { throwError, of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import type { AuthResponse } from '../../models/auth.interface';
 import { AuthService } from '../../data-access/auth.service';
 import { RegisterComponent } from './register.component';
@@ -19,6 +20,8 @@ describe('RegisterComponent', () => {
   let progressMock: ReturnType<typeof vi.fn>;
   let dismissMock: ReturnType<typeof vi.fn>;
   let successMock: ReturnType<typeof vi.fn>;
+  let warningMock: ReturnType<typeof vi.fn>;
+  let syncAfterAuthenticationMock: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     registerMock = vi.fn();
@@ -26,6 +29,10 @@ describe('RegisterComponent', () => {
     progressMock = vi.fn().mockReturnValue(77);
     dismissMock = vi.fn();
     successMock = vi.fn();
+    warningMock = vi.fn();
+    syncAfterAuthenticationMock = vi
+      .fn()
+      .mockReturnValue(of({ mergedGuestItems: 0, cart: [] }));
 
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
@@ -34,6 +41,12 @@ describe('RegisterComponent', () => {
         {
           provide: AuthService,
           useValue: { register: registerMock } as Pick<AuthService, 'register'>,
+        },
+        {
+          provide: CartFacadeService,
+          useValue: {
+            syncAfterAuthentication: syncAfterAuthenticationMock,
+          } as Pick<CartFacadeService, 'syncAfterAuthentication'>,
         },
         {
           provide: Router,
@@ -45,7 +58,8 @@ describe('RegisterComponent', () => {
             progress: progressMock,
             dismiss: dismissMock,
             success: successMock,
-          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success'>,
+            warning: warningMock,
+          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success' | 'warning'>,
         },
         {
           provide: ActivatedRoute,
@@ -81,6 +95,7 @@ describe('RegisterComponent', () => {
       'Creating your account and preparing your library access.',
       { title: 'Creating Account' },
     );
+    expect(syncAfterAuthenticationMock).toHaveBeenCalledTimes(1);
     expect(successMock).toHaveBeenCalledWith('Your account is ready. Redirecting you now.', {
       title: 'Account Created',
     });
@@ -88,6 +103,45 @@ describe('RegisterComponent', () => {
     expect(dismissMock).toHaveBeenCalledWith(77);
     expect(component.loading()).toBe(false);
     expect(component.errorMessage()).toBeNull();
+  });
+
+  it('shows a cart sync success message when guest items were merged before redirect', () => {
+    registerMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
+    syncAfterAuthenticationMock.mockReturnValue(of({ mergedGuestItems: 3, cart: [] }));
+    component.form.setValue({
+      username: 'reader',
+      email: 'reader@example.com',
+      password: 'secret123',
+      confirmPassword: 'secret123',
+    });
+
+    component.onSubmit();
+
+    expect(successMock).toHaveBeenCalledWith(
+      'Your account is ready and your guest cart was synced before redirecting.',
+      { title: 'Account Created' },
+    );
+  });
+
+  it('warns and continues redirecting when cart sync cannot be confirmed', () => {
+    registerMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
+    syncAfterAuthenticationMock.mockReturnValue(
+      throwError(() => new Error('sync failed')),
+    );
+    component.form.setValue({
+      username: 'reader',
+      email: 'reader@example.com',
+      password: 'secret123',
+      confirmPassword: 'secret123',
+    });
+
+    component.onSubmit();
+
+    expect(warningMock).toHaveBeenCalledWith(
+      'Your account is ready, but we could not confirm your cart sync before redirecting.',
+      { title: 'Cart Sync Warning' },
+    );
+    expect(navigateByUrlMock).toHaveBeenCalledWith('/checkout');
   });
 
   it('renders the API error message when registration fails', () => {

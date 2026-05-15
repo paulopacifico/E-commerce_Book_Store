@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
-import { CartStateService } from '../../../cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
 import type { Category } from '../../../categories/models/category.interface';
 import { BookService } from '../../data-access/book.service';
@@ -51,7 +51,7 @@ describe('BookListComponent', () => {
     getBooksByCategoryMock = vi.fn();
     searchBooksMock = vi.fn();
     getCategoriesMock = vi.fn();
-    addItemMock = vi.fn();
+    addItemMock = vi.fn().mockReturnValue(of(void 0));
     successMock = vi.fn();
 
     await TestBed.configureTestingModule({
@@ -71,8 +71,8 @@ describe('BookListComponent', () => {
           useValue: { getCategories: getCategoriesMock } as Pick<CategoryService, 'getCategories'>,
         },
         {
-          provide: CartStateService,
-          useValue: { addItem: addItemMock } as Pick<CartStateService, 'addItem'>,
+          provide: CartFacadeService,
+          useValue: { addItem: addItemMock } as Pick<CartFacadeService, 'addItem'>,
         },
         {
           provide: NotificationService,

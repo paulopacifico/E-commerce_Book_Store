@@ -2,9 +2,11 @@ import { Component, signal, inject, ChangeDetectionStrategy, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, finalize, map, switchMap } from 'rxjs/operators';
 import { AuthService } from '../../data-access/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +18,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly cartFacade = inject(CartFacadeService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly route = inject(ActivatedRoute);
@@ -58,6 +61,20 @@ export class LoginComponent {
     this.authService
       .login(email.trim(), password)
       .pipe(
+        switchMap(() =>
+          this.cartFacade.syncAfterAuthentication().pipe(
+            map((result) => ({
+              mergedGuestItems: result.mergedGuestItems,
+              cartSyncFailed: false,
+            })),
+            catchError(() =>
+              of({
+                mergedGuestItems: 0,
+                cartSyncFailed: true,
+              }),
+            ),
+          ),
+        ),
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.loading.set(false);
@@ -65,11 +82,23 @@ export class LoginComponent {
         }),
       )
       .subscribe({
-        next: () => {
+        next: ({ mergedGuestItems, cartSyncFailed }) => {
           const targetUrl = this.getSafeReturnUrl() ?? '/books';
-          this.notificationService.success('Welcome back. Redirecting you now.', {
-            title: 'Signed In',
-          });
+          if (cartSyncFailed) {
+            this.notificationService.warning(
+              'Welcome back. Your session is ready, but we could not confirm your cart sync before redirecting.',
+              { title: 'Cart Sync Warning' },
+            );
+          } else if (mergedGuestItems > 0) {
+            this.notificationService.success(
+              'Welcome back. Your guest cart was synced before redirecting you.',
+              { title: 'Signed In' },
+            );
+          } else {
+            this.notificationService.success('Welcome back. Redirecting you now.', {
+              title: 'Signed In',
+            });
+          }
           void this.router.navigateByUrl(targetUrl);
         },
         error: (err) => {

@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CartStateService } from '../../features/cart/data-access/cart-state.service';
+import { CartFacadeService } from '../../features/cart/data-access/cart-facade.service';
 import { pairwise, startWith } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators';
   styleUrl: './cart-icon.component.scss',
 })
 export class CartIconComponent {
-  readonly cartCount$ = inject(CartStateService).cartCount$;
+  readonly cartCount$ = inject(CartFacadeService).cartCount$;
   readonly bump = signal(false);
 
   private readonly destroyRef = inject(DestroyRef);

@@ -4,6 +4,8 @@ import type { Book } from '../../books/models/book.interface';
 import { CartStateService } from './cart-state.service';
 
 describe('CartStateService', () => {
+  const guestStorageKey = 'bookstore_cart:guest';
+  const userStorageKey = 'bookstore_cart:user:reader@example.com';
   const book: Book = {
     id: 7,
     title: 'Domain-Driven Design',
@@ -38,7 +40,7 @@ describe('CartStateService', () => {
     expect(service.getCartItemCount()).toBe(3);
     expect(service.getCartTotal()).toBeCloseTo(164.7, 2);
 
-    const stored = JSON.parse(localStorage.getItem('bookstore_cart') ?? '[]') as Array<{
+    const stored = JSON.parse(localStorage.getItem(guestStorageKey) ?? '[]') as Array<{
       bookId: number;
       quantity: number;
     }>;
@@ -52,7 +54,7 @@ describe('CartStateService', () => {
 
   it('hydrates only valid persisted items from storage', () => {
     localStorage.setItem(
-      'bookstore_cart',
+      guestStorageKey,
       JSON.stringify([
         {
           bookId: 7,
@@ -72,6 +74,32 @@ describe('CartStateService', () => {
 
     expect(service.getCartItemCount()).toBe(2);
     expect(service.getCartTotal()).toBeCloseTo(109.8, 2);
+  });
+
+  it('switches persisted storage by scope', () => {
+    localStorage.setItem(
+      userStorageKey,
+      JSON.stringify([
+        {
+          bookId: 12,
+          bookTitle: 'Refactoring',
+          bookAuthor: 'Martin Fowler',
+          bookPrice: 60,
+          quantity: 1,
+        },
+      ]),
+    );
+    const service = setup();
+
+    service.addItem(book, 1);
+    service.setStorageScope('user:reader@example.com');
+
+    expect(service.getItemsSnapshot()).toHaveLength(1);
+    expect(service.getItemsSnapshot()[0]).toMatchObject({
+      bookId: 12,
+      quantity: 1,
+    });
+    expect(JSON.parse(localStorage.getItem(guestStorageKey) ?? '[]')).toHaveLength(1);
   });
 
   it('removes an item when its quantity is updated to zero', () => {

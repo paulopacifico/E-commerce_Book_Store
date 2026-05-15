@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
+import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import type { AuthResponse } from '../../models/auth.interface';
 import { AuthService } from '../../data-access/auth.service';
 import { LoginComponent } from './login.component';
@@ -19,6 +20,8 @@ describe('LoginComponent', () => {
   let progressMock: ReturnType<typeof vi.fn>;
   let dismissMock: ReturnType<typeof vi.fn>;
   let successMock: ReturnType<typeof vi.fn>;
+  let warningMock: ReturnType<typeof vi.fn>;
+  let syncAfterAuthenticationMock: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     loginMock = vi.fn();
@@ -26,12 +29,22 @@ describe('LoginComponent', () => {
     progressMock = vi.fn().mockReturnValue(99);
     dismissMock = vi.fn();
     successMock = vi.fn();
+    warningMock = vi.fn();
+    syncAfterAuthenticationMock = vi
+      .fn()
+      .mockReturnValue(of({ mergedGuestItems: 0, cart: [] }));
 
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
       imports: [CommonModule, ReactiveFormsModule],
       providers: [
         { provide: AuthService, useValue: { login: loginMock } as Pick<AuthService, 'login'> },
+        {
+          provide: CartFacadeService,
+          useValue: {
+            syncAfterAuthentication: syncAfterAuthenticationMock,
+          } as Pick<CartFacadeService, 'syncAfterAuthentication'>,
+        },
         {
           provide: Router,
           useValue: { navigateByUrl: navigateByUrlMock } as Pick<Router, 'navigateByUrl'>,
@@ -42,7 +55,8 @@ describe('LoginComponent', () => {
             progress: progressMock,
             dismiss: dismissMock,
             success: successMock,
-          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success'>,
+            warning: warningMock,
+          } as Pick<NotificationService, 'progress' | 'dismiss' | 'success' | 'warning'>,
         },
         {
           provide: ActivatedRoute,
@@ -87,6 +101,7 @@ describe('LoginComponent', () => {
     component.onSubmit();
 
     expect(loginMock).toHaveBeenCalledWith('reader@example.com', 'secret123');
+    expect(syncAfterAuthenticationMock).toHaveBeenCalledTimes(1);
     expect(navigateByUrlMock).toHaveBeenCalledWith('/orders/42');
     expect(progressMock).toHaveBeenCalledWith('Signing you in to your bookstore account.', {
       title: 'Signing In',
@@ -97,6 +112,41 @@ describe('LoginComponent', () => {
     expect(dismissMock).toHaveBeenCalledWith(99);
     expect(component.loading()).toBe(false);
     expect(component.errorMessage()).toBeNull();
+  });
+
+  it('shows a cart sync success message when guest items were merged before redirect', () => {
+    loginMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
+    syncAfterAuthenticationMock.mockReturnValue(of({ mergedGuestItems: 2, cart: [] }));
+    component.form.setValue({
+      email: 'reader@example.com',
+      password: 'secret123',
+    });
+
+    component.onSubmit();
+
+    expect(successMock).toHaveBeenCalledWith(
+      'Welcome back. Your guest cart was synced before redirecting you.',
+      { title: 'Signed In' },
+    );
+  });
+
+  it('warns and continues redirecting when cart sync cannot be confirmed', () => {
+    loginMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
+    syncAfterAuthenticationMock.mockReturnValue(
+      throwError(() => new Error('sync failed')),
+    );
+    component.form.setValue({
+      email: 'reader@example.com',
+      password: 'secret123',
+    });
+
+    component.onSubmit();
+
+    expect(warningMock).toHaveBeenCalledWith(
+      'Welcome back. Your session is ready, but we could not confirm your cart sync before redirecting.',
+      { title: 'Cart Sync Warning' },
+    );
+    expect(navigateByUrlMock).toHaveBeenCalledWith('/orders/42');
   });
 
   it('renders the API error message when login fails', () => {

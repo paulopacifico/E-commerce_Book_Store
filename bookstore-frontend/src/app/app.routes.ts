@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { AuthGuard } from './core/guards/auth.guard';
+import { GuestOnlyGuard } from './core/guards/guest-only.guard';
 import { HomeComponent } from './features/home/pages/home/home.component';
 import { LoginComponent } from './features/auth/pages/login/login.component';
 import { RegisterComponent } from './features/auth/pages/register/register.component';
@@ -14,11 +15,13 @@ export const appRoutes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    canActivate: [GuestOnlyGuard],
     data: { animation: 'LoginPage' },
   },
   {
     path: 'register',
     component: RegisterComponent,
+    canActivate: [GuestOnlyGuard],
     data: { animation: 'RegisterPage' },
   },
   {
