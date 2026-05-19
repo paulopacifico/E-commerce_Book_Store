@@ -1,10 +1,8 @@
 <div class="order-list-page">
-  <h1 class="page-title">My Orders</h1>
-
   @if (loading()) {
-    <div class="loading-wrap" aria-busy="true">
+    <div class="loading-wrap" aria-busy="true" aria-live="polite">
       <span class="spinner"></span>
-      <span>Loading orders...</span>
+      <span>Loading orders…</span>
     </div>
   } @else if (errorMessage(); as errorMessage) {
     <div class="state-card state-card-error" role="alert">
@@ -19,17 +17,82 @@
       <a routerLink="/books" class="btn btn-primary">Browse Books</a>
     </div>
   } @else {
-    <div class="order-list">
-      @for (order of orders(); track order.id) {
-        <a [routerLink]="['/orders', order.id]" class="order-card">
-          <div class="order-card-main">
-            <span class="order-id">Order #{{ order.id }}</span>
-            <span class="order-date">{{ order.createdAt | date: 'mediumDate' }}</span>
-            <span class="order-status" [class]="'status-' + order.status.toLowerCase()">{{
-              order.status
-            }}</span>
+    <header class="orders-hero">
+      <div class="orders-hero-copy">
+        <p class="eyebrow">Purchase archive</p>
+        <h1 class="page-title">My Orders</h1>
+        <p class="orders-intro">
+          Track every completed checkout, review receipts, and jump back into details without losing
+          the rhythm of the storefront.
+        </p>
+      </div>
+
+      <div class="orders-hero-metrics" aria-label="Orders summary">
+        <article class="metric-card">
+          <span class="metric-label">Orders</span>
+          <strong class="metric-value">{{ orders().length }}</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Items</span>
+          <strong class="metric-value">{{ totalUnits() }}</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Total spent</span>
+          <strong class="metric-value">{{ totalSpent() | currency: 'EUR' }}</strong>
+        </article>
+      </div>
+    </header>
+
+    <section class="orders-toolbar" aria-label="Order history controls">
+      <div>
+        <span class="toolbar-label">Latest activity</span>
+        <strong>{{ latestOrderDate() | date: 'mediumDate' }}</strong>
+      </div>
+      <a routerLink="/books" class="btn btn-secondary">Continue Shopping</a>
+    </section>
+
+    <div class="order-list" aria-label="Order history">
+      @for (order of sortedOrders(); track order.id) {
+        <a
+          [routerLink]="['/orders', order.id]"
+          class="order-card"
+          [attr.aria-label]="'Open details for order ' + order.id"
+        >
+          <div class="order-card-header">
+            <div>
+              <span class="order-date">{{ order.createdAt | date: 'MMM d, y' }}</span>
+              <h2 class="order-id">Order #{{ order.id }}</h2>
+            </div>
+            <span class="order-status {{ statusClass(order.status) }}">
+              {{ statusLabel(order.status) }}
+            </span>
           </div>
-          <span class="order-total">{{ order.totalAmount | currency: 'EUR' }}</span>
+
+          <div class="order-card-body">
+            <div class="order-book-preview">
+              <span class="book-mark" aria-hidden="true">{{ primaryTitle(order).charAt(0) }}</span>
+              <div>
+                <span class="book-title">{{ primaryTitle(order) }}</span>
+                <span class="book-meta">{{ itemSummary(order) }}</span>
+              </div>
+            </div>
+
+            <dl class="order-metrics">
+              <div>
+                <dt>Items</dt>
+                <dd>{{ orderUnits(order) }}</dd>
+              </div>
+              <div>
+                <dt>Total</dt>
+                <dd>{{ order.totalAmount | currency: 'EUR' }}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="order-card-footer">
+            <span>{{ statusGuidance(order.status) }}</span>
+            <span class="details-link">View details</span>
+          </div>
         </a>
       }
     </div>
