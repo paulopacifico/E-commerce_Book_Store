@@ -175,4 +175,8 @@ describe('LoginComponent', () => {
   it('preserves the return url when linking to registration', () => {
     expect(component.secondaryAuthQueryParams).toEqual({ returnUrl: '/orders/42' });
   });
+
+  it('does not mark a non-checkout return url as checkout flow', () => {
+    expect(component.isCheckoutReturnFlow).toBe(false);
+  });
 });

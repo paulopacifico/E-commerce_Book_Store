@@ -19,6 +19,10 @@
   position: relative;
 }
 
+.auth-context-banner {
+  margin-bottom: var(--space-5);
+}
+
 @media (max-width: 768px) {
   .auth-shell {
     padding: var(--space-4);

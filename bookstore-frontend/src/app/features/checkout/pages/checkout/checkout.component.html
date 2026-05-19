@@ -1,5 +1,35 @@
 <div class="checkout-page">
-  <h1 class="page-title">Checkout</h1>
+  <header class="checkout-hero">
+    <div class="checkout-hero-copy">
+      <p class="eyebrow">Secure order</p>
+      <h1 class="page-title">Checkout</h1>
+      <p class="checkout-intro">
+        Confirm shipping details and place the exact cart that was last synchronized with the server.
+      </p>
+    </div>
+    <div class="checkout-hero-meta" aria-label="Checkout summary">
+      <div class="checkout-meta-card">
+        <span class="checkout-meta-label">Items</span>
+        <strong class="checkout-meta-value">{{ totalUnits() }}</strong>
+      </div>
+      <div class="checkout-meta-card">
+        <span class="checkout-meta-label">Total</span>
+        <strong class="checkout-meta-value">{{ finalTotal() | currency: 'EUR' }}</strong>
+      </div>
+      <div class="checkout-meta-card">
+        <span class="checkout-meta-label">Status</span>
+        <strong class="checkout-meta-value">
+          @if (cartSyncLoading()) {
+            Syncing
+          } @else if (cartSyncError()) {
+            Needs retry
+          } @else {
+            Ready
+          }
+        </strong>
+      </div>
+    </div>
+  </header>
 
   @if (cartSyncLoading()) {
     <div class="state-card" role="status" aria-live="polite">
@@ -8,6 +38,7 @@
     </div>
   } @else if (isCartEmpty()) {
     <div class="cart-empty" role="status">
+      <span class="checkout-empty-kicker">No confirmed items</span>
       <p class="cart-empty-message">Your cart is empty. Add items before checkout.</p>
       <a routerLink="/books" class="btn btn-primary">Browse Books</a>
       <a routerLink="/cart" class="btn btn-secondary">View Cart</a>
@@ -15,10 +46,12 @@
   } @else {
     <div class="checkout-layout">
       <div class="checkout-forms form-layout">
-        <!-- Shipping -->
         <section class="form-section" aria-labelledby="shipping-heading">
           <div class="form-section-header">
-            <h2 id="shipping-heading" class="form-section-title">Shipping Address</h2>
+            <div>
+              <p class="eyebrow checkout-section-eyebrow">Delivery details</p>
+              <h2 id="shipping-heading" class="form-section-title">Shipping Address</h2>
+            </div>
             <span class="badge-subtle">Step 1</span>
           </div>
           <div class="form-banner form-banner-info" role="status">
@@ -167,9 +200,14 @@
         </section>
       </div>
 
-      <!-- Order summary sidebar -->
       <aside class="order-summary" aria-labelledby="summary-heading">
-        <h2 id="summary-heading" class="section-title">Order Summary</h2>
+        <div class="order-summary-header">
+          <div>
+            <p class="eyebrow checkout-section-eyebrow">Order checkpoint</p>
+            <h2 id="summary-heading" class="section-title">Order Summary</h2>
+          </div>
+          <span class="badge-subtle">Step 2</span>
+        </div>
         <div class="summary-items">
           @for (item of cartItems(); track item.bookId) {
             <div class="summary-row">
@@ -193,8 +231,15 @@
           </div>
         </div>
 
+        <div class="summary-callout">
+          <p class="summary-callout-title">Final review happens on submit</p>
+          <p class="summary-callout-copy">
+            We refresh your cart one more time before creating the order so the backend and UI stay aligned.
+          </p>
+        </div>
+
         @if (cartSyncError(); as cartSyncErrorMessage) {
-          <div class="form-banner form-banner-error" role="alert">
+          <div class="form-banner form-banner-error checkout-sync-banner" role="alert">
             <p>{{ cartSyncErrorMessage }}</p>
             <button type="button" class="btn btn-secondary" (click)="loadCheckoutCart()">
               Retry Cart Sync

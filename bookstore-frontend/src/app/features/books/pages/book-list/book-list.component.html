@@ -126,12 +126,18 @@
   } @else if (books$ | async; as bookList) {
     @if (bookList.length > 0) {
       <div class="catalog-results-head">
-        <p class="catalog-results-kicker">
-          Showing page {{ currentPage() + 1 }} of {{ totalPages() }}
-        </p>
-        <p class="catalog-results-note">
-          Each card is optimized for fast scanning, comparison, and checkout flow.
-        </p>
+        <div class="catalog-results-copy">
+          <p class="catalog-results-kicker">
+            Showing page {{ currentPage() + 1 }} of {{ totalPages() }}
+          </p>
+          <p class="catalog-results-note">
+            Each card is optimized for quick comparison, clear stock signals, and checkout-ready decisions.
+          </p>
+        </div>
+        <div class="catalog-results-flags" aria-label="Catalog flow notes">
+          <span class="results-flag">Guest cart sync on sign-in</span>
+          <span class="results-flag">Fast path to checkout</span>
+        </div>
       </div>
 
       @let rows = chunkBooks(bookList, columns());

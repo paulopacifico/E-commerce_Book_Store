@@ -18,17 +18,38 @@
         >
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-        </svg>BookStore
+        </svg>Book Store
       </span>
+      <p class="brand-copy">
+        Browse, compare, and check out ebooks in one connected flow built for speed and clarity.
+      </p>
       <p class="copyright">&copy; {{ currentYear }} BookStore. All rights reserved.</p>
     </div>
 
-    <nav class="footer-links" aria-label="Footer navigation">
-      <a routerLink="/books" class="footer-link">Catalog</a>
-      <a routerLink="/categories" class="footer-link">Categories</a>
-      <a routerLink="/cart" class="footer-link">Cart</a>
-      <a routerLink="/faq" class="footer-link">Help</a>
-    </nav>
+    <div class="footer-columns">
+      <nav class="footer-links" aria-label="Explore">
+        <p class="footer-heading">Explore</p>
+        <a routerLink="/" class="footer-link">Home</a>
+        <a routerLink="/books" class="footer-link">Catalog</a>
+        <a routerLink="/categories" class="footer-link">Categories</a>
+      </nav>
+
+      <nav class="footer-links" aria-label="Buying flow">
+        <p class="footer-heading">Buying Flow</p>
+        <a routerLink="/cart" class="footer-link">Cart</a>
+        <a routerLink="/checkout" class="footer-link">Checkout</a>
+        <a routerLink="/login" class="footer-link">Account Access</a>
+      </nav>
+    </div>
+
+    <div class="footer-trust">
+      <p class="footer-heading">Why it feels clear</p>
+      <ul class="trust-list" aria-label="Storefront trust points">
+        <li>Responsive browsing from catalog to confirmation.</li>
+        <li>Cart sync is preserved across sign-in and checkout.</li>
+        <li>Order details stay available after purchase.</li>
+      </ul>
+    </div>
 
     <div class="social" aria-label="Social media">
       <a

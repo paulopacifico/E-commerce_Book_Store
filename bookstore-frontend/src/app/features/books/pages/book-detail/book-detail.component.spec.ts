@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
+import { AuthService } from '../../../auth/data-access/auth.service';
 import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { BookService } from '../../data-access/book.service';
 import type { Book } from '../../models/book.interface';
@@ -16,6 +17,8 @@ describe('BookDetailComponent', () => {
   let fixture: ComponentFixture<BookDetailComponent>;
   let component: BookDetailComponent;
   let getBookByIdMock: ReturnType<typeof vi.fn>;
+  let addItemMock: ReturnType<typeof vi.fn>;
+  let successMock: ReturnType<typeof vi.fn>;
 
   const book: Book = {
     id: 7,
@@ -27,6 +30,8 @@ describe('BookDetailComponent', () => {
 
   beforeEach(async () => {
     getBookByIdMock = vi.fn();
+    addItemMock = vi.fn().mockReturnValue(of(void 0));
+    successMock = vi.fn();
 
     await TestBed.configureTestingModule({
       declarations: [BookDetailComponent],
@@ -46,11 +51,18 @@ describe('BookDetailComponent', () => {
         },
         {
           provide: CartFacadeService,
-          useValue: { addItem: vi.fn().mockReturnValue(of(void 0)) } as Pick<CartFacadeService, 'addItem'>,
+          useValue: { addItem: addItemMock } as Pick<CartFacadeService, 'addItem'>,
+        },
+        {
+          provide: AuthService,
+          useValue: { isAuthenticated: vi.fn().mockReturnValue(false) } as Pick<
+            AuthService,
+            'isAuthenticated'
+          >,
         },
         {
           provide: NotificationService,
-          useValue: { success: vi.fn() } as Pick<NotificationService, 'success'>,
+          useValue: { success: successMock } as Pick<NotificationService, 'success'>,
         },
         {
           provide: SmoothScrollService,
@@ -87,5 +99,20 @@ describe('BookDetailComponent', () => {
     fixture.detectChanges();
 
     expect(component.loading()).toBe(false);
+  });
+
+  it('tells guests their cart will sync after sign-in when adding a book', () => {
+    getBookByIdMock.mockReturnValue(of(book));
+
+    fixture = TestBed.createComponent(BookDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.handleAddToCart(book, 2);
+
+    expect(addItemMock).toHaveBeenCalledWith(book, 2);
+    expect(successMock).toHaveBeenCalledWith(
+      'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
+    );
   });
 });

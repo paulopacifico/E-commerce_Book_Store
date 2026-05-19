@@ -1,14 +1,45 @@
 <div class="order-detail-page">
   @if (orderState$ | async; as state) {
     @if (state.status === 'loaded') {
-      <div class="detail-header">
-        <h1 class="page-title">Order #{{ state.order.id }}</h1>
+      <header class="detail-hero">
+        <div class="detail-hero-copy">
+          <p class="eyebrow">Order {{ statusTone(state.order) }}</p>
+          <h1 class="page-title">Order #{{ state.order.id }}</h1>
+          <p class="detail-intro">
+            Your purchase is recorded and synchronized. Review delivery details, status, and every
+            title included in this order.
+          </p>
+        </div>
+        <div class="detail-hero-meta" aria-label="Order snapshot">
+          <div class="meta-card">
+            <span class="meta-label">Items</span>
+            <strong class="meta-value">{{ totalUnits(state.order) }}</strong>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Total</span>
+            <strong class="meta-value">{{ state.order.totalAmount | currency: 'EUR' }}</strong>
+          </div>
+          <div class="meta-card">
+            <span class="meta-label">Placed</span>
+            <strong class="meta-value">{{ state.order.createdAt | date: 'MMM d' }}</strong>
+          </div>
+        </div>
+      </header>
+
+      <div class="detail-actions">
+        <a routerLink="/books" class="btn btn-primary">Continue Shopping</a>
         <a routerLink="/orders" class="btn btn-secondary">Back to Orders</a>
       </div>
 
       <div class="detail-grid">
         <section class="detail-card" aria-labelledby="status-heading">
-          <h2 id="status-heading" class="card-title">Status</h2>
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow detail-section-eyebrow">Order progress</p>
+              <h2 id="status-heading" class="card-title">Status</h2>
+            </div>
+            <span class="status-pill">{{ statusTone(state.order) }}</span>
+          </div>
           <div class="status-timeline" role="list" aria-label="Order status">
             @for (step of statusSteps; track step; let i = $index) {
               <div
@@ -40,20 +71,34 @@
         </section>
 
         <section class="detail-card" aria-labelledby="info-heading">
-          <h2 id="info-heading" class="card-title">Order information</h2>
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow detail-section-eyebrow">Delivery details</p>
+              <h2 id="info-heading" class="card-title">Order information</h2>
+            </div>
+          </div>
           <dl class="info-list">
             <dt>Order number</dt>
             <dd>{{ state.order.id }}</dd>
             <dt>Date</dt>
             <dd>{{ state.order.createdAt | date: 'medium' }}</dd>
             <dt>Shipping address</dt>
-            <dd class="address">{{ state.order.shippingAddress }}</dd>
+            <dd class="address">
+              @for (line of shippingLines(state.order); track $index) {
+                <span class="address-line">{{ line }}</span>
+              }
+            </dd>
           </dl>
         </section>
       </div>
 
       <section class="detail-card items-section" aria-labelledby="items-heading">
-        <h2 id="items-heading" class="card-title">Ordered items</h2>
+        <div class="card-heading">
+          <div>
+            <p class="eyebrow detail-section-eyebrow">Receipt</p>
+            <h2 id="items-heading" class="card-title">Ordered items</h2>
+          </div>
+        </div>
         @if (hasItems(state.order)) {
           <div class="table-wrap">
             <table class="items-table" aria-label="Order line items">
@@ -111,9 +156,13 @@
       </section>
     } @else if (state.status === 'not-found') {
       <div class="error-state">
+        <p class="eyebrow">Order lookup</p>
         <h1 class="page-title">Order not found</h1>
         <p class="error-message">This order does not exist or you do not have access to it.</p>
-        <a routerLink="/books" class="btn btn-primary">Back to Books</a>
+        <div class="error-actions">
+          <a routerLink="/orders" class="btn btn-secondary">My Orders</a>
+          <a routerLink="/books" class="btn btn-primary">Back to Books</a>
+        </div>
       </div>
     } @else {
       <div class="loading-state" aria-live="polite">

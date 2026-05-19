@@ -46,6 +46,9 @@ export class CheckoutComponent implements OnInit {
   protected readonly cartItems = toSignal(this.cartFacade.cart$, {
     initialValue: [] as LocalCartItem[],
   });
+  readonly totalUnits = computed(() =>
+    this.cartItems().reduce((sum, item) => sum + item.quantity, 0),
+  );
   readonly cartTotal = computed(() =>
     this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0),
   );

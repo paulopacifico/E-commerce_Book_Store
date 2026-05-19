@@ -6,6 +6,7 @@ import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
+import { AuthService } from '../../../auth/data-access/auth.service';
 import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
 import type { Category } from '../../../categories/models/category.interface';
@@ -73,6 +74,13 @@ describe('BookListComponent', () => {
         {
           provide: CartFacadeService,
           useValue: { addItem: addItemMock } as Pick<CartFacadeService, 'addItem'>,
+        },
+        {
+          provide: AuthService,
+          useValue: { isAuthenticated: vi.fn().mockReturnValue(false) } as Pick<
+            AuthService,
+            'isAuthenticated'
+          >,
         },
         {
           provide: NotificationService,
@@ -189,5 +197,21 @@ describe('BookListComponent', () => {
     expect(component.hasActiveFilters).toBe(false);
 
     subscription.unsubscribe();
+  });
+
+  it('tells guests the cart will sync later when adding a book', () => {
+    getBooksMock.mockReturnValue(of(pageResponse(books)));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.handleAddToCart(books[0]);
+
+    expect(addItemMock).toHaveBeenCalledWith(books[0], 1);
+    expect(successMock).toHaveBeenCalledWith(
+      'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
+    );
   });
 });

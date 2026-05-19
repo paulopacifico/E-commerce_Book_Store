@@ -36,7 +36,7 @@ describe('BookCardComponent', () => {
     expect(component.stockBadgeLabel).toBe('Only 4 left');
     expect(component.fallbackMonogram).toBe('TD');
     expect(fixture.nativeElement.textContent).toContain('Limited shelf stock');
-    expect(fixture.nativeElement.textContent).toContain('Preview');
+    expect(fixture.nativeElement.textContent).toContain('View Details');
   });
 
   it('disables purchase for sold out books and still renders the fallback cover', () => {

@@ -64,6 +64,10 @@ export class RegisterComponent {
     return returnUrl ? { returnUrl } : null;
   }
 
+  get isCheckoutReturnFlow(): boolean {
+    return this.getSafeReturnUrl() === '/checkout';
+  }
+
   onSubmit(): void {
     if (this.loading()) return;
     this.errorMessage.set(null);

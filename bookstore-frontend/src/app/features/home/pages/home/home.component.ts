@@ -194,7 +194,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       .addItem(book, 1)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => this.notificationService.success('Book added to cart'),
+        next: () =>
+          this.notificationService.success(
+            this.authService.isAuthenticated()
+              ? 'Book added to cart.'
+              : 'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
+          ),
         error: () => this.notificationService.error('Unable to update your cart right now.'),
       });
   }

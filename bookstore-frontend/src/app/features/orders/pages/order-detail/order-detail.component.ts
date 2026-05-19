@@ -57,4 +57,31 @@ export class OrderDetailComponent {
   hasItems(order: Order): boolean {
     return order.items.length > 0;
   }
+
+  totalUnits(order: Order): number {
+    return order.items.reduce((sum, item) => sum + item.quantity, 0);
+  }
+
+  shippingLines(order: Order): string[] {
+    return order.shippingAddress
+      .split('|')
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  statusTone(order: Order): string {
+    if (order.status === 'DELIVERED') {
+      return 'Delivered';
+    }
+    if (order.status === 'CANCELLED') {
+      return 'Cancelled';
+    }
+    if (order.status === 'SHIPPED') {
+      return 'Shipped';
+    }
+    if (order.status === 'CONFIRMED') {
+      return 'Confirmed';
+    }
+    return 'Pending';
+  }
 }

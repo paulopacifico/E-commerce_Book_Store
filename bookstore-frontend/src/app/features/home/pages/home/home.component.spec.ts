@@ -78,7 +78,8 @@ describe('HomeComponent', () => {
           provide: AuthService,
           useValue: {
             isAuthenticated$: of(false),
-          } as Pick<AuthService, 'isAuthenticated$'>,
+            isAuthenticated: vi.fn().mockReturnValue(false),
+          } as Pick<AuthService, 'isAuthenticated$' | 'isAuthenticated'>,
         },
         {
           provide: CartFacadeService,
@@ -118,6 +119,8 @@ describe('HomeComponent', () => {
     addButton.click();
 
     expect(addItemMock).toHaveBeenCalledWith(featuredBooks[0], 1);
-    expect(successMock).toHaveBeenCalledWith('Book added to cart');
+    expect(successMock).toHaveBeenCalledWith(
+      'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
+    );
   });
 });

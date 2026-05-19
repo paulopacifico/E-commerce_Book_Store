@@ -35,22 +35,29 @@
 
   <div class="card-body">
     <div class="card-copy">
+      <p class="card-category-text">{{ categoryLabel }}</p>
       <h3 class="card-title" [title]="book.title">
         <a [routerLink]="detailLink()" class="card-title-link">{{ book.title }}</a>
       </h3>
       <p class="card-author">by {{ book.author }}</p>
-      <p
-        class="card-availability"
-        [class.low-stock]="stockState === 'low'"
-        [class.out-of-stock]="stockState === 'out'"
-      >
-        {{ availabilityMessage }}
-      </p>
+      <div class="card-supporting">
+        <p
+          class="card-availability"
+          [class.low-stock]="stockState === 'low'"
+          [class.out-of-stock]="stockState === 'out'"
+        >
+          {{ availabilityMessage }}
+        </p>
+        <p class="card-delivery-note">Instant digital access after purchase.</p>
+      </div>
     </div>
 
     <div class="card-footer">
       <div class="price-block">
-        <p class="card-price">{{ book.price | currency: 'EUR' }}</p>
+        <div class="price-row">
+          <p class="card-price">{{ book.price | currency: 'EUR' }}</p>
+          <span class="card-price-note">per ebook</span>
+        </div>
         <p class="card-stock-count">
           @if (book.stockQuantity === 0) {
             Not available now
@@ -61,7 +68,7 @@
       </div>
 
       <div class="card-actions">
-        <a [routerLink]="detailLink()" class="btn-detail">Preview</a>
+        <a [routerLink]="detailLink()" class="btn-detail">View Details</a>
         <button
           type="button"
           class="btn-add"
@@ -75,6 +82,8 @@
           }
         </button>
       </div>
+
+      <p class="card-fulfillment-note">{{ fulfillmentLabel }}</p>
     </div>
   </div>
 </article>

@@ -1,10 +1,22 @@
 <section class="auth-shell form-shell">
   <div class="auth-card form-card form-card-compact">
     <div class="form-header auth-header">
-      <p class="eyebrow">New Account</p>
+      <p class="eyebrow">{{ isCheckoutReturnFlow ? 'Checkout Access' : 'New Account' }}</p>
       <h1 class="form-title">Create your account</h1>
-      <p class="form-intro">Track orders and check out faster. Free to join.</p>
+      <p class="form-intro">
+        @if (isCheckoutReturnFlow) {
+          Create your account to finish checkout. Your synced cart will be waiting after sign-up.
+        } @else {
+          Track orders and check out faster. Free to join.
+        }
+      </p>
     </div>
+
+    @if (isCheckoutReturnFlow) {
+      <div class="form-banner form-banner-info auth-context-banner" role="status">
+        <p>You are signing up to continue an order in progress. After registration, you will return to checkout.</p>
+      </div>
+    }
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-layout" novalidate>
       <div class="form-field">

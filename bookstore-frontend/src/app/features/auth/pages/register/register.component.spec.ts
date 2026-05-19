@@ -172,4 +172,11 @@ describe('RegisterComponent', () => {
   it('preserves the return url when linking back to login', () => {
     expect(component.secondaryAuthQueryParams).toEqual({ returnUrl: '/checkout' });
   });
+
+  it('shows checkout return context when registration starts from checkout', () => {
+    expect(component.isCheckoutReturnFlow).toBe(true);
+    expect(fixture.nativeElement.querySelector('.auth-context-banner')?.textContent).toContain(
+      'After registration, you will return to checkout.',
+    );
+  });
 });

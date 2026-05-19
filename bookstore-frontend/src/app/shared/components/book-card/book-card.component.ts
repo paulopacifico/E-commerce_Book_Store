@@ -80,4 +80,12 @@ export class BookCardComponent {
   get fallbackLabel(): string {
     return this.book.categoryName?.trim() || 'Shelf Copy';
   }
+
+  get fulfillmentLabel(): string {
+    if (this.book.stockQuantity === 0) {
+      return 'Unavailable now. Browse details for related titles.';
+    }
+
+    return 'Guest carts sync after sign-in before checkout.';
+  }
 }

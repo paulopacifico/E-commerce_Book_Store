@@ -45,6 +45,10 @@ export class LoginComponent {
     return returnUrl ? { returnUrl } : null;
   }
 
+  get isCheckoutReturnFlow(): boolean {
+    return this.getSafeReturnUrl() === '/checkout';
+  }
+
   onSubmit(): void {
     this.errorMessage.set(null);
     if (this.form.invalid) return;

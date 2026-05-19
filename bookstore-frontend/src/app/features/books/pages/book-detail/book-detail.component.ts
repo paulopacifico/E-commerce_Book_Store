@@ -17,6 +17,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap, map, catchError, tap, finalize } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
 import { CartFacadeService } from '../../../cart/data-access/cart-facade.service';
+import { AuthService } from '../../../auth/data-access/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { SmoothScrollService } from '../../../../shared/services/smooth-scroll/smooth-scroll.service';
 import type { Book } from '../../models/book.interface';
@@ -34,6 +35,7 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly bookService = inject(BookService);
   private readonly cartFacade = inject(CartFacadeService);
+  private readonly authService = inject(AuthService);
   private readonly notificationService = inject(NotificationService);
   private readonly smoothScroll = inject(SmoothScrollService);
   private readonly destroyRef = inject(DestroyRef);
@@ -148,7 +150,12 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
         finalize(() => this.addingToCart.set(false)),
       )
       .subscribe({
-        next: () => this.notificationService.success('Book added to cart'),
+        next: () =>
+          this.notificationService.success(
+            this.authService.isAuthenticated()
+              ? 'Book added to cart.'
+              : 'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
+          ),
         error: () => this.notificationService.error('Unable to update your cart right now.'),
       });
   }
