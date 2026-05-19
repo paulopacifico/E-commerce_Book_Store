@@ -1,14 +1,23 @@
 <div class="browse-layout categories-page">
-
-  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
   <aside class="browse-sidebar" aria-label="Browse categories">
-
     <div class="sidebar-header">
-      <svg class="sidebar-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-           viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-        <path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7A1 1 0 0 0 3 11h1v6a1 1 0 0 0 1 1h4v-4h2v4h4a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 .707-1.707l-7-7z"/>
+      <svg
+        class="sidebar-icon"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        width="16"
+        height="16"
+      >
+        <path
+          d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7A1 1 0 0 0 3 11h1v6a1 1 0 0 0 1 1h4v-4h2v4h4a1 1 0 0 0 1-1v-6h1a1 1 0 0 0 .707-1.707l-7-7z"
+        />
       </svg>
       <span>Browse Collections</span>
+      @if (!loading() && !errorMessage()) {
+        <small class="sidebar-meta">{{ categories().length }} shelves</small>
+      }
     </div>
 
     <div class="sidebar-search">
@@ -17,54 +26,93 @@
         class="sidebar-search-input"
         placeholder="Search collections"
         [value]="searchQuery()"
-      (input)="onSearch($event)"
+        (input)="onSearch($event)"
         aria-label="Search collections"
       />
-      <svg class="sidebar-search-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-           viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
-        <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9z" clip-rule="evenodd"/>
+      <svg
+        class="sidebar-search-icon"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        width="14"
+        height="14"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9z"
+          clip-rule="evenodd"
+        />
       </svg>
+      @if (hasSearch()) {
+        <button
+          type="button"
+          class="sidebar-clear"
+          (click)="clearSearch()"
+          aria-label="Clear category search"
+        >
+          Clear
+        </button>
+      }
     </div>
 
     @if (!loading() && !errorMessage()) {
       <nav class="sidebar-nav">
-        <p class="sidebar-section-label">All Categories</p>
+        <p class="sidebar-section-label">
+          All Categories
+          <span>{{ filteredCount() }}</span>
+        </p>
         @for (cat of filteredCategories(); track cat.id) {
           <a
             class="sidebar-link"
             [routerLink]="['/books']"
             [queryParams]="{ category: cat.id }"
             [title]="cat.name"
-          >{{ cat.name }}</a>
-        }
-        @empty {
-          <p class="sidebar-empty">No categories match your search.</p>
+          >
+            {{ cat.name }}
+          </a>
+        } @empty {
+          <p class="sidebar-empty">No collections match "{{ searchQuery() }}".</p>
         }
       </nav>
     }
-
   </aside>
 
-  <!-- ── Main content ───────────────────────────────────────────── -->
   <main class="browse-main" id="main-content">
-
     <div class="browse-hero">
+      <p class="eyebrow">Category Discovery</p>
       <h1 class="browse-title">Browse Collections</h1>
       <p class="browse-subtitle">
-        Browse and shop books ranging from vintage paperbacks and signed first editions
-        to rare and collectible titles from independent sellers.
+        Browse and shop books ranging from vintage paperbacks and signed first editions to rare and
+        collectible titles from independent sellers.
       </p>
+
+      @if (!loading() && !errorMessage() && categories().length > 0) {
+        <div class="category-stats" aria-label="Collections snapshot">
+          <div class="category-stat">
+            <span>Collections</span>
+            <strong>{{ categories().length }}</strong>
+          </div>
+          <div class="category-stat">
+            <span>Listed books</span>
+            <strong>{{ totalBookCount() }}</strong>
+          </div>
+          <div class="category-stat">
+            <span>Featured shelves</span>
+            <strong>{{ featuredCategories().length }}</strong>
+          </div>
+        </div>
+      }
     </div>
 
     @if (loading()) {
-      <!-- Skeleton sections -->
-      @for (s of [1,2]; track s) {
+      @for (s of [1, 2]; track s) {
         <section class="collection-section" aria-busy="true">
           <div class="section-header">
             <div class="skeleton skeleton-title"></div>
           </div>
           <div class="collection-grid">
-            @for (i of [1,2,3,4,5,6]; track i) {
+            @for (i of [1, 2, 3, 4, 5, 6]; track i) {
               <div class="collection-card skeleton-card">
                 <div class="skeleton skeleton-collage"></div>
                 <div class="card-info">
@@ -76,23 +124,64 @@
           </div>
         </section>
       }
-
     } @else if (errorMessage(); as msg) {
       <div class="state-card state-card-error" role="alert">
         <p class="state-title">We couldn't load categories.</p>
         <p class="state-message">{{ msg }}</p>
         <button type="button" class="btn btn-primary" (click)="loadCategories()">Try Again</button>
       </div>
-
     } @else if (categories().length === 0) {
       <div class="state-card" role="status">
         <p class="state-title">No categories available.</p>
         <p class="state-message">Please check back later to explore the catalog.</p>
       </div>
+    } @else if (hasSearch()) {
+      <section class="collection-section search-panel" aria-labelledby="search-heading">
+        <div class="section-header">
+          <div class="section-heading-group">
+            <h2 class="section-title" id="search-heading">Search Results</h2>
+            <span class="section-count">{{ filteredCount() }} Collections</span>
+          </div>
+          <button type="button" class="btn-view-all" (click)="clearSearch()">Reset search</button>
+        </div>
+        <p class="section-desc">Collections matching "{{ searchQuery() }}".</p>
 
+        @if (filteredCategories().length > 0) {
+          <div class="collection-grid">
+            @for (cat of filteredCategories(); track cat.id) {
+              <a
+                class="collection-card"
+                [routerLink]="['/books']"
+                [queryParams]="{ category: cat.id }"
+                [attr.aria-label]="categoryAriaLabel(cat)"
+              >
+                <div class="card-collage" [attr.data-seed]="cat.id">
+                  <span class="collage-cell collage-cell--1"></span>
+                  <span class="collage-cell collage-cell--2"></span>
+                  <span class="collage-cell collage-cell--3"></span>
+                  <span class="collage-cell collage-cell--4"></span>
+                  <span class="collage-initial" aria-hidden="true">{{ cat.name.charAt(0) }}</span>
+                </div>
+                <div class="card-info">
+                  <span class="card-title">{{ cat.name }}</span>
+                  @if (cat.description) {
+                    <span class="card-seller">{{ cat.description }}</span>
+                  }
+                  @if (cat.bookCount) {
+                    <span class="card-count">{{ cat.bookCount }} items</span>
+                  }
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="state-card" role="status">
+            <p class="state-title">No matching collections.</p>
+            <p class="state-message">Clear the search or try a broader term.</p>
+          </div>
+        }
+      </section>
     } @else {
-
-      <!-- Featured section -->
       <section class="collection-section" aria-labelledby="featured-heading">
         <div class="section-header">
           <div class="section-heading-group">
@@ -101,7 +190,9 @@
           </div>
           <a [routerLink]="['/books']" class="btn-view-all">View all</a>
         </div>
-        <p class="section-desc">Hand-picked categories to help you discover your next great read.</p>
+        <p class="section-desc">
+          Hand-picked categories to help you discover your next great read.
+        </p>
 
         <div class="collection-grid">
           @for (cat of featuredCategories(); track cat.id) {
@@ -109,7 +200,7 @@
               class="collection-card"
               [routerLink]="['/books']"
               [queryParams]="{ category: cat.id }"
-              [attr.aria-label]="cat.name + (cat.bookCount ? ', ' + cat.bookCount + ' books' : '')"
+              [attr.aria-label]="categoryAriaLabel(cat)"
             >
               <div class="card-collage" [attr.data-seed]="cat.id">
                 <span class="collage-cell collage-cell--1"></span>
@@ -132,7 +223,6 @@
         </div>
       </section>
 
-      <!-- All categories section -->
       @if (remainingCategories().length > 0) {
         <section class="collection-section" aria-labelledby="all-heading">
           <div class="section-header">
@@ -149,7 +239,7 @@
                 class="collection-card"
                 [routerLink]="['/books']"
                 [queryParams]="{ category: cat.id }"
-                [attr.aria-label]="cat.name + (cat.bookCount ? ', ' + cat.bookCount + ' books' : '')"
+                [attr.aria-label]="categoryAriaLabel(cat)"
               >
                 <div class="card-collage card-collage--alt" [attr.data-seed]="cat.id">
                   <span class="collage-cell collage-cell--1"></span>
@@ -172,7 +262,6 @@
           </div>
         </section>
       }
-
     }
   </main>
 </div>

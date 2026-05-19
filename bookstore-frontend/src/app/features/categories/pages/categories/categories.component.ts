@@ -39,16 +39,17 @@ export class CategoriesComponent implements OnInit {
       ? this.categories().filter((c) => c.name.toLowerCase().includes(q))
       : this.categories();
   });
+  readonly hasSearch = computed(() => this.searchQuery().trim().length > 0);
+  readonly filteredCount = computed(() => this.filteredCategories().length);
+  readonly totalBookCount = computed(() =>
+    this.categories().reduce((sum, category) => sum + (category.bookCount ?? 0), 0),
+  );
 
   /** Main content: first N categories shown as "Featured". */
-  readonly featuredCategories = computed(() =>
-    this.categories().slice(0, FEATURED_COUNT),
-  );
+  readonly featuredCategories = computed(() => this.categories().slice(0, FEATURED_COUNT));
 
   /** Main content: remaining categories after the featured slice. */
-  readonly remainingCategories = computed(() =>
-    this.categories().slice(FEATURED_COUNT),
-  );
+  readonly remainingCategories = computed(() => this.categories().slice(FEATURED_COUNT));
 
   ngOnInit(): void {
     this.loadCategories();
@@ -73,5 +74,13 @@ export class CategoriesComponent implements OnInit {
 
   onSearch(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
+  }
+
+  clearSearch(): void {
+    this.searchQuery.set('');
+  }
+
+  categoryAriaLabel(category: Category): string {
+    return category.bookCount ? `${category.name}, ${category.bookCount} books` : category.name;
   }
 }

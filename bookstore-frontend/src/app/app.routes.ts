@@ -7,7 +7,6 @@ import { LoginComponent } from './features/auth/pages/login/login.component';
 import { RegisterComponent } from './features/auth/pages/register/register.component';
 import { CartComponent } from './features/cart/pages/cart/cart.component';
 import { CheckoutComponent } from './features/checkout/pages/checkout/checkout.component';
-import { CategoriesComponent } from './features/categories/pages/categories/categories.component';
 import { NotFoundComponent } from './features/not-found/pages/not-found/not-found.component';
 
 export const appRoutes: Routes = [
@@ -49,7 +48,8 @@ export const appRoutes: Routes = [
   },
   {
     path: 'categories',
-    component: CategoriesComponent,
+    loadChildren: () =>
+      import('./features/categories/categories.module').then((m) => m.CategoriesModule),
     data: { animation: 'CategoriesPage' },
   },
   {
