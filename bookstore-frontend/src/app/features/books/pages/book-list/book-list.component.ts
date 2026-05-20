@@ -36,7 +36,6 @@ import type { Category } from '../../../categories/models/category.interface';
 
 const PAGE_SIZE = 12;
 type SortOption = 'featured' | 'title-asc' | 'price-asc' | 'price-desc';
-type PaginationItem = number | 'ellipsis';
 
 @Component({
   selector: 'app-book-list',
@@ -332,29 +331,6 @@ export class BookListComponent implements OnInit, AfterViewChecked {
       return `${total} titles available in ${category}.`;
     }
     return `${total} titles available in the catalog.`;
-  }
-
-  get visiblePages(): PaginationItem[] {
-    const total = this.totalPages();
-    const current = this.currentPage();
-    if (total <= 1) return [1];
-    if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
-
-    const pages = new Set<number>([1, total, current + 1, current, current + 2]);
-    const sorted = Array.from(pages)
-      .filter((page) => page >= 1 && page <= total)
-      .sort((a, b) => a - b);
-
-    const result: PaginationItem[] = [];
-    sorted.forEach((page, index) => {
-      const previous = sorted[index - 1];
-      if (previous && page - previous > 1) {
-        result.push('ellipsis');
-      }
-      result.push(page);
-    });
-
-    return result;
   }
 
   private sortBooks(books: Book[], sortOption: SortOption): Book[] {

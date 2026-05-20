@@ -131,7 +131,8 @@
             Showing page {{ currentPage() + 1 }} of {{ totalPages() }}
           </p>
           <p class="catalog-results-note">
-            Each card is optimized for quick comparison, clear stock signals, and checkout-ready decisions.
+            Each card is optimized for quick comparison, clear stock signals, and checkout-ready
+            decisions.
           </p>
         </div>
         <div class="catalog-results-flags" aria-label="Catalog flow notes">
@@ -164,61 +165,11 @@
         </div>
       </cdk-virtual-scroll-viewport>
 
-      @if (totalPages() > 1) {
-        <nav class="pagination" aria-label="Books pagination">
-          <button
-            type="button"
-            class="page-btn"
-            [disabled]="currentPage() === 0"
-            (click)="goToPage(0)"
-          >
-            First
-          </button>
-          <button
-            type="button"
-            class="page-btn"
-            [disabled]="currentPage() === 0"
-            (click)="goToPage(currentPage() - 1)"
-          >
-            Previous
-          </button>
-
-          <div class="page-numbers">
-            @for (page of visiblePages; track $index) {
-              @if (page === 'ellipsis') {
-                <span class="page-ellipsis" aria-hidden="true">…</span>
-              } @else {
-                <button
-                  type="button"
-                  class="page-number"
-                  [class.active]="currentPage() === page - 1"
-                  [attr.aria-current]="currentPage() === page - 1 ? 'page' : null"
-                  (click)="goToPage(page - 1)"
-                >
-                  {{ page }}
-                </button>
-              }
-            }
-          </div>
-
-          <button
-            type="button"
-            class="page-btn"
-            [disabled]="currentPage() >= totalPages() - 1"
-            (click)="goToPage(currentPage() + 1)"
-          >
-            Next
-          </button>
-          <button
-            type="button"
-            class="page-btn"
-            [disabled]="currentPage() >= totalPages() - 1"
-            (click)="goToPage(totalPages() - 1)"
-          >
-            Last
-          </button>
-        </nav>
-      }
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        (pageChange)="goToPage($event)"
+      />
     } @else {
       <div class="catalog-empty state-card" role="status">
         <p class="eyebrow">No Match Found</p>

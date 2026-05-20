@@ -65,7 +65,12 @@ export class PaginationComponent {
 
   protected goToPage(page: number): void {
     if (page < 0 || page >= this.totalPages) return;
+    if (page === this.currentPage) return;
     this.pageChange.emit(page);
+  }
+
+  protected first(): void {
+    if (this.currentPage > 0) this.pageChange.emit(0);
   }
 
   protected previous(): void {
@@ -74,6 +79,14 @@ export class PaginationComponent {
 
   protected next(): void {
     if (this.currentPage < this.totalPages - 1) this.pageChange.emit(this.currentPage + 1);
+  }
+
+  protected last(): void {
+    if (this.currentPage < this.totalPages - 1) this.pageChange.emit(this.totalPages - 1);
+  }
+
+  protected pageAriaLabel(page: number): string {
+    return page === this.currentPage ? `Current page, page ${page + 1}` : `Go to page ${page + 1}`;
   }
 
   protected isEllipsis(item: PageItem): item is 'ellipsis' {

@@ -1,15 +1,29 @@
 @if (totalPages > 1) {
   <nav class="pagination" aria-label="Pagination">
+    <p class="pagination-summary" aria-live="polite">
+      Page {{ currentPage + 1 }} of {{ totalPages }}
+    </p>
+
     <div class="pagination-inner">
+      <button
+        type="button"
+        class="btn-nav"
+        [disabled]="currentPage <= 0"
+        [attr.aria-label]="'Go to first page'"
+        (click)="first()"
+      >
+        First
+      </button>
       <button
         type="button"
         class="btn-nav btn-prev"
         [disabled]="currentPage <= 0"
-        [attr.aria-label]="'Previous page'"
+        [attr.aria-label]="'Go to previous page'"
         (click)="previous()"
       >
-        Previous
+        Prev
       </button>
+
       <ul class="page-list" role="list">
         @for (item of pageItems(); track $index) {
           @if (isEllipsis(item)) {
@@ -20,7 +34,7 @@
                 type="button"
                 class="btn-page"
                 [class.active]="item === currentPage"
-                [attr.aria-label]="'Page ' + (item + 1)"
+                [attr.aria-label]="pageAriaLabel(item)"
                 [attr.aria-current]="item === currentPage ? 'page' : null"
                 (click)="goToPage(item)"
               >
@@ -30,14 +44,24 @@
           }
         }
       </ul>
+
       <button
         type="button"
         class="btn-nav btn-next"
         [disabled]="currentPage >= totalPages - 1"
-        [attr.aria-label]="'Next page'"
+        [attr.aria-label]="'Go to next page'"
         (click)="next()"
       >
         Next
+      </button>
+      <button
+        type="button"
+        class="btn-nav"
+        [disabled]="currentPage >= totalPages - 1"
+        [attr.aria-label]="'Go to last page'"
+        (click)="last()"
+      >
+        Last
       </button>
     </div>
   </nav>

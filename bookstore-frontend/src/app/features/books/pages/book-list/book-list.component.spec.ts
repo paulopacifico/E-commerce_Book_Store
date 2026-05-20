@@ -110,7 +110,7 @@ describe('BookListComponent', () => {
     expect(getBooksMock).toHaveBeenCalledWith(0, 12);
     expect(component.categories()).toEqual(categories);
     expect(component.totalResults()).toBe(1);
-    expect(component.visiblePages).toEqual([1]);
+    expect(component.totalPages()).toBe(1);
     expect(fixture.nativeElement.textContent).toContain('1 titles available in the catalog.');
   });
 
@@ -137,7 +137,7 @@ describe('BookListComponent', () => {
     expect(getBooksMock).toHaveBeenCalledTimes(2);
     expect(component.booksErrorMessage()).toBeNull();
     expect(component.totalResults()).toBe(1);
-    expect(component.visiblePages).toEqual([1]);
+    expect(component.totalPages()).toBe(1);
   });
 
   it('surfaces category fetch failures without breaking the catalog', () => {
