@@ -15,7 +15,7 @@
       <span>Loading book...</span>
     </div>
   } @else {
-    @let result = bookResult$ | async;
+    @let result = bookResult();
     @if (!result || 'error' in result) {
       <div class="error-block" role="alert">
         <p>Book not found or failed to load.</p>

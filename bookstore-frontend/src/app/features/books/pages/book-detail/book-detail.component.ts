@@ -70,7 +70,7 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
       }),
     );
 
-  private readonly bookResult = toSignal(this.bookResult$, {
+  readonly bookResult = toSignal(this.bookResult$, {
     initialValue: null as { book: Book } | { error: unknown } | null,
   });
 

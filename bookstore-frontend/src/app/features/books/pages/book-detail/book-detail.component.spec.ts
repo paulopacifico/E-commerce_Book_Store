@@ -82,7 +82,9 @@ describe('BookDetailComponent', () => {
     fixture.detectChanges();
 
     expect(getBookByIdMock).toHaveBeenCalledWith(7);
+    expect(getBookByIdMock).toHaveBeenCalledTimes(1);
     expect(component.loading()).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Domain-Driven Design');
   });
 
   it('clears the loading state after a failed fetch', () => {
