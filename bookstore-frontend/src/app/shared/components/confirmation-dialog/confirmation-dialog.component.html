@@ -1,17 +1,29 @@
 <div
   class="confirmation-dialog"
-  role="dialog"
+  [class.confirmation-dialog-danger]="tone === 'danger'"
+  role="alertdialog"
   aria-modal="true"
   [attr.aria-labelledby]="dialogTitleId"
   [attr.aria-describedby]="dialogDescId"
 >
-  <h2 [id]="dialogTitleId" class="dialog-title">{{ title }}</h2>
-  <p [id]="dialogDescId" class="dialog-message">{{ message }}</p>
+  <div class="dialog-icon" aria-hidden="true">
+    @if (tone === 'danger') {
+      !
+    } @else {
+      ?
+    }
+  </div>
+
+  <div class="dialog-copy">
+    <p class="dialog-kicker">{{ tone === 'danger' ? 'Confirm removal' : 'Confirm action' }}</p>
+    <h2 [id]="dialogTitleId" class="dialog-title">{{ title }}</h2>
+    <p [id]="dialogDescId" class="dialog-message">{{ message }}</p>
+  </div>
+
   <div class="dialog-actions">
     <button
       type="button"
-      class="btn-cancel"
-      mat-button
+      class="dialog-button dialog-button-cancel"
       [attr.aria-label]="cancelText"
       (click)="onCancel()"
     >
@@ -19,9 +31,8 @@
     </button>
     <button
       type="button"
-      class="btn-confirm"
-      color="primary"
-      mat-raised-button
+      class="dialog-button dialog-button-confirm"
+      [class.dialog-button-danger]="tone === 'danger'"
       [attr.aria-label]="confirmText"
       (click)="onConfirm()"
     >

@@ -1,32 +1,139 @@
 .confirmation-dialog {
-  min-width: 320px;
-  max-width: 400px;
-  padding: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4);
+  width: min(100%, 29rem);
+  padding: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.98), rgb(255 255 255 / 0.9)),
+    radial-gradient(circle at top right, rgb(var(--color-primary-rgb) / 0.1), transparent 38%);
+  color: var(--color-text-primary);
+}
+
+.dialog-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 18px;
+  background: var(--interactive-selected-surface);
+  color: var(--color-primary-dark);
+  font: var(--font-weight-bold) 1.35rem / 1 var(--font-display);
+}
+
+.confirmation-dialog-danger .dialog-icon {
+  background: var(--state-error-bg);
+  color: var(--state-error-text);
+}
+
+.dialog-copy {
+  min-width: 0;
+}
+
+.dialog-kicker {
+  margin: 0 0 var(--space-2);
+  color: var(--color-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.confirmation-dialog-danger .dialog-kicker {
+  color: var(--state-error-text);
 }
 
 .dialog-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+  font: var(--font-weight-semibold) var(--font-size-xl) / var(--line-height-heading)
+    var(--font-display);
 }
 
 .dialog-message {
-  margin: 0 0 1.5rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-primary);
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
 }
 
 .dialog-actions {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
 }
 
-.btn-cancel {
-  // Default/secondary style; Material primary used for confirm
+.dialog-button {
+  min-height: 2.75rem;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font: var(--font-weight-semibold) var(--font-size-sm) / 1 var(--font-body);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.btn-confirm {
-  // mat-raised-button with color="primary"
+.dialog-button:hover {
+  transform: translateY(-1px);
+}
+
+.dialog-button-cancel {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.dialog-button-cancel:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-muted);
+}
+
+.dialog-button-confirm {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  box-shadow: 0 10px 24px -18px rgb(var(--color-primary-rgb) / 0.75);
+}
+
+.dialog-button-confirm:hover {
+  border-color: var(--color-primary-dark);
+  background: var(--color-primary-dark);
+}
+
+.dialog-button-danger {
+  border-color: var(--state-error-text);
+  background: var(--state-error-text);
+  color: var(--white);
+  box-shadow: 0 10px 24px -18px color-mix(in oklch, var(--state-error-text) 78%, transparent);
+}
+
+.dialog-button-danger:hover {
+  border-color: color-mix(in oklch, var(--state-error-text) 88%, var(--black));
+  background: color-mix(in oklch, var(--state-error-text) 88%, var(--black));
+}
+
+@media (max-width: 520px) {
+  .confirmation-dialog {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialog-button {
+    transition: none;
+  }
+
+  .dialog-button:hover {
+    transform: none;
+  }
 }

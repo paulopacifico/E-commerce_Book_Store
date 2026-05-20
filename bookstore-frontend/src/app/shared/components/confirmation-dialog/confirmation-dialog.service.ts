@@ -17,10 +17,15 @@ export class ConfirmationDialogService {
   open(data: ConfirmationDialogData): Observable<boolean> {
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       data,
-      width: 'min(400px, 90vw)',
+      width: 'min(29rem, calc(100vw - 2rem))',
+      maxWidth: 'calc(100vw - 2rem)',
       disableClose: false,
       role: 'alertdialog',
       ariaModal: true,
+      ariaLabelledBy: 'confirmation-dialog-title',
+      ariaDescribedBy: 'confirmation-dialog-desc',
+      panelClass: 'app-confirmation-dialog-panel',
+      backdropClass: 'app-confirmation-dialog-backdrop',
     });
     return ref.afterClosed().pipe(map((result) => result === true));
   }

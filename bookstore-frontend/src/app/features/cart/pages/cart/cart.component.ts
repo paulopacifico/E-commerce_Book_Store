@@ -112,6 +112,7 @@ export class CartComponent implements OnInit {
         message: `Remove "${item.bookTitle}" from your cart?`,
         confirmText: 'Remove',
         cancelText: 'Keep Item',
+        tone: 'danger',
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

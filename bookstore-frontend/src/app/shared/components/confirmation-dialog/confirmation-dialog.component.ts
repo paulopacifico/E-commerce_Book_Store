@@ -1,6 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import type { ConfirmationDialogData } from './confirmation-dialog.data';
 import { DEFAULT_CONFIRM_TEXT, DEFAULT_CANCEL_TEXT } from './confirmation-dialog.data';
@@ -8,7 +7,6 @@ import { DEFAULT_CONFIRM_TEXT, DEFAULT_CANCEL_TEXT } from './confirmation-dialog
 @Component({
   selector: 'app-confirmation-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
   templateUrl: './confirmation-dialog.component.html',
   styleUrl: './confirmation-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +21,7 @@ export class ConfirmationDialogComponent {
   readonly message = this.data.message;
   readonly confirmText = this.data.confirmText ?? DEFAULT_CONFIRM_TEXT;
   readonly cancelText = this.data.cancelText ?? DEFAULT_CANCEL_TEXT;
+  readonly tone = this.data.tone ?? 'default';
 
   onConfirm(): void {
     this.dialogRef.close(true);

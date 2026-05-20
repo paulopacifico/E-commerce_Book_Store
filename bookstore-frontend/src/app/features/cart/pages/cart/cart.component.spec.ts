@@ -130,6 +130,7 @@ describe('CartComponent', () => {
       message: 'Remove "Clean Architecture" from your cart?',
       confirmText: 'Remove',
       cancelText: 'Keep Item',
+      tone: 'danger',
     });
     expect(removeItemMock).toHaveBeenCalledWith(cartItem.bookId);
   });
