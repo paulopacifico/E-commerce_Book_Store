@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -28,12 +29,24 @@ public class RateLimitFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        String method = request.getMethod();
         return !path.startsWith("/api/")
+                || HttpMethod.OPTIONS.matches(method)
+                || isPublicCatalogRead(method, path)
                 || path.startsWith("/api/actuator")
                 || path.startsWith("/api-docs")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/h2-console");
+    }
+
+    private boolean isPublicCatalogRead(String method, String path) {
+        return HttpMethod.GET.matches(method)
+                && (isPathOrChild(path, "/api/books") || isPathOrChild(path, "/api/categories"));
+    }
+
+    private boolean isPathOrChild(String path, String parentPath) {
+        return path.equals(parentPath) || path.startsWith(parentPath + "/");
     }
 
     @Override
