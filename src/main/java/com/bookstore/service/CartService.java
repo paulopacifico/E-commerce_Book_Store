@@ -73,7 +73,7 @@ public class CartService {
     }
 
     @Transactional
-    public CartItem updateCartItem(User user, Long cartItemId, Integer quantity) {
+    public CartItem updateCartItem(User user, Long cartItemId, int quantity) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item", "id", cartItemId));
 

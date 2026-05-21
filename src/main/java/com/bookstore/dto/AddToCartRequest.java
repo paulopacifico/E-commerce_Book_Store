@@ -17,6 +17,7 @@ public class AddToCartRequest {
     @Schema(description = "Book ID to add", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long bookId;
 
+    @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")
     @Schema(description = "Quantity to add", example = "1")
     private Integer quantity = 1;
