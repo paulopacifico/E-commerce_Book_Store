@@ -4,6 +4,7 @@ import com.bookstore.dto.BookDTO;
 import com.bookstore.dto.PageResponse;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.Category;
+import com.bookstore.exception.BadRequestException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.service.CategoryService;
 import com.bookstore.service.BookService;
@@ -24,9 +25,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
+
+    private static final int MAX_PAGE_SIZE = 100;
+    private static final Set<String> SORTABLE_BOOK_FIELDS = Set.of(
+            "title", "author", "price", "stockQuantity", "createdAt");
 
     private final BookService bookService;
     private final CategoryService categoryService;
@@ -46,6 +54,7 @@ public class BookController {
     @Operation(summary = "List all books", description = "Returns a paginated list of all books with optional sorting.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination or sorting parameters", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping
@@ -55,10 +64,7 @@ public class BookController {
             @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
 
-        Sort sort = sortDir.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = bookPageRequest(page, size, sortBy, sortDir);
 
         Page<BookDTO> books = bookService.getAllBooks(pageable).map(bookMapper::toDTO);
         return ResponseEntity.ok(PageResponse.from(books));
@@ -79,6 +85,7 @@ public class BookController {
     @Operation(summary = "Search books", description = "Searches books by keyword (title, author, description) with pagination.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping("/search")
@@ -87,7 +94,7 @@ public class BookController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = pageRequest(page, size);
         Page<BookDTO> books = bookService.searchBooks(keyword, pageable).map(bookMapper::toDTO);
         return ResponseEntity.ok(PageResponse.from(books));
     }
@@ -95,6 +102,7 @@ public class BookController {
     @Operation(summary = "List books by category", description = "Returns a paginated list of books for the given category ID.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true)))
     })
@@ -104,7 +112,7 @@ public class BookController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = pageRequest(page, size);
         Category category = categoryService.getCategoryById(categoryId);
         Page<BookDTO> books = bookService.getBooksByCategory(category, pageable).map(bookMapper::toDTO);
         return ResponseEntity.ok(PageResponse.from(books));
@@ -170,5 +178,34 @@ public class BookController {
             return null;
         }
         return categoryService.getCategoryById(categoryId);
+    }
+
+    private Pageable bookPageRequest(int page, int size, String sortBy, String sortDir) {
+        validatePageRequest(page, size);
+        if (!SORTABLE_BOOK_FIELDS.contains(sortBy)) {
+            throw new BadRequestException("Invalid book sort field: " + sortBy);
+        }
+
+        Sort sort = switch (sortDir.toLowerCase(Locale.ROOT)) {
+            case "asc" -> Sort.by(sortBy).ascending();
+            case "desc" -> Sort.by(sortBy).descending();
+            default -> throw new BadRequestException("Sort direction must be 'asc' or 'desc'");
+        };
+
+        return PageRequest.of(page, size, sort);
+    }
+
+    private Pageable pageRequest(int page, int size) {
+        validatePageRequest(page, size);
+        return PageRequest.of(page, size);
+    }
+
+    private void validatePageRequest(int page, int size) {
+        if (page < 0) {
+            throw new BadRequestException("Page index must be 0 or greater");
+        }
+        if (size < 1 || size > MAX_PAGE_SIZE) {
+            throw new BadRequestException("Page size must be between 1 and " + MAX_PAGE_SIZE);
+        }
     }
 }
