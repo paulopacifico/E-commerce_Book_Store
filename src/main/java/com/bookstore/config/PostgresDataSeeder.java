@@ -54,9 +54,9 @@ public class PostgresDataSeeder implements ApplicationRunner {
                 "A handbook of agile software craftsmanship", BigDecimal.valueOf(39.99), 20, technology);
 
         upsertUser(ADMIN_EMAIL, "Admin", "User", Role.ADMIN,
-                "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iKqP/yU8xHEGjNJzT4kzW8mQqPHW");
+                "$2a$10$5hyXbq.nyvEg1C/aFm/6Ee5JW20MuMIggUh1LAVJtxYyQPB3LC9.y");
         upsertUser(USER_EMAIL, "Test", "User", Role.USER,
-                "$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG");
+                "$2a$10$08JpbQO4nrTcHkTC.QqNq.KLlLGgFFmvKYdKh2MaCmkEwkQ.G.PAe");
     }
 
     private Category upsertCategory(String name, String description) {

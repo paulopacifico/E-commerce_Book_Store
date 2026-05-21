@@ -22,8 +22,8 @@ VALUES (5, 'Clean Code', 'Robert C. Martin', '978-0132350884', 'A handbook of ag
 
 -- Admin User (password: admin123)
 INSERT INTO users (id, email, password, first_name, last_name, role, created_at, updated_at)
-VALUES (1, 'admin@bookstore.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iKqP/yU8xHEGjNJzT4kzW8mQqPHW', 'Admin', 'User', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES (1, 'admin@bookstore.com', '$2a$10$5hyXbq.nyvEg1C/aFm/6Ee5JW20MuMIggUh1LAVJtxYyQPB3LC9.y', 'Admin', 'User', 'ADMIN', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Test User (password: user123)
 INSERT INTO users (id, email, password, first_name, last_name, role, created_at, updated_at)
-VALUES (2, 'user@test.com', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'Test', 'User', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES (2, 'user@test.com', '$2a$10$08JpbQO4nrTcHkTC.QqNq.KLlLGgFFmvKYdKh2MaCmkEwkQ.G.PAe', 'Test', 'User', 'USER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
