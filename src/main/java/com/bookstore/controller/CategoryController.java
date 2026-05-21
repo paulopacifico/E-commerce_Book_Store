@@ -96,6 +96,7 @@ public class CategoryController {
     @Operation(summary = "Delete category", description = "Deletes a category by ID. Requires admin role.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Category deleted"),
+            @ApiResponse(responseCode = "400", description = "Category still contains books", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content(schema = @Schema(hidden = true)))

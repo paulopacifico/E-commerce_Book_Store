@@ -4,6 +4,7 @@ import com.bookstore.entity.Category;
 import com.bookstore.exception.BadRequestException;
 import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.domain.projection.CategoryWithCount;
+import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,11 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, BookRepository bookRepository) {
         this.categoryRepository = categoryRepository;
+        this.bookRepository = bookRepository;
     }
 
     public List<Category> getAllCategories() {
@@ -68,6 +71,9 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+        if (bookRepository.existsByCategoryId(id)) {
+            throw new BadRequestException("Category cannot be deleted while it contains books");
+        }
         categoryRepository.delete(category);
     }
 

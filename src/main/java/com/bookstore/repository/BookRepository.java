@@ -38,6 +38,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByCategoryId(Long categoryId);
 
+    boolean existsByCategoryId(Long categoryId);
+
     @Query("SELECT b FROM Book b WHERE b.stockQuantity > 0")
     Page<Book> findAvailableBooks(Pageable pageable);
 

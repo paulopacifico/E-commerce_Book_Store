@@ -1,6 +1,5 @@
 package com.bookstore.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -30,7 +29,7 @@ public class Category extends BaseEntity {
 
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     @Builder.Default
     private List<Book> books = new ArrayList<>();
 }
