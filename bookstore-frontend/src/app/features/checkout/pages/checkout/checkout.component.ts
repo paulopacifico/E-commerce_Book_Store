@@ -18,8 +18,6 @@ import type { LocalCartItem } from '../../../cart/data-access/cart-state.service
 import { OrderService } from '../../../orders/data-access/order.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 
-const SHIPPING_COST = 4.99;
-
 const PHONE_PATTERN = /^[\d\s\-+()]{10,20}$/;
 
 @Component({
@@ -52,7 +50,7 @@ export class CheckoutComponent implements OnInit {
   readonly cartTotal = computed(() =>
     this.cartItems().reduce((sum, item) => sum + item.bookPrice * item.quantity, 0),
   );
-  readonly finalTotal = computed(() => this.cartTotal() + SHIPPING_COST);
+  readonly finalTotal = this.cartTotal;
   readonly isCartEmpty = computed(() => this.cartItems().length === 0);
 
   readonly shippingForm = this.fb.nonNullable.group({
@@ -64,8 +62,6 @@ export class CheckoutComponent implements OnInit {
     postalCode: ['', [Validators.required, Validators.minLength(3)]],
     phone: ['', [Validators.required, Validators.pattern(PHONE_PATTERN)]],
   });
-
-  readonly shippingCost = SHIPPING_COST;
 
   ngOnInit(): void {
     this.loadCheckoutCart();

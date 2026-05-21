@@ -117,6 +117,16 @@ describe('CheckoutComponent', () => {
     expect(component.cartSyncLoading()).toBe(true);
   });
 
+  it('keeps the checkout summary total aligned with the order total when shipping is included', () => {
+    const summaryTotals = fixture.nativeElement.querySelector('.summary-totals') as HTMLElement;
+
+    expect(component.cartTotal()).toBe(90);
+    expect(component.finalTotal()).toBe(90);
+    expect(summaryTotals.textContent).toContain('Shipping');
+    expect(summaryTotals.textContent).toContain('Included');
+    expect(summaryTotals.textContent).toContain('€90.00');
+  });
+
   it('blocks submit and shows retry guidance when the initial cart sync fails', async () => {
     refreshMock.mockReturnValueOnce(throwError(() => new Error('refresh failed')));
     fixture = TestBed.createComponent(CheckoutComponent);
@@ -158,7 +168,7 @@ describe('CheckoutComponent', () => {
     const order: Order = {
       id: 42,
       items: [],
-      totalAmount: 94.99,
+      totalAmount: 90,
       status: 'PLACED',
       shippingAddress: 'Ada Lovelace | 123 Main St | Toronto, ON, M5V 2T6 | +1 416 555 1212',
       createdAt: '2026-03-17T12:00:00Z',
@@ -191,7 +201,7 @@ describe('CheckoutComponent', () => {
     const order: Order = {
       id: 77,
       items: [],
-      totalAmount: 94.99,
+      totalAmount: 90,
       status: 'PLACED',
       shippingAddress: 'Ada Lovelace | 123 Main St | Toronto, ON, M5V 2T6 | +1 416 555 1212',
       createdAt: '2026-03-17T12:00:00Z',
@@ -221,7 +231,9 @@ describe('CheckoutComponent', () => {
 
     expect(createOrderMock).not.toHaveBeenCalled();
     expect(clearCartMock).not.toHaveBeenCalled();
-    expect(component.errorMessage()).toBe('Your cart is empty on the server. Review the cart and try again.');
+    expect(component.errorMessage()).toBe(
+      'Your cart is empty on the server. Review the cart and try again.',
+    );
     expect(component.loading()).toBe(false);
     expect(dismissMock).toHaveBeenCalledWith(501);
   });
