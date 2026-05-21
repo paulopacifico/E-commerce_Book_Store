@@ -31,7 +31,6 @@ export const appRoutes: Routes = [
   {
     path: 'cart',
     component: CartComponent,
-    canActivate: [AuthGuard],
     data: { animation: 'CartPage' },
   },
   {
