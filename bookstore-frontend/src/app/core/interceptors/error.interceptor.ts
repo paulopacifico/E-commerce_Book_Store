@@ -19,6 +19,10 @@ export class ErrorInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
+        if (this.isAuthEntryRequest(req.url)) {
+          return throwError(() => error);
+        }
+
         const userMessage = this.getUserMessage(error);
         switch (error.status) {
           case 401:
@@ -40,6 +44,10 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
       }),
     );
+  }
+
+  private isAuthEntryRequest(url: string): boolean {
+    return url.includes('/auth/login') || url.includes('/auth/register');
   }
 
   private getUserMessage(error: HttpErrorResponse): string {
