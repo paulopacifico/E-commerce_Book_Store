@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("SELECT b FROM Book b WHERE b.stockQuantity > 0")
     Page<Book> findAvailableBooks(Pageable pageable);
+
+    @Modifying
+    @Query("""
+            UPDATE Book b
+            SET b.stockQuantity = b.stockQuantity - :quantity
+            WHERE b.id = :bookId
+              AND b.stockQuantity >= :quantity
+            """)
+    int decrementStockIfAvailable(@Param("bookId") Long bookId, @Param("quantity") int quantity);
 }

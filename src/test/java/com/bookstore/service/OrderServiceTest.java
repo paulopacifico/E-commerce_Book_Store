@@ -5,10 +5,10 @@ import com.bookstore.entity.CartItem;
 import com.bookstore.entity.Order;
 import com.bookstore.entity.OrderStatus;
 import com.bookstore.entity.User;
+import com.bookstore.exception.BadRequestException;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
-import com.bookstore.validation.StockValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,9 +39,6 @@ class OrderServiceTest {
     @Mock
     private OwnershipValidator ownershipValidator;
 
-    @Mock
-    private StockValidator stockValidator;
-
     @InjectMocks
     private OrderService orderService;
 
@@ -54,7 +52,7 @@ class OrderServiceTest {
         item.setId(3L);
 
         when(cartService.getCartItems(user)).thenReturn(List.of(item));
-        when(bookRepository.save(any(Book.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(bookRepository.decrementStockIfAvailable(10L, 2)).thenReturn(1);
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> {
             Order order = inv.getArgument(0);
             order.setId(99L);
@@ -69,10 +67,28 @@ class OrderServiceTest {
 
         assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.CONFIRMED);
         assertThat(savedOrder.getTotalAmount()).isEqualByComparingTo("50");
-        assertThat(book.getStockQuantity()).isEqualTo(8);
 
         verify(cartService).clearCart(user);
-        verify(bookRepository).save(book);
+        verify(bookRepository).decrementStockIfAvailable(10L, 2);
         assertThat(result).isNotNull();
+    }
+
+    @Test
+    void checkout_whenAtomicStockDecrementFails_rejectsOrderAndKeepsCart() {
+        User user = User.builder().build();
+        user.setId(1L);
+        Book book = Book.builder().title("Clean Code").price(BigDecimal.valueOf(25)).stockQuantity(1).build();
+        book.setId(10L);
+        CartItem item = CartItem.builder().user(user).book(book).quantity(2).build();
+
+        when(cartService.getCartItems(user)).thenReturn(List.of(item));
+        when(bookRepository.decrementStockIfAvailable(10L, 2)).thenReturn(0);
+
+        assertThatThrownBy(() -> orderService.checkout(user, "123 Main St"))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage("Not enough stock available for book: Clean Code");
+
+        verify(orderRepository, never()).save(any(Order.class));
+        verify(cartService, never()).clearCart(user);
     }
 }

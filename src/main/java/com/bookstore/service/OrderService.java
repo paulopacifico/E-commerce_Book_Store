@@ -6,7 +6,6 @@ import com.bookstore.exception.ResourceNotFoundException;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.OrderRepository;
 import com.bookstore.validation.OwnershipValidator;
-import com.bookstore.validation.StockValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,18 +19,15 @@ public class OrderService {
     private final CartService cartService;
     private final BookRepository bookRepository;
     private final OwnershipValidator ownershipValidator;
-    private final StockValidator stockValidator;
 
     public OrderService(OrderRepository orderRepository,
             CartService cartService,
             BookRepository bookRepository,
-            OwnershipValidator ownershipValidator,
-            StockValidator stockValidator) {
+            OwnershipValidator ownershipValidator) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.bookRepository = bookRepository;
         this.ownershipValidator = ownershipValidator;
-        this.stockValidator = stockValidator;
     }
 
     @Transactional
@@ -40,11 +36,6 @@ public class OrderService {
 
         if (cartItems.isEmpty()) {
             throw new BadRequestException("Cart is empty");
-        }
-
-        // Validate stock availability (reuses same rule as CartService)
-        for (CartItem item : cartItems) {
-            stockValidator.validateAvailableStock(item.getBook(), item.getQuantity());
         }
 
         // Create order
@@ -70,9 +61,7 @@ public class OrderService {
 
             totalAmount = totalAmount.add(orderItem.getSubtotal());
 
-            // Update stock
-            book.setStockQuantity(book.getStockQuantity() - cartItem.getQuantity());
-            bookRepository.save(book);
+            decrementStock(book, cartItem.getQuantity());
         }
 
         order.setTotalAmount(totalAmount);
@@ -82,6 +71,13 @@ public class OrderService {
         cartService.clearCart(user);
 
         return savedOrder;
+    }
+
+    private void decrementStock(Book book, int quantity) {
+        int updatedRows = bookRepository.decrementStockIfAvailable(book.getId(), quantity);
+        if (updatedRows == 0) {
+            throw new BadRequestException("Not enough stock available for book: " + book.getTitle());
+        }
     }
 
     public List<Order> getUserOrders(User user) {
