@@ -84,7 +84,8 @@ describe('OrderDetailComponent', () => {
     fixture = TestBed.createComponent(OrderDetailComponent);
     fixture.detectChanges();
 
-    const title = fixture.nativeElement.querySelector('.error-state .page-title')?.textContent ?? '';
+    const title =
+      fixture.nativeElement.querySelector('.error-state .page-title')?.textContent ?? '';
     expect(title).toContain('Order not found');
   });
 });

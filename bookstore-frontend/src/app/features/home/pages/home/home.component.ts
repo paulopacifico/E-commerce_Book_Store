@@ -65,7 +65,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly catalogSignals = [
     { value: 'Instant access', label: 'Buy once and read your ebooks right away' },
     { value: 'Smart catalog', label: 'Filter by category, price, and availability in seconds' },
-    { value: 'Secure checkout', label: 'Clear cart, account, and payment steps from start to finish' },
+    {
+      value: 'Secure checkout',
+      label: 'Clear cart, account, and payment steps from start to finish',
+    },
   ] as const;
   readonly purchaseJourney = [
     {
@@ -95,8 +98,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     {
       title: 'Reliable checkout flow',
-      detail:
-        'The purchase path is stable across devices, with clear actions and no hidden steps.',
+      detail: 'The purchase path is stable across devices, with clear actions and no hidden steps.',
     },
     {
       title: 'Responsive by default',

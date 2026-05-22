@@ -1,3 +1,6 @@
 dist
 out-tsc
 coverage
+AGENTS.md
+docs/superpowers
+src/tweakcn-modern-minimal.css

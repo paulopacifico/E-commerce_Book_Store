@@ -30,9 +30,7 @@ describe('RegisterComponent', () => {
     dismissMock = vi.fn();
     successMock = vi.fn();
     warningMock = vi.fn();
-    syncAfterAuthenticationMock = vi
-      .fn()
-      .mockReturnValue(of({ mergedGuestItems: 0, cart: [] }));
+    syncAfterAuthenticationMock = vi.fn().mockReturnValue(of({ mergedGuestItems: 0, cart: [] }));
 
     await TestBed.configureTestingModule({
       declarations: [RegisterComponent],
@@ -125,9 +123,7 @@ describe('RegisterComponent', () => {
 
   it('warns and continues redirecting when cart sync cannot be confirmed', () => {
     registerMock.mockReturnValue(of({ accessToken: 'token-123' } as AuthResponse));
-    syncAfterAuthenticationMock.mockReturnValue(
-      throwError(() => new Error('sync failed')),
-    );
+    syncAfterAuthenticationMock.mockReturnValue(throwError(() => new Error('sync failed')));
     component.form.setValue({
       username: 'reader',
       email: 'reader@example.com',

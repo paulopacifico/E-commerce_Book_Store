@@ -6,15 +6,15 @@ The official `shadcn` CLI is built for **React / Next.js / Vite**. In a plain **
 
 ## What’s installed
 
-| Piece | Role |
-|-------|------|
-| `tailwindcss` + `@tailwindcss/postcss` | Tailwind v4, PostCSS pipeline (Angular 17.2+ application builder) |
-| `.postcssrc.json` | Enables `@tailwindcss/postcss` |
-| `src/tweakcn-modern-minimal.css` | Tailwind + **all** `--background`, `--primary`, `.dark { … }`, etc. |
-| `tools/themes/modern-minimal.json` | Copy of [modern-minimal.json](https://tweakcn.com/r/themes/modern-minimal.json) |
-| `tools/generate-tweakcn-theme.mjs` | Regenerates the CSS when you update the JSON |
-| `angular.json` | Loads `tweakcn-modern-minimal.css` **before** `styles.scss` |
-| `src/styles.scss` | Maps legacy tokens (`--color-primary`, etc.) onto shadcn variables |
+| Piece                                  | Role                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------- |
+| `tailwindcss` + `@tailwindcss/postcss` | Tailwind v4, PostCSS pipeline (Angular 17.2+ application builder)               |
+| `.postcssrc.json`                      | Enables `@tailwindcss/postcss`                                                  |
+| `src/tweakcn-modern-minimal.css`       | Tailwind + **all** `--background`, `--primary`, `.dark { … }`, etc.             |
+| `tools/themes/modern-minimal.json`     | Copy of [modern-minimal.json](https://tweakcn.com/r/themes/modern-minimal.json) |
+| `tools/generate-tweakcn-theme.mjs`     | Regenerates the CSS when you update the JSON                                    |
+| `angular.json`                         | Loads `tweakcn-modern-minimal.css` **before** `styles.scss`                     |
+| `src/styles.scss`                      | Maps legacy tokens (`--color-primary`, etc.) onto shadcn variables              |
 
 ## Regenerate after changing the theme
 

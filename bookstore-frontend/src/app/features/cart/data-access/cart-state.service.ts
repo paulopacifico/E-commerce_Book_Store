@@ -133,7 +133,8 @@ export class CartStateService {
       return parsed.filter(
         (item): item is LocalCartItem =>
           item != null &&
-          (typeof item.serverCartItemId === 'undefined' || typeof item.serverCartItemId === 'number') &&
+          (typeof item.serverCartItemId === 'undefined' ||
+            typeof item.serverCartItemId === 'number') &&
           typeof item.bookId === 'number' &&
           typeof item.quantity === 'number' &&
           typeof item.bookPrice === 'number' &&

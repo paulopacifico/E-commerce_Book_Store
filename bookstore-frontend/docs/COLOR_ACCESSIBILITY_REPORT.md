@@ -4,13 +4,13 @@ Sampled critical foreground/background pairs from the enforced token system.
 
 ## Contrast Checks
 
-| Pair | Colors | Contrast | Result |
-|---|---|---:|---|
-| Primary text on page background | `#1f1f1f` on `#fffdf9` | 16.22:1 | PASS |
-| Secondary text on page background | `#5a5a5a` on `#fffdf9` | 6.79:1 | PASS |
-| Primary button text on CTA background | `#ffffff` on `#a84a1e` | 5.68:1 | PASS |
-| Error text on error surface | `#b71c1c` on `#f8dddd` | 5.12:1 | PASS |
-| Success text on success surface | `#1d5d24` equivalent token mix on `#dff2e3` | >=4.5:1 | PASS |
+| Pair                                  | Colors                                      | Contrast | Result |
+| ------------------------------------- | ------------------------------------------- | -------: | ------ |
+| Primary text on page background       | `#1f1f1f` on `#fffdf9`                      |  16.22:1 | PASS   |
+| Secondary text on page background     | `#5a5a5a` on `#fffdf9`                      |   6.79:1 | PASS   |
+| Primary button text on CTA background | `#ffffff` on `#a84a1e`                      |   5.68:1 | PASS   |
+| Error text on error surface           | `#b71c1c` on `#f8dddd`                      |   5.12:1 | PASS   |
+| Success text on success surface       | `#1d5d24` equivalent token mix on `#dff2e3` |  >=4.5:1 | PASS   |
 
 ## Focus Visibility
 

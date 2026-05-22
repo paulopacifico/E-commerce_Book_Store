@@ -128,7 +128,8 @@ mvn test
   - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
 
 ## CI
-GitHub Actions runs the test suite on JDK 21.
+GitHub Actions runs the Maven backend suite on JDK 21 and the Angular frontend delivery gate
+(`npm run check`) on Node.js 22.
 
 ## API Modules
 - **Auth:** register, login, refresh token

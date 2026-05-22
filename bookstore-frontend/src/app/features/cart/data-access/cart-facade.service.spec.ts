@@ -12,7 +12,9 @@ import { CartStateService } from './cart-state.service';
 describe('CartFacadeService', () => {
   const guestStorageKey = 'bookstore_cart:guest';
   let token$: BehaviorSubject<string | null>;
-  let sessionEvents$: Subject<{ type: 'authenticated'; replacedSession: boolean } | { type: 'cleared' }>;
+  let sessionEvents$: Subject<
+    { type: 'authenticated'; replacedSession: boolean } | { type: 'cleared' }
+  >;
   let isAuthenticatedMock: ReturnType<typeof vi.fn>;
   let getCartStorageScopeMock: ReturnType<typeof vi.fn>;
   let getCartMock: ReturnType<typeof vi.fn>;

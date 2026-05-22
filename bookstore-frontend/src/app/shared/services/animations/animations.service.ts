@@ -107,7 +107,10 @@ export const listStagger: AnimationTriggerMetadata = trigger('listStagger', [
 export const modalPanel: AnimationTriggerMetadata = trigger('modalPanel', [
   transition(':enter', [
     style({ opacity: 0, transform: 'translate3d(0, {{yPx}}px, 0) scale({{scaleFrom}})' }),
-    animate('{{enterMs}}ms ease-out', style({ opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' })),
+    animate(
+      '{{enterMs}}ms ease-out',
+      style({ opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' }),
+    ),
   ]),
   transition(':leave', [
     animate(

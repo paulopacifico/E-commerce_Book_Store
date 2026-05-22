@@ -90,9 +90,7 @@ export class CartFacadeService {
     return this.withResolvedServerItemId(bookId, (serverCartItemId) =>
       this.cartService.removeCartItem(serverCartItemId).pipe(
         tap(() => {
-          const next = this.cartState
-            .getItemsSnapshot()
-            .filter((item) => item.bookId !== bookId);
+          const next = this.cartState.getItemsSnapshot().filter((item) => item.bookId !== bookId);
           this.cartState.replaceCart(next);
         }),
         map(() => void 0),
@@ -215,5 +213,4 @@ export class CartFacadeService {
       catchError((error) => throwError(() => error)),
     );
   }
-
 }
