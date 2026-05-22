@@ -25,6 +25,7 @@ Full‑stack bookstore e‑commerce: a production‑minded Spring Boot API plus 
 - Input sanitization guard (`@NoHtml`) on user-controlled text fields
 - Clean separation between API DTOs and domain logic
 - Cart and order workflows with validation and stock checks
+- Flyway-managed PostgreSQL schema for `docker` and `prod` profiles
 - Docker + PostgreSQL profile for containerized runs
 - Idempotent PostgreSQL seed runner (`docker` profile)
 - Consistent API error envelope and stable pagination DTO responses
@@ -75,6 +76,29 @@ API will be available at `http://localhost:8080`.
 docker compose up --build
 ```
 API will be available at `http://localhost:8080`.
+
+The Docker profile applies Flyway migrations before JPA validation and then runs the idempotent
+demo seed runner. If a local Docker volume was created before migrations were introduced, recreate
+that development volume before starting the stack again.
+
+## Production Run (PostgreSQL)
+Use the `prod` profile with an externally managed PostgreSQL database:
+
+```bash
+export SPRING_PROFILES_ACTIVE=prod
+export DATABASE_URL=jdbc:postgresql://db.example.com:5432/bookstore
+export DATABASE_USERNAME=bookstore_app
+export DATABASE_PASSWORD=replace-me
+export JWT_SECRET=replace-with-a-long-random-secret
+export CORS_ALLOWED_ORIGIN=https://bookstore.example.com
+mvn spring-boot:run
+```
+
+The production profile runs Flyway migrations and sets Hibernate to schema validation only. It does
+not load `data.sql` or create demo users; catalog and privileged accounts must be provisioned through
+an explicit production process. Runtime OpenAPI endpoints are disabled by default in `prod`; set
+`SPRINGDOC_API_DOCS_ENABLED=true` and `SPRINGDOC_SWAGGER_UI_ENABLED=true` only where they should be
+published.
 
 ## Postman
 Postman assets are in `postman/`:
@@ -161,9 +185,10 @@ The frontend consumes this backend’s REST API: auth (`/api/auth/*`), books and
   return `ApiErrorResponse` with: `status`, `error`, `message`, `path`, `timestamp`, and optional `errors` map for validation failures.
 
 ## Security Hardening Config
+- **Production database:** set `DATABASE_URL`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD` for the PostgreSQL target. The `prod` profile runs Flyway and validates the migrated schema instead of using H2 auto-DDL.
 - **JWT (production):** set `JWT_SECRET` in the environment; optional `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION` (milliseconds). With profile `prod`, the app fails at startup if `JWT_SECRET` is not set.
 - **Rate limit properties:** `app.security.rate-limit.max-requests`, `app.security.rate-limit.window-seconds`
-- **CORS properties:** `app.security.cors.allowed-origins`, `allowed-methods`, `allowed-headers`, `exposed-headers`, `allow-credentials`, `max-age`
+- **CORS properties:** set `CORS_ALLOWED_ORIGIN` for the production frontend origin, or configure `app.security.cors.allowed-origins`, `allowed-methods`, `allowed-headers`, `exposed-headers`, `allow-credentials`, `max-age`
 
 ## Author
 **Paulo Pacifico**  
