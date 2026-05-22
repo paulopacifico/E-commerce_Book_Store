@@ -19,6 +19,19 @@ npm start
 
 The app runs at `http://localhost:4200/`.
 
+## Production runtime
+
+The production Angular environment uses `/api` as a same-origin backend base URL. The repository
+Docker Compose stack builds this app into an Nginx runtime image that serves SPA route refreshes and
+proxies `/api` to the Spring Boot `app` service:
+
+```bash
+cd ..
+docker compose up --build
+```
+
+The containerized storefront runs at `http://localhost:3000/`.
+
 ## Available scripts
 
 ```bash

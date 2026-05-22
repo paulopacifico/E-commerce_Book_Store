@@ -1,6 +1,7 @@
 # Compiled files
 target/
 out/
+.m2/
 # IDE
 .idea/
 *.iml

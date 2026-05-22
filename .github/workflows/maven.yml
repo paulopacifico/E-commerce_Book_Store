@@ -20,3 +20,11 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean install
+
+  container:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build backend runtime image
+      run: docker build --tag bookstore-api:ci .

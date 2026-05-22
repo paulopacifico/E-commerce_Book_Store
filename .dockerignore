@@ -1,0 +1,11 @@
+.git
+.github
+.m2
+bookstore-frontend
+cursor-angular-config-en
+docs
+postman
+target
+.DS_Store
+Thumbs.db
+*.log

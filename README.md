@@ -75,11 +75,16 @@ API will be available at `http://localhost:8080`.
 ```bash
 docker compose up --build
 ```
-API will be available at `http://localhost:8080`.
+Storefront will be available at `http://localhost:3000`.
+API will remain available directly at `http://localhost:8080`.
 
 The Docker profile applies Flyway migrations before JPA validation and then runs the idempotent
 demo seed runner. If a local Docker volume was created before migrations were introduced, recreate
 that development volume before starting the stack again.
+
+The frontend runtime image serves the production Angular build through Nginx. It keeps SPA route
+refreshes on `index.html` and proxies same-origin `/api` requests to the `app` service, matching the
+production frontend environment.
 
 ## Production Run (PostgreSQL)
 Use the `prod` profile with an externally managed PostgreSQL database:
@@ -128,8 +133,9 @@ mvn test
   - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
 
 ## CI
-GitHub Actions runs the Maven backend suite on JDK 21 and the Angular frontend delivery gate
-(`npm run check`) on Node.js 22.
+GitHub Actions runs the Maven backend suite on JDK 21, the Angular frontend delivery gate
+(`npm run check`) on Node.js 22, the full-stack Playwright purchase-funnel smoke, and the frontend
+runtime image build.
 
 ## API Modules
 - **Auth:** register, login, refresh token
@@ -173,6 +179,10 @@ Default dev server: `http://localhost:4200`. The app connects to the backend API
 ```bash
 npm run build
 ```
+
+The production Angular environment uses a relative `/api` base URL. Serve it behind a reverse proxy
+that exposes the backend on the same origin, or use the repository Docker Compose stack which ships
+that Nginx proxy configuration.
 
 ### Integration
 The frontend consumes this backend’s REST API: auth (`/api/auth/*`), books and categories (`/api/books`, `/api/categories`), cart (`/api/cart`), and orders (`/api/orders`). JWT access tokens are sent via `Authorization: Bearer <token>`; refresh is handled via `/api/auth/refresh`.
