@@ -6,6 +6,7 @@ Angular 21 storefront application for the E-commerce Book Store project.
 
 - Node.js 20+
 - npm 11+
+- JDK 21 and Maven for the full-stack end-to-end smoke test
 
 ## Local development
 
@@ -72,6 +73,14 @@ npm run test:ci
 Runs the unit test suite once without watch mode. This is the command intended for CI and delivery validation.
 
 ```bash
+npm run test:e2e
+```
+
+Runs the Playwright purchase-funnel smoke test against an isolated full-stack harness. The command
+starts the Spring Boot backend on `http://127.0.0.1:8081` and an Angular E2E server on
+`http://127.0.0.1:4300`.
+
+```bash
 npm run check
 ```
 
@@ -89,7 +98,12 @@ Recommended workflow before opening a PR or handing off work:
 
 ```bash
 npm run check
+npx playwright install chromium
+npm run test:e2e
 ```
+
+The browser install step is only needed when Chromium is not already present in the Playwright
+cache.
 
 ## Project focus
 
