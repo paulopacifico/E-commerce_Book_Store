@@ -102,6 +102,13 @@ class SecurityIntegrationTest {
     }
 
     @Test
+    void healthReadinessProbe_isPublic() throws Exception {
+        mockMvc.perform(get("/actuator/health/readiness"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+    }
+
+    @Test
     void createBook_requiresAuthentication() throws Exception {
         BookDTO request = BookDTO.builder()
                 .title("Clean Architecture")

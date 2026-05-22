@@ -85,6 +85,8 @@ that development volume before starting the stack again.
 The frontend runtime image serves the production Angular build through Nginx. It keeps SPA route
 refreshes on `index.html` and proxies same-origin `/api` requests to the `app` service, matching the
 production frontend environment.
+Compose waits for PostgreSQL readiness and the backend Actuator readiness probe before exposing the
+frontend runtime as healthy.
 
 ## Production Run (PostgreSQL)
 Use the `prod` profile with an externally managed PostgreSQL database:
@@ -131,6 +133,9 @@ mvn test
   - Swagger UI: `http://localhost:8080/swagger-ui.html`
   - OpenAPI JSON: `http://localhost:8080/v3/api-docs`
   - Public APIs: `http://localhost:8080/api/books` and `http://localhost:8080/api/categories`
+- Health probes:
+  - Readiness: `http://localhost:8080/actuator/health/readiness`
+  - Liveness: `http://localhost:8080/actuator/health/liveness`
 
 ## CI
 GitHub Actions runs the Maven backend suite on JDK 21, the Angular frontend delivery gate
