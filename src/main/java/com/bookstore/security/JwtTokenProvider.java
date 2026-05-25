@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 
 @Component
@@ -21,26 +21,43 @@ public class JwtTokenProvider {
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
     private static final int MIN_KEY_LENGTH_BYTES = 32; // 256 bits for HS256
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private final SecretKey signingKey;
+    private final long jwtExpiration;
 
-    @Value("${jwt.expiration}")
-    private long jwtExpiration;
+    public JwtTokenProvider(
+            @Value("${jwt.secret}") String jwtSecret,
+            @Value("${jwt.expiration}") long jwtExpiration) {
+        this.signingKey = buildSigningKey(jwtSecret);
+        this.jwtExpiration = jwtExpiration;
+    }
 
     /**
      * Builds the signing key from the configured secret.
      * Supports both raw text (UTF-8) and Base64-encoded secrets.
-     * For HS256, the key is at least 256 bits (32 bytes).
+     * For HS256, the key must be at least 256 bits (32 bytes).
      */
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = tryDecodeBase64(jwtSecret);
-        if (keyBytes == null || keyBytes.length == 0) {
-            keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
-        }
-        if (keyBytes.length < MIN_KEY_LENGTH_BYTES) {
-            keyBytes = Arrays.copyOf(keyBytes, MIN_KEY_LENGTH_BYTES);
-        }
+    private static SecretKey buildSigningKey(String jwtSecret) {
+        byte[] keyBytes = resolveKeyBytes(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private static byte[] resolveKeyBytes(String jwtSecret) {
+        if (!StringUtils.hasText(jwtSecret)) {
+            throw new IllegalStateException("JWT secret must be configured and contain at least 32 bytes for HS256 signing");
+        }
+
+        String normalizedSecret = jwtSecret.trim();
+        byte[] decodedKeyBytes = tryDecodeBase64(normalizedSecret);
+        if (decodedKeyBytes != null && decodedKeyBytes.length >= MIN_KEY_LENGTH_BYTES) {
+            return decodedKeyBytes;
+        }
+
+        byte[] rawKeyBytes = normalizedSecret.getBytes(StandardCharsets.UTF_8);
+        if (rawKeyBytes.length >= MIN_KEY_LENGTH_BYTES) {
+            return rawKeyBytes;
+        }
+
+        throw new IllegalStateException("JWT secret must contain at least 32 bytes for HS256 signing");
     }
 
     private static byte[] tryDecodeBase64(String value) {
@@ -49,6 +66,10 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private SecretKey getSigningKey() {
+        return signingKey;
     }
 
     public String generateToken(Authentication authentication) {

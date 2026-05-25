@@ -1,5 +1,6 @@
-# Production profile: no default for JWT secret — set JWT_SECRET (and optionally
-# JWT_EXPIRATION, JWT_REFRESH_EXPIRATION) in the environment or the app will fail at startup.
+# Production profile: no default for JWT secret — set JWT_SECRET with at least
+# 32 bytes of entropy (and optionally JWT_EXPIRATION, JWT_REFRESH_EXPIRATION)
+# in the environment or the app will fail at startup.
 spring:
   config:
     activate:

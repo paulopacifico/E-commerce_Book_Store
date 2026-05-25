@@ -96,7 +96,7 @@ export SPRING_PROFILES_ACTIVE=prod
 export DATABASE_URL=jdbc:postgresql://db.example.com:5432/bookstore
 export DATABASE_USERNAME=bookstore_app
 export DATABASE_PASSWORD=replace-me
-export JWT_SECRET=replace-with-a-long-random-secret
+export JWT_SECRET=replace-with-at-least-32-random-bytes
 export CORS_ALLOWED_ORIGIN=https://bookstore.example.com
 mvn spring-boot:run
 ```
@@ -202,7 +202,7 @@ The frontend consumes this backend’s REST API: auth (`/api/auth/*`), books and
 
 ## Security Hardening Config
 - **Production database:** set `DATABASE_URL`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD` for the PostgreSQL target. The `prod` profile runs Flyway and validates the migrated schema instead of using H2 auto-DDL.
-- **JWT (production):** set `JWT_SECRET` in the environment; optional `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION` (milliseconds). With profile `prod`, the app fails at startup if `JWT_SECRET` is not set.
+- **JWT (production):** set `JWT_SECRET` in the environment with at least 32 bytes of entropy; optional `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION` (milliseconds). The app fails at startup if `JWT_SECRET` is missing or too short for HS256 signing.
 - **Rate limit properties:** `app.security.rate-limit.max-requests`, `app.security.rate-limit.window-seconds`
 - **CORS properties:** set `CORS_ALLOWED_ORIGIN` for the production frontend origin, or configure `app.security.cors.allowed-origins`, `allowed-methods`, `allowed-headers`, `exposed-headers`, `allow-credentials`, `max-age`
 
