@@ -1,6 +1,6 @@
 # Spartan UI Parts Todo
 
-- [x] Install Spartan dependencies (`@spartan-ng/brain`, `@spartan-ng/cli`)
+- [x] Install Spartan runtime dependency (`@spartan-ng/brain`; use `npx @spartan-ng/cli` only when generating parts)
 - [x] Add Spartan Tailwind preset import (`@spartan-ng/brain/hlm-tailwind-preset.css`)
 - [x] Configure Spartan project file (`components.json`)
 - [x] Generate `button` Helm component
