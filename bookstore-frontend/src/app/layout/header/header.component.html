@@ -64,7 +64,7 @@
           class="search-input"
           placeholder="Search books..."
           [value]="searchQuery()"
-          (input)="searchQuery.set($any($event.target).value)"
+          (input)="onSearchInput($event)"
           (keydown.enter)="onSearch()"
           aria-label="Search books"
         />

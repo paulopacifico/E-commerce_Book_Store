@@ -76,7 +76,7 @@
                   [value]="quantity()"
                   [min]="1"
                   [max]="book.stockQuantity"
-                  (input)="setQuantity($any($event.target).valueAsNumber, book)"
+                  (input)="onQuantityInput($event, book)"
                   aria-label="Quantity"
                 />
                 <button

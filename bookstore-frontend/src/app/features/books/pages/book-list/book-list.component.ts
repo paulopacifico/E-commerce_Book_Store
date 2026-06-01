@@ -253,6 +253,11 @@ export class BookListComponent implements OnInit, AfterViewChecked {
     this.currentPage.set(0);
   }
 
+  onSearchInputChange(event: Event): void {
+    const input = event.target instanceof HTMLInputElement ? event.target : null;
+    this.onSearchInput(input?.value ?? '');
+  }
+
   onCategoryChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
     const v = select?.value ?? '';

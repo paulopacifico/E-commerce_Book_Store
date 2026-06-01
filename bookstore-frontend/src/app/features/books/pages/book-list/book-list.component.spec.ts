@@ -199,6 +199,23 @@ describe('BookListComponent', () => {
     subscription.unsubscribe();
   });
 
+  it('updates the search value from the catalog input event', () => {
+    getBooksMock.mockReturnValue(of(pageResponse(books)));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const searchInput = fixture.nativeElement.querySelector('#catalog-search') as HTMLInputElement;
+
+    searchInput.value = 'refactoring';
+    searchInput.dispatchEvent(new Event('input'));
+
+    expect(component.searchValue()).toBe('refactoring');
+    expect(component.currentPage()).toBe(0);
+  });
+
   it('tells guests the cart will sync later when adding a book', () => {
     getBooksMock.mockReturnValue(of(pageResponse(books)));
     getCategoriesMock.mockReturnValue(of(categories));

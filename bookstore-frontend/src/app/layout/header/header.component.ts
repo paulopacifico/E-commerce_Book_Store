@@ -75,6 +75,11 @@ export class HeaderComponent implements OnInit {
     this.closeUserMenu();
   }
 
+  onSearchInput(event: Event): void {
+    const input = event.target instanceof HTMLInputElement ? event.target : null;
+    this.searchQuery.set(input?.value ?? '');
+  }
+
   onUserMenuTriggerKeydown(event: KeyboardEvent): void {
     if (event.key === 'ArrowDown') {
       event.preventDefault();

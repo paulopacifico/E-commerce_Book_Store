@@ -129,6 +129,11 @@ export class BookDetailComponent implements AfterViewInit, OnDestroy {
     this.quantity.set(clamped);
   }
 
+  onQuantityInput(event: Event, book: Book | null): void {
+    const input = event.target instanceof HTMLInputElement ? event.target : null;
+    this.setQuantity(input?.valueAsNumber ?? Number.NaN, book);
+  }
+
   incrementQuantity(book: Book | null): void {
     this.setQuantity(this.quantity() + 1, book);
   }

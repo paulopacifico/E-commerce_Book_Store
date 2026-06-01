@@ -117,4 +117,21 @@ describe('BookDetailComponent', () => {
       'Book added to cart. Sign in when you are ready and we will sync it before checkout.',
     );
   });
+
+  it('clamps quantity from the quantity input event', () => {
+    getBookByIdMock.mockReturnValue(of(book));
+
+    fixture = TestBed.createComponent(BookDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const quantityInput = document.createElement('input');
+    quantityInput.type = 'number';
+    quantityInput.value = '99';
+    quantityInput.dispatchEvent(new Event('input'));
+
+    component.onQuantityInput({ target: quantityInput } as unknown as Event, book);
+
+    expect(component.quantity()).toBe(book.stockQuantity);
+  });
 });

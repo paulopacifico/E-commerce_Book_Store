@@ -31,7 +31,7 @@
           class="search-input"
           placeholder="Try “Clean Architecture” or “Tolkien”"
           [value]="searchValue()"
-          (input)="onSearchInput($any($event.target).value)"
+          (input)="onSearchInputChange($event)"
           aria-label="Search books"
         />
       </div>
