@@ -11,19 +11,16 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { Subject } from 'rxjs';
-import { combineLatest, fromEvent, of } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, of, timer } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {
   switchMap,
   map,
   catchError,
-  startWith,
   debounceTime,
+  distinctUntilChanged,
   tap,
   finalize,
-  take,
 } from 'rxjs/operators';
 import { BookService } from '../../data-access/book.service';
 import { CategoryService } from '../../../categories/data-access/category.service';
@@ -36,6 +33,7 @@ import type { Category } from '../../../categories/models/category.interface';
 
 const PAGE_SIZE = 12;
 type SortOption = 'featured' | 'title-asc' | 'price-asc' | 'price-desc';
+type SearchUpdate = Readonly<{ value: string; debounce: boolean }>;
 
 @Component({
   selector: 'app-book-list',
@@ -57,7 +55,14 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   @ViewChild(CdkVirtualScrollViewport) private viewport?: CdkVirtualScrollViewport;
 
-  private readonly searchInput$ = new Subject<string>();
+  private readonly searchUpdates$ = new BehaviorSubject<SearchUpdate>({
+    value: '',
+    debounce: false,
+  });
+  private readonly searchTerm$ = this.searchUpdates$.pipe(
+    switchMap(({ value, debounce }) => (debounce ? timer(300).pipe(map(() => value)) : of(value))),
+    distinctUntilChanged(),
+  );
   readonly searchValue = signal('');
   readonly loading = signal(false);
   readonly categoriesLoading = signal(true);
@@ -80,7 +85,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
   private lastChunkRows: Array<Array<Book | null>> = [];
 
   readonly booksResult$ = combineLatest([
-    this.searchInput$.pipe(debounceTime(300), startWith('')),
+    this.searchTerm$,
     toObservable(this.selectedCategoryId),
     toObservable(this.selectedSort),
     toObservable(this.currentPage),
@@ -148,19 +153,24 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.loadCategories();
-    this.route.queryParamMap.pipe(take(1)).subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const search = params.get('search')?.trim() ?? '';
-      if (search) {
+      if (search !== this.searchValue()) {
         this.searchValue.set(search);
-        this.searchInput$.next(search);
+        this.searchUpdates$.next({ value: search, debounce: false });
       }
+
       const categoryIdParam = params.get('category');
-      if (categoryIdParam != null) {
-        const id = Number(categoryIdParam);
-        if (Number.isFinite(id)) {
-          this.selectedCategoryId.set(id);
-        }
+      const parsedCategoryId = categoryIdParam == null ? null : Number(categoryIdParam);
+      const categoryId =
+        parsedCategoryId != null && Number.isInteger(parsedCategoryId) && parsedCategoryId > 0
+          ? parsedCategoryId
+          : null;
+      if (categoryId !== this.selectedCategoryId()) {
+        this.selectedCategoryId.set(categoryId);
       }
+
+      this.currentPage.set(0);
     });
 
     const width = typeof window !== 'undefined' ? window.innerWidth : 9999;
@@ -249,7 +259,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   onSearchInput(value: string): void {
     this.searchValue.set(value);
-    this.searchInput$.next(value);
+    this.searchUpdates$.next({ value, debounce: true });
     this.currentPage.set(0);
   }
 
@@ -275,7 +285,7 @@ export class BookListComponent implements OnInit, AfterViewChecked {
 
   clearFilters(): void {
     this.searchValue.set('');
-    this.searchInput$.next('');
+    this.searchUpdates$.next({ value: '', debounce: false });
     this.selectedCategoryId.set(null);
     this.selectedSort.set('featured');
     this.currentPage.set(0);

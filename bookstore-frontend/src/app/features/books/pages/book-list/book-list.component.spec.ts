@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { ActivatedRoute, convertToParamMap, type ParamMap } from '@angular/router';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -23,6 +23,7 @@ describe('BookListComponent', () => {
   let getCategoriesMock: ReturnType<typeof vi.fn>;
   let addItemMock: ReturnType<typeof vi.fn>;
   let successMock: ReturnType<typeof vi.fn>;
+  let queryParamMap$: BehaviorSubject<ParamMap>;
 
   const books: Book[] = [
     {
@@ -54,6 +55,7 @@ describe('BookListComponent', () => {
     getCategoriesMock = vi.fn();
     addItemMock = vi.fn().mockReturnValue(of(void 0));
     successMock = vi.fn();
+    queryParamMap$ = new BehaviorSubject(convertToParamMap({}));
 
     await TestBed.configureTestingModule({
       declarations: [BookListComponent],
@@ -89,7 +91,7 @@ describe('BookListComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParamMap: of(convertToParamMap({})),
+            queryParamMap: queryParamMap$.asObservable(),
           },
         },
       ],
@@ -214,6 +216,63 @@ describe('BookListComponent', () => {
 
     expect(component.searchValue()).toBe('refactoring');
     expect(component.currentPage()).toBe(0);
+  });
+
+  it('applies the initial route search before the catalog subscribes', () => {
+    queryParamMap$.next(convertToParamMap({ search: '  refactoring  ' }));
+    searchBooksMock.mockReturnValue(of(books));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.searchValue()).toBe('refactoring');
+    expect(searchBooksMock).toHaveBeenCalledWith('refactoring', undefined);
+    expect(getBooksMock).not.toHaveBeenCalled();
+  });
+
+  it('reacts to route search changes while the catalog component is reused', () => {
+    getBooksMock.mockReturnValue(of(pageResponse(books)));
+    searchBooksMock.mockReturnValue(of(books));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    queryParamMap$.next(convertToParamMap({ search: 'domain' }));
+    fixture.detectChanges();
+
+    expect(component.searchValue()).toBe('domain');
+    expect(searchBooksMock).toHaveBeenCalledWith('domain', undefined);
+
+    queryParamMap$.next(convertToParamMap({}));
+    fixture.detectChanges();
+
+    expect(component.searchValue()).toBe('');
+    expect(getBooksMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('applies and clears the category from route changes', () => {
+    getBooksMock.mockReturnValue(of(pageResponse(books)));
+    getBooksByCategoryMock.mockReturnValue(of(pageResponse(books)));
+    getCategoriesMock.mockReturnValue(of(categories));
+
+    fixture = TestBed.createComponent(BookListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    queryParamMap$.next(convertToParamMap({ category: '2' }));
+    fixture.detectChanges();
+
+    expect(component.selectedCategoryId()).toBe(2);
+    expect(getBooksByCategoryMock).toHaveBeenCalledWith(2, 0, 12);
+
+    queryParamMap$.next(convertToParamMap({ category: 'invalid' }));
+    fixture.detectChanges();
+
+    expect(component.selectedCategoryId()).toBeNull();
   });
 
   it('tells guests the cart will sync later when adding a book', () => {
