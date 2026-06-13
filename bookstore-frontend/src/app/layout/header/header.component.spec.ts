@@ -56,6 +56,8 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => vi.useRealTimers());
+
   it('updates the responsive state and closes mobile menus on desktop', () => {
     breakpointState$.next({ matches: true, breakpoints: {} });
     component.toggleMobileMenu();
@@ -93,5 +95,31 @@ describe('HeaderComponent', () => {
     breakpointState$.next({ matches: false, breakpoints: {} });
 
     expect(component.isMobile()).toBe(true);
+  });
+
+  it('cancels pending menu focus when the menu closes', () => {
+    vi.useFakeTimers();
+    const getItemsSpy = vi
+      .spyOn(component as unknown as { getUserMenuItems: () => HTMLElement[] }, 'getUserMenuItems')
+      .mockReturnValue([]);
+
+    component.onUserMenuTriggerKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    component.closeUserMenu();
+    vi.runAllTimers();
+
+    expect(getItemsSpy).not.toHaveBeenCalled();
+  });
+
+  it('cancels pending menu focus on destruction', () => {
+    vi.useFakeTimers();
+    const getItemsSpy = vi
+      .spyOn(component as unknown as { getUserMenuItems: () => HTMLElement[] }, 'getUserMenuItems')
+      .mockReturnValue([]);
+
+    component.onUserMenuTriggerKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    fixture.destroy();
+    vi.runAllTimers();
+
+    expect(getItemsSpy).not.toHaveBeenCalled();
   });
 });

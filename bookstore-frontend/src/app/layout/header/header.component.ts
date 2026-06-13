@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit {
   private readonly cartFacade = inject(CartFacadeService);
   private readonly hostElement = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
+  private userMenuFocusTimeout: ReturnType<typeof setTimeout> | null = null;
 
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
   readonly cartCount$ = this.cartFacade.cartCount$;
@@ -35,6 +36,10 @@ export class HeaderComponent implements OnInit {
   readonly isMobile = signal(false);
   readonly searchQuery = signal('');
   readonly showNavLinks = computed(() => !this.isMobile() || this.mobileMenuOpen());
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.clearUserMenuFocusTimeout());
+  }
 
   ngOnInit(): void {
     this.breakpointObserver
@@ -63,6 +68,7 @@ export class HeaderComponent implements OnInit {
   }
 
   closeUserMenu(): void {
+    this.clearUserMenuFocusTimeout();
     this.userMenuOpen.set(false);
   }
 
@@ -157,12 +163,20 @@ export class HeaderComponent implements OnInit {
     if (!this.userMenuOpen()) {
       this.userMenuOpen.set(true);
     }
-    setTimeout(() => {
+    this.clearUserMenuFocusTimeout();
+    this.userMenuFocusTimeout = setTimeout(() => {
+      this.userMenuFocusTimeout = null;
       const items = this.getUserMenuItems();
       if (!items.length) return;
       const targetIndex = index < 0 ? items.length - 1 : index;
       items[targetIndex]?.focus();
     });
+  }
+
+  private clearUserMenuFocusTimeout(): void {
+    if (this.userMenuFocusTimeout == null) return;
+    clearTimeout(this.userMenuFocusTimeout);
+    this.userMenuFocusTimeout = null;
   }
 
   private getUserMenuItems(): HTMLElement[] {
