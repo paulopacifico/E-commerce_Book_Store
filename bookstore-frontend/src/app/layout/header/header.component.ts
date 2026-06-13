@@ -1,5 +1,6 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
   inject,
@@ -7,6 +8,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AuthService } from '../../features/auth/data-access/auth.service';
@@ -24,6 +26,7 @@ export class HeaderComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly cartFacade = inject(CartFacadeService);
   private readonly hostElement = inject(ElementRef<HTMLElement>);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isAuthenticated$ = this.authService.isAuthenticated$;
   readonly cartCount$ = this.cartFacade.cartCount$;
@@ -34,12 +37,15 @@ export class HeaderComponent implements OnInit {
   readonly showNavLinks = computed(() => !this.isMobile() || this.mobileMenuOpen());
 
   ngOnInit(): void {
-    this.breakpointObserver.observe('(max-width: 768px)').subscribe((state) => {
-      this.isMobile.set(state.matches);
-      if (!state.matches) {
-        this.closeMobileMenu();
-      }
-    });
+    this.breakpointObserver
+      .observe('(max-width: 768px)')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state) => {
+        this.isMobile.set(state.matches);
+        if (!state.matches) {
+          this.closeMobileMenu();
+        }
+      });
   }
 
   toggleMobileMenu(): void {
