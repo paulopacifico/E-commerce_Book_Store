@@ -18,6 +18,8 @@ export class CartIconComponent {
   private bumpTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.clearBumpTimeout());
+
     this.cartCount$
       .pipe(
         startWith(0),
@@ -27,8 +29,17 @@ export class CartIconComponent {
       )
       .subscribe(() => {
         this.bump.set(true);
-        if (this.bumpTimeout) clearTimeout(this.bumpTimeout);
-        this.bumpTimeout = setTimeout(() => this.bump.set(false), 260);
+        this.clearBumpTimeout();
+        this.bumpTimeout = setTimeout(() => {
+          this.bump.set(false);
+          this.bumpTimeout = null;
+        }, 260);
       });
+  }
+
+  private clearBumpTimeout(): void {
+    if (this.bumpTimeout == null) return;
+    clearTimeout(this.bumpTimeout);
+    this.bumpTimeout = null;
   }
 }
