@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
+  NavigationCancel,
   NavigationEnd,
   NavigationError,
+  NavigationSkipped,
   NavigationStart,
   Router,
   RouterOutlet,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
 
 import { AnimationsService, pageTransition } from './shared/services/animations/animations.service';
 
@@ -18,32 +20,31 @@ import { AnimationsService, pageTransition } from './shared/services/animations/
   styleUrl: './app.component.scss',
   animations: [pageTransition],
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   isNavigating = false;
-  private sub: Subscription | null = null;
 
   constructor(private readonly router: Router) {}
 
   private readonly animations = inject(AnimationsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly motion = this.animations.motionParams('standard');
 
   ngOnInit(): void {
-    this.sub = this.router.events
+    this.router.events
       .pipe(
         filter(
           (e) =>
             e instanceof NavigationStart ||
             e instanceof NavigationEnd ||
-            e instanceof NavigationError,
+            e instanceof NavigationError ||
+            e instanceof NavigationCancel ||
+            e instanceof NavigationSkipped,
         ),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((e) => {
         this.isNavigating = e instanceof NavigationStart;
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub?.unsubscribe();
   }
 
   prepareRoute(outlet: RouterOutlet | null | undefined): string {
