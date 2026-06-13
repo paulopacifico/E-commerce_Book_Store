@@ -49,17 +49,14 @@ export class SmoothScrollService {
   smoothScrollToY(targetY: number, options: SmoothScrollToOptions = {}): void {
     if (typeof window === 'undefined') return;
 
+    this.cancelActiveAnimation();
+
     const durationMs = options.durationMs ?? 800;
     const easing = options.easing ?? 'inertia';
 
     if (this.prefersReducedMotion || durationMs <= 0) {
       window.scrollTo(0, Math.round(targetY));
       return;
-    }
-
-    if (this.activeRafId != null) {
-      cancelAnimationFrame(this.activeRafId);
-      this.activeRafId = null;
     }
 
     const startY = window.scrollY;
@@ -95,5 +92,12 @@ export class SmoothScrollService {
     };
 
     this.activeRafId = requestAnimationFrame(step);
+  }
+
+  private cancelActiveAnimation(): void {
+    this.animationToken += 1;
+    if (this.activeRafId == null) return;
+    cancelAnimationFrame(this.activeRafId);
+    this.activeRafId = null;
   }
 }
