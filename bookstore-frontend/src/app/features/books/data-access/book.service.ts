@@ -46,6 +46,8 @@ export class BookService {
   }
 
   searchBooks(query: string, categoryId?: number): Observable<Book[]> {
+    const normalizedQuery = query.trim();
+
     if (categoryId != null) {
       return this.http
         .get<PageResponse<Book>>(`${this.apiUrl}/category/${categoryId}`, {
@@ -53,19 +55,38 @@ export class BookService {
         })
         .pipe(
           retry({ count: 2, delay: 500 }),
-          map((res) => res.content),
+          map((res) =>
+            normalizedQuery
+              ? res.content.filter((book) => this.matchesSearchQuery(book, normalizedQuery))
+              : res.content,
+          ),
           catchError(this.handleError),
         );
     }
     return this.http
       .get<PageResponse<Book>>(`${this.apiUrl}/search`, {
-        params: new HttpParams().set('keyword', query).set('page', 0).set('size', 100),
+        params: new HttpParams().set('keyword', normalizedQuery).set('page', 0).set('size', 100),
       })
       .pipe(
         retry({ count: 2, delay: 500 }),
         map((res) => res.content),
         catchError(this.handleError),
       );
+  }
+
+  private matchesSearchQuery(book: Book, query: string): boolean {
+    const normalizedQuery = this.normalizeSearchValue(query);
+    return [book.title, book.author, book.isbn, book.description].some((value) =>
+      this.normalizeSearchValue(value).includes(normalizedQuery),
+    );
+  }
+
+  private normalizeSearchValue(value: string | null | undefined): string {
+    return (value ?? '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase()
+      .trim();
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
